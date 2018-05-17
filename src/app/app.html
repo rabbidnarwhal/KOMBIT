@@ -1,1 +1,21 @@
-<ion-nav [root]="rootPage"></ion-nav>
+<ion-menu [content]="content" id="sideMenu">
+  <ion-header>
+    <div class="menu-header">
+      <img src="assets/imgs/profile.jpg">
+      <h4 text-center>Welcome User</h4>
+    </div>
+  </ion-header>
+
+  <ion-content class="menu-content">
+    <ion-list no-margin>
+      <button menuClose ion-item no-lines padding-left *ngFor="let p of pages" (click)="openPage(p)">
+        <ion-icon icon-small item-left [name]="p.icon">
+        </ion-icon>
+        {{p.title}}
+      </button>
+    </ion-list>
+  </ion-content>
+
+</ion-menu>
+
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

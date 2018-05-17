@@ -1,0 +1,18 @@
+<ion-header class="custom-background">
+  <ion-navbar>
+    <ion-item class="top-searchbar">
+      <ion-input type="text" placeholder="Company" [(ngModel)]="searchText"></ion-input>
+      <ion-icon name="search" item-end></ion-icon>
+    </ion-item>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-row>
+    <ion-col col-4 *ngFor="let company of companies">
+      <div class="image-container" [style.background-image]="'url('+company.ImageUrl+')'">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-content>

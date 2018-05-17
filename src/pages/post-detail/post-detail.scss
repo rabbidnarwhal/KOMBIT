@@ -1,0 +1,49 @@
+page-post-detail {
+  .box-label {
+    margin: 0 6px;
+  }
+
+  .box-content {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    width: calc(100% - 64px);
+    font-weight: 500;
+  }
+
+  p {
+    white-space: pre-wrap;
+    text-align: justify;
+  }
+
+  .box-text {
+    width: 52px;
+  }
+
+  div {
+    width: 100%;
+  }
+
+  .popover-close-icon {
+    float: right;
+    margin-top: 10px;
+    margin-right: 20px;
+    font-size: 30px;
+  }
+
+  ion-scroll {
+    height: calc(100vh - 164px);
+  }
+
+  .header-md::after {
+    background-image: none;
+  }
+
+  .popover {
+    padding: 0px !important;
+  }
+
+  .videoPlayer {
+    width: 100%;
+  }
+}

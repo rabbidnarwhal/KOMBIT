@@ -1,0 +1,19 @@
+page-welcome {
+  img {
+    width: 64% !important;
+  }
+
+  [btn-kombit] {
+    margin-bottom: 0px !important;
+    border-radius: 0px !important;
+  }
+
+  ion-footer {
+    &::before {
+      background-image: none !important;
+    }
+    > div {
+      min-height: 36px;
+    }
+  }
+}

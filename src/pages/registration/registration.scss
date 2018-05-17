@@ -1,0 +1,82 @@
+page-registration {
+  $colorHigh: map-get($kombit-colors, 'bg-high');
+  $colorLow: map-get($kombit-colors, 'bg-low');
+  $colorText: map-get($kombit-colors, 'text');
+  $colorBtn: map-get($kombit-colors, 'btn');
+
+  ion-input {
+    background-color: $colorText;
+    border: 1px solid $colorText;
+    border-radius: 25px;
+    margin-bottom: 8px;
+    input {
+      width: calc(100% - 8px - 24px) !important;
+      margin: 8px 16px !important;
+      text-align: center;
+    }
+  }
+
+  .input-fields {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  h2 {
+    text-transform: uppercase;
+    color: $colorText;
+  }
+
+  ion-footer,
+  ion-header {
+    &::after {
+      background-image: none !important;
+    }
+    &::before {
+      background-image: none !important;
+    }
+    .toolbar-background {
+      background-color: transparent !important;
+    }
+  }
+
+  ion-content {
+    @include background-content(0deg);
+  }
+
+  div.line {
+    position: relative;
+    z-index: 1;
+
+    &:after {
+      border-top: 2px solid $colorText;
+      content: '';
+      margin: 0 auto;
+      position: absolute;
+      top: 65%;
+      left: 0;
+      right: auto;
+      bottom: 0;
+      width: 50%;
+      z-index: -1;
+    }
+
+    &:before {
+      border-top: 2px solid $colorText;
+      content: '';
+      margin: 0 auto;
+      position: absolute;
+      top: 28%;
+      left: auto;
+      right: 0;
+      bottom: 0;
+      width: calc(50% - 100px);
+      z-index: -1;
+    }
+
+    span {
+      background: transparent;
+      padding: 0 20px;
+      display: inline-block;
+    }
+  }
+}

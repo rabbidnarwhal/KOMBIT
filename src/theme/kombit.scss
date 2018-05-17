@@ -1,0 +1,109 @@
+$kombit-colors: (
+  bg-high: #f2703f,
+  bg-low: #fbcb4d,
+  btn: #f18b1d,
+  text: #fdfdfd
+);
+@mixin background-content($direction) {
+  background: map-get($kombit-colors, 'bg-high') !important;
+  background: -moz-linear-gradient($direction, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
+  background: -webkit-linear-gradient($direction, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
+  background: linear-gradient($direction, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
+}
+@mixin color-item() {
+  color: map-get($kombit-colors, 'bg-high') !important;
+  color: -moz-linear-gradient(90deg, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
+  color: -webkit-linear-gradient(90deg, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
+  color: linear-gradient(90deg, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
+}
+@mixin color-border() {
+  border-color: map-get($kombit-colors, 'bg-high') !important;
+  border-color: -moz-linear-gradient(90deg, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
+  border-color: -webkit-linear-gradient(90deg, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
+  border-color: linear-gradient(90deg, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
+}
+ion-header.custom-background {
+  .toolbar-background {
+    @include background-content(0deg);
+  }
+  div.toolbar-content {
+    div.toolbar-title {
+      margin-right: 56px !important;
+      text-align: center !important;
+      color: map-get($kombit-colors, 'text') !important;
+      font-weight: 100 !important;
+      font-size: 16px !important;
+    }
+  }
+}
+ion-header {
+  button.bar-button,
+  button.back-button {
+    color: map-get($kombit-colors, 'text') !important;
+  }
+}
+ion-navbar.toolbar.toolbar-md {
+  min-height: 10px;
+}
+ion-content.content.content-md:not(.menu-content):not(.popover) {
+  > .fixed-content {
+    margin-top: 42px !important;
+  }
+  > .scroll-content {
+    margin-top: 42px !important;
+  }
+}
+.inline-flex {
+  display: inline-flex;
+}
+// ion-grid {
+// padding-left: 21px !important;
+// }
+ion-popover.popover-width .popover-content {
+  width: 90% !important;
+  max-height: calc(100% - 64px) !important;
+  height: 100% !important;
+}
+.top-searchbar {
+  width: calc(100% - 120px) !important;
+  display: inline-flex !important;
+  min-height: 2rem !important;
+  left: 20px !important;
+  background-color: transparent !important;
+  .item-inner {
+    border: 1px solid map-get($kombit-colors, 'text') !important;
+    background-color: map-get($kombit-colors, 'text') !important;
+    box-shadow: none !important !important;
+    border-radius: 25px !important;
+    padding: 0 12px !important;
+    font-size: 12px !important;
+    box-shadow: none !important;
+    ion-icon {
+      min-height: 10px !important;
+      margin: 0px !important;
+      font-size: 18px !important;
+      color: map-get($kombit-colors, 'btn');
+    }
+    input {
+      text-align: center;
+      margin: 0px !important;
+      padding-left: 18px;
+    }
+  }
+}
+.margin-top-0 {
+  margin-top: 0px !important;
+}
+.margin-top-10 {
+  margin-top: 10px !important;
+}
+.margin-vertical-20 {
+  margin: 20px 0 !important;
+}
+[btn-kombit] {
+  border-radius: 20px !important;
+  background-color: map-get($kombit-colors, 'btn') !important;
+  text-transform: capitalize !important;
+  padding: 12px 24px !important;
+  margin-bottom: 20px !important;
+}

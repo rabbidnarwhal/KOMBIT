@@ -1,3 +1,52 @@
 page-home {
+  .post-list-box {
+    margin-bottom: 16px;
+    background: map-get($kombit-colors, 'text');
+    -ms-box-shadow: 0 4px 10px RGBA(0, 0, 0, 0.3);
+    box-shadow: 0 4px 10px RGBA(0, 0, 0, 0.3);
+    width: 100%;
+    font-size: 10px;
+  }
 
+  .box-label {
+    margin: 0 6px;
+  }
+
+  .box-button {
+    margin: 0px;
+    font-weight: 200;
+    text-transform: capitalize;
+    @include background-content(90deg);
+  }
+
+  .box-content {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    width: calc(100% - 64px);
+    font-weight: 500;
+  }
+
+  .box-text {
+    width: 52px;
+  }
+
+  .box-icon {
+    font-size: 8px;
+    margin: 4px 6px;
+    ion-icon {
+      @include color-item();
+    }
+  }
+
+  .top-searchbar {
+    + ion-label {
+      margin: 0;
+      float: right;
+      font-size: 12px;
+      margin-top: 4px;
+      margin-right: 8px;
+      color: map-get($kombit-colors, 'text');
+    }
+  }
 }
