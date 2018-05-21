@@ -20,7 +20,7 @@ export class HomePage {
         Company: 'TestCompany1',
         Holding: 'TestHolding1',
         Solution: 'TestSolurion1',
-        ImageUrl: '../assets/imgs/test1.jpg',
+        ImageUrl: 'https://vignette.wikia.nocookie.net/leagueoflegends/images/4/41/Dragon_OriginalSkin.jpg',
         Views: 1,
         Calls: 10,
         Comments: 4
@@ -30,7 +30,7 @@ export class HomePage {
         Company: 'TestCompany2',
         Holding: 'TestHolding2',
         Solution: 'TestSolurion2',
-        ImageUrl: '../assets/imgs/test2.jpg',
+        ImageUrl: 'https://pre00.deviantart.net/7ec3/th/pre/f/2017/255/1/b/dragon_rider_by_chirun-dbn6lis.png',
         Views: 122,
         Calls: 22,
         Comments: 5
@@ -40,7 +40,7 @@ export class HomePage {
         Company: 'TestCompany3',
         Holding: 'TestHolding3',
         Solution: 'TestSolurion3',
-        ImageUrl: '../assets/imgs/test3.jpg',
+        ImageUrl: 'https://i.ytimg.com/vi/T8SaaNlkNW4/maxresdefault.jpg',
         Views: 300,
         Calls: 30,
         Comments: 6
@@ -50,7 +50,7 @@ export class HomePage {
         Company: 'TestCompany4',
         Holding: 'TestHolding4',
         Solution: 'TestSolurion4',
-        ImageUrl: '../assets/imgs/test4.jpg',
+        ImageUrl: 'http://www.liquidhearth.com/staff/Hayl_Storm/Kobolds/Hayl/NeireaDragons_banner.jpg',
         Views: 140,
         Calls: 4,
         Comments: 7
@@ -60,7 +60,7 @@ export class HomePage {
         Company: 'TestCompany5',
         Holding: 'TestHolding5',
         Solution: 'TestSolurion5',
-        ImageUrl: '../assets/imgs/test5.jpg',
+        ImageUrl: 'https://vignette.wikia.nocookie.net/dragonballfanon/images/8/8d/Water-dragon-wallpaper.jpg',
         Views: 55,
         Calls: 15,
         Comments: 8

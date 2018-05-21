@@ -33,8 +33,8 @@ export class PostDetailPage {
         'Managed by Client\n' +
         'Click to Dial Client Delivery\n' +
         'Find Near Me Store\n',
-      ImageUrl: '../assets/imgs/test.png',
-      VideoUrl: '../assets/vids/test.mp4'
+      ImageUrl: 'https://vignette.wikia.nocookie.net/dragonage/images/8/80/Concept-HighDragon.jpg',
+      VideoUrl: 'http://static.videogular.com/assets/videos/videogular.mp4'
     };
   }
 
