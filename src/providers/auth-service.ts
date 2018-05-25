@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiServiceProvider } from './api-service';
 import { UtilityServiceProvider } from './utility-service';
 import { BehaviorSubject } from 'rxjs/Rx';
+import { LoginResponse, LoginRequest } from '../models/login';
 
 /*
   Generated class for the AuthServiceProvider provider.
@@ -13,7 +14,7 @@ import { BehaviorSubject } from 'rxjs/Rx';
 export class AuthServiceProvider {
   public authNotifier: BehaviorSubject<any> = new BehaviorSubject(null);
   private isLoggin: boolean;
-  private credential: any;
+  private principal: LoginResponse;
 
   constructor(private api: ApiServiceProvider, private utility: UtilityServiceProvider) {
     this.isLoggin = false;
@@ -29,15 +30,21 @@ export class AuthServiceProvider {
     }
   }
 
-  login(credentials: any) {
+  login(credentials: LoginRequest) {
     const loading = this.utility.showLoading();
     loading.present();
-    this.authenticate({}).then(res => {
-      setTimeout(() => {
+    this.api.post('/users/login', credentials).subscribe(
+      (sub: LoginResponse) => {
+        this.authenticate(sub).then(res => {
+          loading.dismiss();
+          this.authNotifier.next(true);
+        });
+      },
+      error => {
         loading.dismiss();
-        this.authNotifier.next(true);
-      }, 1500);
-    });
+        this.utility.showToast(error);
+      }
+    );
   }
 
   logout() {
@@ -50,17 +57,25 @@ export class AuthServiceProvider {
     }, 1500);
   }
 
-  reAuth(token) {
-    this.authenticate(token).then(res => {
-      setTimeout(() => {
-        this.authNotifier.next(true);
-      }, 1500);
-    });
+  reAuth(data) {
+    const token = data.split(':');
+    this.api.get('/users/' + token[1] + '/' + token[0]).subscribe(
+      (sub: LoginResponse) => {
+        this.authenticate(sub).then(res => {
+          this.authNotifier.next(true);
+        });
+      },
+      err => {
+        localStorage.removeItem('token');
+        this.authNotifier.next(false);
+      }
+    );
   }
 
-  authenticate(data: any) {
+  authenticate(data: LoginResponse) {
     this.isLoggin = true;
-    localStorage.setItem('token', 'true');
+    this.setPrincipal(data);
+    localStorage.setItem('token', data.idNumber + ':' + data.id);
     return new Promise(resolve => {
       resolve(true);
     });
@@ -68,5 +83,13 @@ export class AuthServiceProvider {
 
   getLoggingStatus() {
     return this.isLoggin;
+  }
+
+  setPrincipal(principal: LoginResponse) {
+    this.principal = principal;
+  }
+
+  getPrincipal() {
+    return this.principal;
   }
 }

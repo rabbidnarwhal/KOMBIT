@@ -56,9 +56,6 @@ ion-content.content.content-md:not(.menu-content):not(.popover) {
 .inline-flex {
   display: inline-flex;
 }
-// ion-grid {
-// padding-left: 21px !important;
-// }
 ion-popover.popover-width .popover-content {
   width: 90% !important;
   max-height: calc(100% - 64px) !important;
@@ -95,6 +92,9 @@ ion-popover.popover-width .popover-content {
   margin-top: 0px !important;
 }
 .margin-top-10 {
+  margin-top: 10px !important;
+}
+.margin-top-20 {
   margin-top: 10px !important;
 }
 .margin-vertical-20 {

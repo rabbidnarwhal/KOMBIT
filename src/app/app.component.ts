@@ -1,6 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { Platform, Nav } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
+import { Keyboard } from '@ionic-native/keyboard';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { UtilityServiceProvider } from '../providers/utility-service';
@@ -20,10 +21,10 @@ export class MyApp {
     private splashScreen: SplashScreen,
     private utility: UtilityServiceProvider,
     private auth: AuthServiceProvider,
-    private menu: MenuController
+    private menu: MenuController,
+    private keyboard: Keyboard
   ) {
     this.initializeApp();
-    this.authCheck();
 
     this.pages = [
       { title: 'Notification', component: '', icon: 'notifications' },
@@ -42,6 +43,8 @@ export class MyApp {
       this.statusBar.styleDefault();
       this.menu.enable(false, 'sideMenu');
       this.menu.swipeEnable(false, 'sideMenu');
+      this.keyboard.disableScroll(true);
+      this.authCheck();
     });
   }
 
@@ -70,12 +73,16 @@ export class MyApp {
         isFirstTime = 'false';
         this.rootPage = 'welcome';
       } else if (res) {
-        this.menu.enable(true, 'sideMenu');
-        this.menu.swipeEnable(true, 'sideMenu');
+        if (!this.menu.isEnabled('sideMenu')) {
+          this.menu.enable(true, 'sideMenu');
+          this.menu.swipeEnable(true, 'sideMenu');
+        }
         this.rootPage = 'home';
       } else {
-        this.menu.enable(false, 'sideMenu');
-        this.menu.swipeEnable(false, 'sideMenu');
+        if (this.menu.isEnabled('sideMenu')) {
+          this.menu.enable(false, 'sideMenu');
+          this.menu.swipeEnable(false, 'sideMenu');
+        }
         this.rootPage = 'login';
       }
       this.splashScreen.hide();

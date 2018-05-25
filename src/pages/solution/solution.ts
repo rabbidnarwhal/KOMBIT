@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Category } from '../../models/category';
+import { DataCategoryServiceProvider } from '../../providers/dataCategory-service';
+import { UtilityServiceProvider } from '../../providers/utility-service';
 
 /**
  * Generated class for the SolutionPage page.
@@ -16,22 +19,30 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'solution.html'
 })
 export class SolutionPage {
-  public listSolution: any;
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-    this.listSolution = [
-      { Name: 'SolutionA' },
-      { Name: 'SolutionB' },
-      { Name: 'SolutionC' },
-      { Name: 'SolutionD' },
-      { Name: 'SolutionE' },
-      { Name: 'SolutionF' },
-      { Name: 'SolutionG' },
-      { Name: 'SolutionH' },
-      { Name: 'SolutionI' }
-    ];
+  public listSolution: Array<Category>;
+  public filteredItems: Array<Category>;
+  public filterText: string = '';
+  public isSearching: boolean = true;
+  constructor(public navCtrl: NavController, private dataCategory: DataCategoryServiceProvider, private utility: UtilityServiceProvider) {
+    this.listSolution = new Array<Category>();
+    this.listSolution = this.dataCategory.getCategory() || [];
+    this.filterItems();
+  }
+  ionViewDidEnter() {
+    if (this.listSolution.length) this.isSearching = false;
+    this.dataCategory
+      .getListCategory()
+      .then(() => {
+        this.listSolution = this.dataCategory.getCategory() || [];
+        this.filterItems();
+        this.isSearching = false;
+      })
+      .catch(err => this.utility.showToast(err));
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SolutionPage');
+  filterItems() {
+    this.filteredItems = this.listSolution.filter(res => {
+      return res.category.toLowerCase().indexOf(this.filterText.trim().toLowerCase()) !== -1;
+    });
   }
 }

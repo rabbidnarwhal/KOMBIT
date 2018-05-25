@@ -21,6 +21,27 @@ page-registration {
     padding-right: 16px;
   }
 
+  ion-item {
+    min-height: 1rem !important;
+    padding: 8px 16px !important;
+    margin-bottom: 8px !important;
+    border-radius: 20px;
+    .item-inner {
+      border-bottom: none !important;
+      ion-select {
+        font-size: 14px !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        padding: 0 2px 0 0 !important;
+        text-align: center;
+        div.select-text,
+        div.select-placeholder {
+          padding-left: 18px;
+        }
+      }
+    }
+  }
+
   h2 {
     text-transform: uppercase;
     color: $colorText;

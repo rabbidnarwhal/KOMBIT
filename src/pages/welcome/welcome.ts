@@ -1,9 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController } from 'ionic-angular';
 import { Slides } from 'ionic-angular';
-// import { BrowserModule } from '@angular/platform-browser';
-// import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { trigger, transition, style, animate, state } from '@angular/animations';
+import { trigger, transition, style, animate } from '@angular/animations';
 /**
  * Generated class for the WelcomePage page.
  *

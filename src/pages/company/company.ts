@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { Company } from '../../models/company';
+import { DataCompanyServiceProvider } from '../../providers/dataCompany-service';
+import { UtilityServiceProvider } from '../../providers/utility-service';
 
 /**
  * Generated class for the CompanyPage page.
@@ -16,26 +19,31 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'company.html'
 })
 export class CompanyPage {
-  public companies: any;
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-    this.companies = [
-      { ImageUrl: 'assets/imgs/company1.jpg' },
-      { ImageUrl: 'assets/imgs/company2.jpg' },
-      { ImageUrl: 'assets/imgs/company3.jpg' },
-      { ImageUrl: 'assets/imgs/company4.jpg' },
-      { ImageUrl: 'assets/imgs/company5.jpg' },
-      { ImageUrl: 'assets/imgs/company6.jpg' },
-      { ImageUrl: 'assets/imgs/company7.jpg' },
-      { ImageUrl: 'assets/imgs/company8.jpg' },
-      { ImageUrl: 'assets/imgs/company9.jpg' },
-      { ImageUrl: 'assets/imgs/company10.jpg' },
-      { ImageUrl: 'assets/imgs/company11.jpg' },
-      { ImageUrl: 'assets/imgs/company12.jpg' },
-      { ImageUrl: 'assets/imgs/company13.jpg' }
-    ];
+  public companies: Array<Company>;
+  public filteredItems: Array<Company>;
+  public filterText: string = '';
+  public isSearching: boolean = true;
+  constructor(public navCtrl: NavController, private dataCompany: DataCompanyServiceProvider, private utility: UtilityServiceProvider) {
+    this.companies = new Array<Company>();
+    this.companies = this.dataCompany.getCompany() || [];
+    this.filterItems();
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad CompanyPage');
+    if (this.companies.length) this.isSearching = false;
+    this.dataCompany
+      .getListCompany()
+      .then(() => {
+        this.companies = this.dataCompany.getCompany();
+        this.filterItems();
+        this.isSearching = false;
+      })
+      .catch(err => this.utility.showToast(err));
+  }
+
+  filterItems() {
+    this.filteredItems = this.companies.filter(res => {
+      return res.companyName.toLowerCase().indexOf(this.filterText.trim().toLowerCase()) !== -1;
+    });
   }
 }

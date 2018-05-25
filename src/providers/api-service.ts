@@ -14,7 +14,7 @@ export class ApiServiceProvider {
   private url: string;
 
   constructor(private http: HttpClient) {
-    this.url = '';
+    this.url = 'http://192.168.1.3:5003/api';
   }
 
   getUrl() {
@@ -40,11 +40,12 @@ export class ApiServiceProvider {
   }
 
   private handleError(error: HttpErrorResponse) {
+    console.log('this is api', error);
     if (error.hasOwnProperty('error')) {
       if (error.error instanceof ErrorEvent) console.error('An error occurred:', error.error.message);
-      else if (error.error.hasOwnProperty('ExceptionMessage')) return new ErrorObservable(error.error.ExceptionMessage);
+      else if (error.error && error.error.hasOwnProperty('Message')) return new ErrorObservable(error.error.Message);
       // return new ErrorObservable(error.error.ExceptionMessage);
-      else console.error(`error message`, error);
+      else console.error(`error message`, error.message);
       return new ErrorObservable(`An error occured.`);
     }
   }

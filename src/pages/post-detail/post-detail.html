@@ -5,41 +5,203 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-  <ion-icon class="popover-close-icon" name="close-circle" (click)="close()"></ion-icon>
+  <ion-icon class="popover-icon" name="arrow-back" (click)="back()" *ngIf="selectedPage !== 'detail'"></ion-icon>
+  <ion-label>{{selectedPage}}</ion-label>
+  <ion-icon class="popover-icon" name="close-circle" (click)="close()"></ion-icon>
 </ion-header>
 
 <ion-content padding class="popover">
-  <ion-scroll scrollY="true">
+  <ion-scroll scrollY="true" *ngIf="selectedPage === 'detail'">
+    <div *ngIf="isSearching">
+      <div></div>
+      <ion-spinner></ion-spinner>
+    </div>
+    <ion-row *ngIf="!isSearching">
+      <div>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Product</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider"> : </ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.productName}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.companyName}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Solution</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.categoryName}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label" *ngIf="data.isIncludePrice">
+          <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.price}}</ion-label>
+        </ion-label>
+        <ion-row>
+          <ion-col no-padding>
+            <button ion-button small class="interactionBtn" (click)="likeBtnClick()">
+              <ion-icon *ngIf="!lockBtn" [name]="data.isLike ? 'heart' : 'heart-outline'"></ion-icon>
+              <span>{{data.totalLike}}</span>
+              <ion-spinner *ngIf="lockBtn"></ion-spinner>
+            </button>
+          </ion-col>
+          <ion-col no-padding>
+            <button ion-button small class="interactionBtn" (click)="openComment()">
+              <ion-icon name="chatboxes"></ion-icon>
+              <span>{{data.totalComment}}</span>
+            </button>
+          </ion-col>
+          <ion-col no-padding>
+            <button ion-button small class="interactionBtn" (click)="openContact()">
+              <ion-icon name="person"></ion-icon>
+            </button>
+          </ion-col>
+        </ion-row>
+      </div>
+      <div class="margin-top-10" *ngIf="data.fotoPath">
+        <img [src]="data.fotoPath" [alt]="data.fotoName" />
+      </div>
+      <div>
+        <h6>Description:</h6>
+        <p>{{data.description}}</p>
+      </div>
+      <div text-center class="video-container" *ngIf="data.videoPath">
+        <video controls width="100%">
+          <source [src]="data.videoPath" type="video/mp4" />
+        </video>
+      </div>
+      <div *ngIf="data.credentials">
+        <h6>Success story or client review:</h6>
+        <p>{{data.credentials}}</p>
+      </div>
+    </ion-row>
+  </ion-scroll>
+
+  <ion-scroll scrollY="true" *ngIf="selectedPage === 'contact'">
     <ion-row>
       <div>
         <ion-label no-margin class="box-label">
           <ion-label no-padding no-margin class="inline-flex box-text">Product</ion-label>
           <ion-label no-margin no-padding class="inline-flex box-divider"> : </ion-label>
-          <ion-label no-margin no-padding class="inline-flex box-content">{{data.Product}}</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.productName}}</ion-label>
         </ion-label>
         <ion-label no-margin class="box-label">
           <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>
           <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-          <ion-label no-margin no-padding class="inline-flex box-content">{{data.Company}}</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.companyName}}</ion-label>
         </ion-label>
         <ion-label no-margin class="box-label">
           <ion-label no-padding no-margin class="inline-flex box-text">Solution</ion-label>
           <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-          <ion-label no-margin no-padding class="inline-flex box-content">{{data.Solution}}</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.categoryName}}</ion-label>
         </ion-label>
-      </div>
-      <div class="margin-top-10">
-        <img [src]="data.ImageUrl" />
-      </div>
-      <div>
-        <p>{{data.Content}}</p>
-      </div>
-      <div text-center class="video-container">
-        <!-- <iframe src="https://www.youtube.com/embed/wyVM1evRxNw" frameborder="0" width="100%" height="300"></iframe> -->
-        <video controls width="100%">
-          <source [src]="data.VideoUrl" type="video/mp4" />
-        </video>
+        <ion-label no-margin class="box-label" *ngIf="data.isIncludePrice">
+          <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.price}}</ion-label>
+        </ion-label>
+        <ion-row>
+          <ion-col>
+            <button ion-button small class="interactionBtn" (click)="openWhatsapp()">
+              <ion-icon name="call"></ion-icon>
+            </button>
+          </ion-col>
+        </ion-row>
       </div>
     </ion-row>
   </ion-scroll>
+
+  <ion-scroll scrollY="true" *ngIf="selectedPage === 'comment'">
+    <ion-row class="fixed-textarea-container">
+      <ion-col>
+        <textarea></textarea>
+      </ion-col>
+      <ion-col>
+        <button ion-button small class="postCommentBtn" (click)="openWhatsapp()">
+          <ion-icon name="call"></ion-icon>
+        </button>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+          <ion-item>
+            <ion-label>Auuu</ion-label>
+            <ion-label>Auuu</ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-scroll>
+
+
 </ion-content>

@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
+import { Product } from '../../models/products';
+import { UtilityServiceProvider } from '../../providers/utility-service';
+import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 
 /**
  * Generated class for the PostDetailPage page.
@@ -16,29 +19,69 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
   templateUrl: 'post-detail.html'
 })
 export class PostDetailPage {
-  public data: any;
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
-    this.data = {
-      Product: 'Test Product',
-      Company: 'Test Company',
-      Solution: 'Test Solution',
-      Content:
-        'A mobile application service that enables cutomer to order product/service up to the online payment process. This solution is fit for any business flow and wide range of industrial background.\n' +
-        '\nOMS application support end user needs to:\n' +
-        'Find Order Info\n' +
-        'Do Order Taking\n' +
-        'Do Online Payment\n' +
-        '\nOMS application also facilitate corporate needs to:\n' +
-        'Automatic Order to Store Dispatching\n' +
-        'Managed by Client\n' +
-        'Click to Dial Client Delivery\n' +
-        'Find Near Me Store\n',
-      ImageUrl: 'https://vignette.wikia.nocookie.net/dragonage/images/8/80/Concept-HighDragon.jpg',
-      VideoUrl: 'http://static.videogular.com/assets/videos/videogular.mp4'
-    };
+  public data: Product;
+  public lockBtn: boolean = false;
+  public isSearching: boolean = true;
+  public selectedPage: string = 'detail';
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private utility: UtilityServiceProvider,
+    private dataProduct: DataProductServiceProvider,
+    private event: Events
+  ) {
+    this.data = new Product();
+  }
+
+  ionViewDidLoad() {
+    this.dataProduct
+      .getProductDetail(this.navParams.get('params').id)
+      .then((res: Product) => {
+        this.data = res;
+        this.isSearching = false;
+        return this.dataProduct.addViewProduct(this.data.id);
+      })
+      .then(() => {
+        if (this.navParams.get('params').page === 'home') this.event.publish('homeViews', { id: this.navParams.get('params').id });
+        else this.event.publish('loadMyPost');
+      })
+      .catch(err => this.utility.showToast(err));
   }
 
   close() {
     this.navCtrl.pop();
+  }
+
+  back() {
+    this.selectedPage = 'detail';
+  }
+
+  openContact() {
+    this.selectedPage = 'contact';
+  }
+
+  openComment() {
+    this.selectedPage = 'comment';
+  }
+
+  openWhatsapp() {
+    const phone = this.dataProduct.getProductOwnerPhone().replace(/ |-|\+/g, '');
+    window.open('https://api.whatsapp.com/send?phone=' + phone);
+  }
+
+  likeBtnClick() {
+    this.data.isLike = !this.data.isLike;
+    this.lockBtn = true;
+    this.dataProduct.modifyLikeProduct(this.data.id, this.data.isLike).then(
+      () => {
+        this.lockBtn = false;
+        this.data.totalLike = this.data.isLike ? this.data.totalLike + 1 : this.data.totalLike - 1;
+        this.utility.showToast(this.data.isLike ? 'Product Liked' : 'Product Unliked');
+      },
+      err => {
+        this.lockBtn = false;
+        this.utility.showToast(err);
+      }
+    );
   }
 }

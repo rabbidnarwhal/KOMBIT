@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { UtilityServiceProvider } from './utility-service';
 
 /*
   Generated class for the FormValidatorProvider provider.
@@ -10,7 +9,7 @@ import { UtilityServiceProvider } from './utility-service';
 */
 @Injectable()
 export class FormValidatorProvider {
-  constructor(private util: UtilityServiceProvider) {}
+  constructor() {}
 
   private findErrorMessages(form: NgForm): string[] {
     const controls = form.controls;
@@ -39,13 +38,13 @@ export class FormValidatorProvider {
     return errorMsgList;
   }
 
-  getErrorMessage(form: NgForm): void {
-    if (!form.valid) this.util.showToast(this.findErrorMessages(form)[0]);
+  getErrorMessage(form: NgForm): string {
+    if (!form.valid) return this.findErrorMessages(form)[0];
     else return;
   }
 
   showErrorMessages(form: NgForm): string {
-    if (!form.valid) return this.findErrorMessages(form).join('\n');
+    if (!form.valid) return this.findErrorMessages(form).join('\n\r');
     else return;
   }
 }

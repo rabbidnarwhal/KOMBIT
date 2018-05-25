@@ -11,13 +11,23 @@ import { AuthServiceProvider } from '../providers/auth-service';
 import { UtilityServiceProvider } from '../providers/utility-service';
 import { FormValidatorProvider } from '../providers/form-validator';
 import { HttpClientModule } from '@angular/common/http';
+import { Keyboard } from '@ionic-native/keyboard';
 
 @NgModule({
   declarations: [MyApp],
-  imports: [BrowserModule, BrowserAnimationsModule, IonicModule.forRoot(MyApp), HttpClientModule],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    IonicModule.forRoot(MyApp, {
+      scrollAssist: false,
+      autoFocusAssist: false
+    }),
+    HttpClientModule
+  ],
   bootstrap: [IonicApp],
   entryComponents: [MyApp],
   providers: [
+    Keyboard,
     StatusBar,
     SplashScreen,
     { provide: ErrorHandler, useClass: IonicErrorHandler },

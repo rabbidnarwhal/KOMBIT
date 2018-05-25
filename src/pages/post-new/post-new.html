@@ -16,42 +16,53 @@
 <ion-content no-margin no-padding>
   <ion-row>
     <ion-col>
-      <div class="image-wrapper">
-        <div class="image" (click)="getPicture()" [style.background-image]="image ? image : 'transparent'">
-          <ion-icon *ngIf="!image" name="camera"></ion-icon>
-          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+      <div class="wrapper">
+        <div class="placeholder" (click)="getFilePath('foto')" [style.background-image]="imagePathSecure ? imagePathSecure : 'transparent'">
+          <ion-icon *ngIf="!imagePathSecure" name="camera"></ion-icon>
+          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" [style.width]="imagePathSecure ? '80%' : '20%'" />
         </div>
       </div>
       <ion-label>Upload Photo</ion-label>
     </ion-col>
   </ion-row>
-  <div class="divider">
-  </div>
+  <div class="divider"></div>
   <div class="input-fields">
-    <ion-label>Title</ion-label>
-    <ion-textarea></ion-textarea>
-    <ion-label>Content</ion-label>
-    <ion-textarea></ion-textarea>
+    <form id="newPostForm" #form="ngForm">
+      <ion-label>Product Name</ion-label>
+      <ion-input type="text" [(ngModel)]="data.ProductName" name="ProductName" required></ion-input>
+      <ion-label>Price</ion-label>
+      <ion-input type="tel" [(ngModel)]="data.Price" name="Price"></ion-input>
+      <ion-label>Solution</ion-label>
+      <ion-item>
+        <ion-select class="input-area" [(ngModel)]="data.CategoryId" name="Solution" interface="popover" required>
+          <ion-option [value]="item.id" *ngFor="let item of listCategory">{{item.category}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-label>Description</ion-label>
+      <ion-textarea [(ngModel)]="data.Description" name="Description" required></ion-textarea>
+    </form>
   </div>
-  <div class="divider">
-  </div>
+  <div class="divider"></div>
   <ion-row>
     <ion-col>
-      <div class="image-wrapper">
-        <div class="image" (click)="getVideo()">
-          <ion-icon *ngIf="!video" name="logo-youtube"></ion-icon>
-          <video *ngIf="video" controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer">
-            <source [src]="video" type="video/mp4" />
+      <div class="input-fields">
+        <ion-label>Testimony</ion-label>
+        <ion-textarea [(ngModel)]="data.Credentials"></ion-textarea>
+      </div>
+      <div class="wrapper margin-top-20">
+        <div class="placeholder" (click)="getFilePath('video')">
+          <ion-icon *ngIf="!videoPathPublic" name="logo-youtube"></ion-icon>
+          <video *ngIf="videoPathPublic" controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer" #videoShow>
+            <source [src]="videoPathPublic" type="video/mp4" />
+            Not Supported
           </video>
-          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+          <img *ngIf="!videoPathPublic" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
         </div>
       </div>
       <ion-label>Upload Video</ion-label>
     </ion-col>
   </ion-row>
+  <ion-row justify-content-center class="margin-top-20">
+    <button ion-button btn-kombit small type="button" (click)="publishClick()">Publish</button>
+  </ion-row>
 </ion-content>
-<ion-footer text-center no-shadow>
-  <ion-toolbar>
-    <button ion-button btn-kombit small type="button">Publish</button>
-  </ion-toolbar>
-</ion-footer>

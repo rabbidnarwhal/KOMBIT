@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { NgForm } from '@angular/forms';
 import { AuthServiceProvider } from '../../providers/auth-service';
 import { FormValidatorProvider } from '../../providers/form-validator';
+import { LoginRequest } from '../../models/login';
 
 /**
  * Generated class for the LoginPage page.
@@ -19,13 +20,16 @@ import { FormValidatorProvider } from '../../providers/form-validator';
   templateUrl: 'login.html'
 })
 export class LoginPage {
-  public credentials: any = { User: '', Password: '' };
+  public credentials: LoginRequest;
   public isPasswordShown = false;
 
   @ViewChild('form') form: NgForm;
-  constructor(private navCtrl: NavController, private auth: AuthServiceProvider, private formValidator: FormValidatorProvider) {}
+  constructor(private navCtrl: NavController, private auth: AuthServiceProvider, private formValidator: FormValidatorProvider) {
+    this.credentials = new LoginRequest();
+  }
 
   signin() {
+    this.form.ngSubmit;
     if (this.form.valid) {
       this.auth.login(this.credentials);
     } else this.formValidator.getErrorMessage(this.form);

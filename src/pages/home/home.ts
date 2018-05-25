@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, IonicPage } from 'ionic-angular';
+import { NavController, IonicPage, Events } from 'ionic-angular';
 import { UtilityServiceProvider } from '../../providers/utility-service';
+import { DataProductServiceProvider } from '../../providers/dataProduct-service';
+import { Product } from '../../models/products';
 
 @IonicPage({
   name: 'home'
@@ -10,74 +12,83 @@ import { UtilityServiceProvider } from '../../providers/utility-service';
   templateUrl: 'home.html'
 })
 export class HomePage {
-  private listPost = [];
-  public listPostLeft = [];
-  public listPostRight = [];
-  constructor(private navCtrl: NavController, private utility: UtilityServiceProvider) {
-    this.listPost = [
-      {
-        Product: 'TestProduct1',
-        Company: 'TestCompany1',
-        Holding: 'TestHolding1',
-        Solution: 'TestSolurion1',
-        ImageUrl: 'https://vignette.wikia.nocookie.net/leagueoflegends/images/4/41/Dragon_OriginalSkin.jpg',
-        Views: 1,
-        Calls: 10,
-        Comments: 4
-      },
-      {
-        Product: 'TestProduct2',
-        Company: 'TestCompany2',
-        Holding: 'TestHolding2',
-        Solution: 'TestSolurion2',
-        ImageUrl: 'https://pre00.deviantart.net/7ec3/th/pre/f/2017/255/1/b/dragon_rider_by_chirun-dbn6lis.png',
-        Views: 122,
-        Calls: 22,
-        Comments: 5
-      },
-      {
-        Product: 'TestProduct3',
-        Company: 'TestCompany3',
-        Holding: 'TestHolding3',
-        Solution: 'TestSolurion3',
-        ImageUrl: 'https://i.ytimg.com/vi/T8SaaNlkNW4/maxresdefault.jpg',
-        Views: 300,
-        Calls: 30,
-        Comments: 6
-      },
-      {
-        Product: 'TestProduct4',
-        Company: 'TestCompany4',
-        Holding: 'TestHolding4',
-        Solution: 'TestSolurion4',
-        ImageUrl: 'http://www.liquidhearth.com/staff/Hayl_Storm/Kobolds/Hayl/NeireaDragons_banner.jpg',
-        Views: 140,
-        Calls: 4,
-        Comments: 7
-      },
-      {
-        Product: 'TestProduct5',
-        Company: 'TestCompany5',
-        Holding: 'TestHolding5',
-        Solution: 'TestSolurion5',
-        ImageUrl: 'https://vignette.wikia.nocookie.net/dragonballfanon/images/8/8d/Water-dragon-wallpaper.jpg',
-        Views: 55,
-        Calls: 15,
-        Comments: 8
-      }
-    ];
+  private listPost: Array<Product>;
+  public listPostLeft: Array<Product>;
+  public listPostRight: Array<Product>;
+  public filteredItems: Array<Product>;
+  public filterText: string = '';
+  public isSearching: boolean = true;
+  public lockBtn: boolean = false;
+  public selectedPost: any;
+  constructor(
+    private navCtrl: NavController,
+    private utility: UtilityServiceProvider,
+    private dataProduct: DataProductServiceProvider,
+    private event: Events
+  ) {
+    this.listPost = new Array<Product>();
+    this.listPost = this.dataProduct.getAllProducts() || [];
+    this.filterItems();
+  }
+  ionViewWillEnter() {
+    if (this.listPost.length) this.isSearching = false;
+    this.dataProduct
+      .getListAllProducts()
+      .then(() => {
+        this.listPost = this.dataProduct.getAllProducts() || [];
+        this.isSearching = false;
+        this.filterItems();
+      })
+      .catch(err => this.utility.showToast(err));
   }
 
   ionViewDidLoad() {
-    this.listPostLeft = this.listPost.filter((e, i) => i % 2);
-    this.listPostRight = this.listPost.filter((e, i) => !(i % 2));
+    this.event.subscribe('homeViews', sub => {
+      const idx = this.listPost.findIndex(x => x.id === sub.id);
+      this.listPost[idx].totalView++;
+      this.filterItems();
+    });
   }
 
-  showDetail() {
-    this.utility.showPopover('detailPost').present();
+  showDetail(data) {
+    this.utility.showPopover('detailPost', { id: data.id, page: 'home' }).present();
   }
 
   createNewPost() {
     this.navCtrl.push('newPost');
+  }
+
+  filterItems() {
+    if (this.listPost) {
+      this.filteredItems = this.listPost.filter(res => {
+        for (const key in res) {
+          if (res.hasOwnProperty(key)) {
+            const element = res[key];
+            if (('' + element).toLowerCase().indexOf(this.filterText.trim().toLowerCase()) !== -1) return res;
+          }
+        }
+      });
+      this.listPostRight = this.filteredItems.filter((e, i) => i % 2);
+      this.listPostLeft = this.filteredItems.filter((e, i) => !(i % 2));
+    }
+  }
+
+  likeBtnClick(post) {
+    this.selectedPost = post;
+    post.isLike = !post.isLike;
+    this.lockBtn = true;
+    this.dataProduct.modifyLikeProduct(post.id, post.isLike).then(
+      () => {
+        this.lockBtn = false;
+        this.selectedPost = null;
+        post.totalLike = post.isLike ? post.totalLike + 1 : post.totalLike - 1;
+        this.utility.showToast(post.isLike ? 'Product Liked' : 'Product Unliked', 1000);
+      },
+      err => {
+        this.lockBtn = false;
+        this.selectedPost = null;
+        this.utility.showToast(err);
+      }
+    );
   }
 }
