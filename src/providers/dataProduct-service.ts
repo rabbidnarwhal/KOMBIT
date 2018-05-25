@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiServiceProvider } from './api-service';
 import { UtilityServiceProvider } from './utility-service';
-import { Product, NewProduct } from '../models/products';
+import { Product, NewProduct, ProductDetail } from '../models/products';
 import { AuthServiceProvider } from './auth-service';
 
 /*
@@ -43,7 +43,7 @@ export class DataProductServiceProvider {
     });
   }
 
-  getProductDetail(id): Promise<Product> {
+  getProductDetail(id): Promise<ProductDetail> {
     return new Promise((resolve, reject) => {
       this.api.get('/product/' + id).subscribe(sub => resolve(sub), error => reject(error));
     });
@@ -123,7 +123,7 @@ export class DataProductServiceProvider {
     });
   }
 
-  getProductOwnerPhone() {
-    return this.auth.getPrincipal().handphone;
+  getCommentByName() {
+    return this.auth.getPrincipal().name;
   }
 }

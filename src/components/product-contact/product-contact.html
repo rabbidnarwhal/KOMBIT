@@ -1,0 +1,40 @@
+<!-- Generated template for the ProductContactComponent component -->
+<ion-row>
+  <div>
+    <div class="margin-top-10" *ngIf="data.fotoPath">
+      <img [src]="data.fotoPath" [alt]="data.fotoName" />
+    </div>
+    <ion-label no-margin class="box-label">
+      <ion-label no-padding no-margin class="inline-flex box-text">Name</ion-label>
+      <ion-label no-margin no-padding class="inline-flex box-divider"> : </ion-label>
+      <ion-label no-margin no-padding class="inline-flex box-content">{{data.contact.name}}</ion-label>
+    </ion-label>
+    <ion-label no-margin class="box-label">
+      <ion-label no-padding no-margin class="inline-flex box-text">Job Title</ion-label>
+      <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+      <ion-label no-margin no-padding class="inline-flex box-content">{{data.contact.jobTitle}}</ion-label>
+    </ion-label>
+    <ion-label no-margin class="box-label">
+      <ion-label no-padding no-margin class="inline-flex box-text">Email</ion-label>
+      <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+      <ion-label no-margin no-padding class="inline-flex box-content">{{data.contact.email}}</ion-label>
+    </ion-label>
+    <ion-label no-margin class="box-label">
+      <ion-label no-padding no-margin class="inline-flex box-text">Handphone</ion-label>
+      <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+      <ion-label no-margin no-padding class="inline-flex box-content">{{data.contact.handphone}}</ion-label>
+    </ion-label>
+    <ion-label no-margin class="box-label">
+      <ion-label no-padding no-margin class="inline-flex box-text">Address</ion-label>
+      <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+      <ion-label no-margin no-padding class="inline-flex box-content">{{data.contact.address}}</ion-label>
+    </ion-label>
+    <ion-row>
+      <ion-col>
+        <button ion-button small class="interactionBtn" (click)="openWhatsapp()">
+          <ion-icon name="call"></ion-icon>
+        </button>
+      </ion-col>
+    </ion-row>
+  </div>
+</ion-row>

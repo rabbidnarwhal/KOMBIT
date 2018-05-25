@@ -1,0 +1,42 @@
+product-comment {
+  .fixed-textarea-container {
+    background-color: map-get($kombit-colors, 'text');
+    border-bottom: 1px solid #dedede;
+    position: fixed;
+    z-index: 1;
+    padding: 6px 8px 0px 8px;
+    margin-top: -18px;
+    width: calc(100% - 64px);
+    .item-inner {
+      border-bottom: none !important;
+      textarea {
+        width: 96%;
+        font-size: 12px;
+        padding: 8px 12px;
+        border-radius: 20px;
+      }
+    }
+  }
+
+  .comment-box-container {
+    padding-top: 62px;
+    ion-item {
+      border-bottom: 1px solid #dedede;
+      .item-inner {
+        border-bottom: none !important;
+        label.title {
+          font-weight: 500;
+          font-size: 16px;
+          padding-right: 8px;
+        }
+        label.time {
+          font-size: 12px;
+          color: #757575;
+        }
+        span {
+          font-size: 12px;
+        }
+      }
+    }
+  }
+}
