@@ -27,25 +27,38 @@ export class HomePage {
     private event: Events
   ) {
     this.listPost = new Array<Product>();
-    this.listPost = this.dataProduct.getAllProducts() || [];
     this.filterItems();
   }
   ionViewWillEnter() {
-    if (this.listPost.length) this.isSearching = false;
+    this.isSearching = true;
     this.dataProduct
       .getListAllProducts()
-      .then(() => {
-        this.listPost = this.dataProduct.getAllProducts() || [];
+      .then(res => {
         this.isSearching = false;
+        this.listPost = res;
         this.filterItems();
       })
-      .catch(err => this.utility.showToast(err));
+      .catch(err => {
+        this.isSearching = false;
+        this.utility.showToast(err);
+      });
   }
 
   ionViewDidLoad() {
-    this.event.subscribe('homeViews', sub => {
+    this.event.subscribe('homeInteraction', sub => {
       const idx = this.listPost.findIndex(x => x.id === sub.id);
-      this.listPost[idx].totalView++;
+      if (sub.type === 'view') this.listPost[idx].totalView++;
+      if (sub.type === 'call') this.listPost[idx].totalChat++;
+      if (sub.type === 'comment') this.listPost[idx].totalComment++;
+      if (sub.type === 'like')
+        if (sub.isLike) {
+          this.listPost[idx].totalLike++;
+          this.listPost[idx].isLike = true;
+        } else {
+          this.listPost[idx].totalLike--;
+          this.listPost[idx].isLike = false;
+        }
+
       this.filterItems();
     });
   }

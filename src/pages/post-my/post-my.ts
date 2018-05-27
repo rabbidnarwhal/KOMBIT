@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { Product } from '../../models/products';
@@ -29,16 +29,45 @@ export class PostMyPage {
   public listProducts: Array<Product>;
   public selectedProductId: number = 0;
   public lockBtn: boolean = false;
-  constructor(public navCtrl: NavController, private utility: UtilityServiceProvider, private dataProduct: DataProductServiceProvider) {
+  public isSearching: boolean = false;
+  constructor(
+    public navCtrl: NavController,
+    private utility: UtilityServiceProvider,
+    private dataProduct: DataProductServiceProvider,
+    private event: Events
+  ) {
     this.listProducts = new Array<Product>();
-    this.listProducts = this.dataProduct.getUserProducts();
   }
 
   ionViewDidEnter() {
+    this.isSearching = true;
     this.dataProduct
       .getListUserProducts()
-      .then(() => (this.listProducts = this.dataProduct.getUserProducts()))
-      .catch(err => this.utility.showToast(err));
+      .then(res => {
+        this.isSearching = false;
+        this.listProducts = res;
+      })
+      .catch(err => {
+        this.isSearching = false;
+        this.utility.showToast(err);
+      });
+  }
+
+  ionViewDidLoad() {
+    this.event.subscribe('postInteraction', sub => {
+      const idx = this.listProducts.findIndex(x => x.id === sub.id);
+      if (sub.type === 'view') this.listProducts[idx].totalView++;
+      if (sub.type === 'call') this.listProducts[idx].totalChat++;
+      if (sub.type === 'comment') this.listProducts[idx].totalComment++;
+      if (sub.type === 'like')
+        if (sub.isLike) {
+          this.listProducts[idx].totalLike++;
+          this.listProducts[idx].isLike = true;
+        } else {
+          this.listProducts[idx].totalLike--;
+          this.listProducts[idx].isLike = false;
+        }
+    });
   }
 
   showPost(data) {
@@ -46,7 +75,7 @@ export class PostMyPage {
   }
 
   showDetail(data) {
-    this.utility.showPopover('detailPost', { id: data.id }).present();
+    this.utility.showPopover('detailPost', { id: data.id, page: 'post' }).present();
   }
 
   likeBtnClick(post) {

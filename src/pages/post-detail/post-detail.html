@@ -16,8 +16,8 @@
       <div></div>
       <ion-spinner></ion-spinner>
     </div>
-    <product-detail *ngIf="selectedPage === 'detail' && !isSearching" [data]="data" (selectedPage)="changePage($event)"></product-detail>
-    <product-comment *ngIf="selectedPage === 'comment' && !isSearching" [data]="data"></product-comment>
-    <product-contact *ngIf="selectedPage === 'contact' && !isSearching" [data]="data"></product-contact>
+    <product-detail *ngIf="selectedPage === 'detail' && !isSearching" [data]="data" [page]="parentPage" (selectedPage)="changePage($event)"></product-detail>
+    <product-comment *ngIf="selectedPage === 'comment' && !isSearching" [data]="data" [page]="parentPage"></product-comment>
+    <product-contact *ngIf="selectedPage === 'contact' && !isSearching" [data]="data" [page]="parentPage"></product-contact>
   </ion-scroll>
 </ion-content>

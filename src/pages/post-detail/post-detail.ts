@@ -23,14 +23,16 @@ export class PostDetailPage {
   public lockBtn: boolean = false;
   public isSearching: boolean = true;
   public selectedPage: string = 'detail';
+  public parentPage: string = '';
   constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
+    private navCtrl: NavController,
+    private navParams: NavParams,
     private utility: UtilityServiceProvider,
     private dataProduct: DataProductServiceProvider,
     private event: Events
   ) {
     this.data = new ProductDetail();
+    this.parentPage = this.navParams.get('params').page;
   }
 
   ionViewDidLoad() {
@@ -38,12 +40,14 @@ export class PostDetailPage {
       .getProductDetail(this.navParams.get('params').id)
       .then((res: ProductDetail) => {
         this.data = res;
+        
         this.isSearching = false;
         return this.dataProduct.addViewProduct(this.data.id);
       })
       .then(() => {
-        if (this.navParams.get('params').page === 'home') this.event.publish('homeViews', { id: this.navParams.get('params').id });
-        else this.event.publish('loadMyPost');
+        if (this.parentPage === 'home')
+          this.event.publish('homeInteraction', { id: this.navParams.get('params').id, type: 'view' });
+        else this.event.publish('postInteraction', { id: this.navParams.get('params').id, type: 'view' });;
       })
       .catch(err => this.utility.showToast(err));
   }
