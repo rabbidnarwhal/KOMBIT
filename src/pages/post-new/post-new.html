@@ -31,7 +31,7 @@
       <ion-label>Product Name</ion-label>
       <ion-input type="text" [(ngModel)]="data.ProductName" name="ProductName" required></ion-input>
       <ion-label>Price</ion-label>
-      <ion-input type="tel" [(ngModel)]="data.Price" name="Price"></ion-input>
+      <ion-input type="tel" [(ngModel)]="price" name="Price" (ionChange)="commaSeparated()"></ion-input>
       <ion-label>Solution</ion-label>
       <ion-item>
         <ion-select class="input-area" [(ngModel)]="data.CategoryId" name="Solution" interface="popover" required>
@@ -53,8 +53,7 @@
         <div class="placeholder" (click)="getFilePath('video')">
           <ion-icon *ngIf="!videoPathPublic" name="logo-youtube"></ion-icon>
           <video *ngIf="videoPathPublic" controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer" #videoShow>
-            <source [src]="videoPathPublic" type="video/mp4" />
-            Not Supported
+            <source [src]="videoPathPublic" type="video/mp4" /> Not Supported
           </video>
           <img *ngIf="!videoPathPublic" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
         </div>

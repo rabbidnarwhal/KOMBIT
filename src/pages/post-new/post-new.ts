@@ -33,6 +33,7 @@ export class PostNewPage {
   public videoPathPublic: any;
   public listCategory: Array<Category>;
   public data: NewProduct;
+  public price: string;
   @ViewChild('form') form: NgForm;
   constructor(
     private navCtrl: NavController,
@@ -168,5 +169,11 @@ export class PostNewPage {
     return new Promise((resolve, reject) => {
       this.api.post('/product', this.data).subscribe(sub => resolve(), err => reject(err));
     });
+  }
+
+  public commaSeparated() {
+    this.price = String(this.price)
+      .replace(/,/g, '')
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
 }
