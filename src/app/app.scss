@@ -22,12 +22,12 @@ ion-menu {
   .menu-header {
     margin-top: 16px;
     background-color: transparent;
+    text-align: center;
     img {
       height: 150px;
       width: 150px;
       border-radius: 50%;
       object-fit: cover;
-      margin-left: 72px;
     }
 
     h4 {
@@ -50,6 +50,12 @@ ion-menu {
         color: map-get($kombit-colors, 'text');
         font-weight: 200;
       }
+    }
+  }
+  .menu-icon-img {
+    width: 28px;
+    + .item-inner {
+      margin-left: 20px;
     }
   }
 }
