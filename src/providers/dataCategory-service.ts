@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ApiServiceProvider } from './api-service';
 import { UtilityServiceProvider } from './utility-service';
+import { Category } from '../models/category';
 
 /*
   Generated class for the AuthServiceProvider provider.
@@ -10,27 +11,11 @@ import { UtilityServiceProvider } from './utility-service';
 */
 @Injectable()
 export class DataCategoryServiceProvider {
-  private category: any;
-
   constructor(private api: ApiServiceProvider, private utility: UtilityServiceProvider) {}
 
-  getListCategory() {
+  getListCategory(): Promise<Array<Category>> {
     return new Promise((resolve, reject) => {
-      this.api.get('/category').subscribe(
-        sub => {
-          this.setCategory(sub);
-          resolve();
-        },
-        error => reject(error)
-      );
+      this.api.get('/category').subscribe(sub => resolve(sub), error => reject(error));
     });
-  }
-
-  setCategory(data) {
-    if (data) this.category = data;
-  }
-
-  getCategory() {
-    return this.category;
   }
 }

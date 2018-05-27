@@ -25,15 +25,14 @@ export class SolutionPage {
   public isSearching: boolean = true;
   constructor(public navCtrl: NavController, private dataCategory: DataCategoryServiceProvider, private utility: UtilityServiceProvider) {
     this.listSolution = new Array<Category>();
-    this.listSolution = this.dataCategory.getCategory() || [];
     this.filterItems();
   }
   ionViewDidEnter() {
     if (this.listSolution.length) this.isSearching = false;
     this.dataCategory
       .getListCategory()
-      .then(() => {
-        this.listSolution = this.dataCategory.getCategory() || [];
+      .then(sub => {
+        this.listSolution = sub;
         this.filterItems();
         this.isSearching = false;
       })

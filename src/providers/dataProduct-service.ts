@@ -12,34 +12,19 @@ import { AuthServiceProvider } from './auth-service';
 */
 @Injectable()
 export class DataProductServiceProvider {
-  private allProducts: Product[];
-  private userProducts: Product[];
-
   constructor(private api: ApiServiceProvider, private utility: UtilityServiceProvider, private auth: AuthServiceProvider) {}
 
-  getListAllProducts() {
+  getListAllProducts(): Promise<Array<Product>> {
     const userId = this.auth.getPrincipal().id;
     return new Promise((resolve, reject) => {
-      this.api.get('/product/interaction/user/' + userId).subscribe(
-        sub => {
-          this.setAllProducts(sub);
-          resolve();
-        },
-        error => reject(error)
-      );
+      this.api.get('/product/interaction/user/' + userId).subscribe(sub => resolve(sub), error => reject(error));
     });
   }
 
-  getListUserProducts() {
+  getListUserProducts(): Promise<Array<Product>> {
     const userId = this.auth.getPrincipal().id;
     return new Promise((resolve, reject) => {
-      this.api.get('/product/user/' + userId).subscribe(
-        sub => {
-          this.setUserProducts(sub);
-          resolve();
-        },
-        error => reject(error)
-      );
+      this.api.get('/product/user/' + userId).subscribe(sub => resolve(sub), error => reject(error));
     });
   }
 
@@ -47,22 +32,6 @@ export class DataProductServiceProvider {
     return new Promise((resolve, reject) => {
       this.api.get('/product/' + id).subscribe(sub => resolve(sub), error => reject(error));
     });
-  }
-
-  setAllProducts(data: Product[]) {
-    if (data) this.allProducts = data;
-  }
-
-  setUserProducts(data: Product[]) {
-    if (data) this.userProducts = data;
-  }
-
-  getAllProducts() {
-    return this.allProducts;
-  }
-
-  getUserProducts() {
-    return this.userProducts;
   }
 
   addNewProduct(request: NewProduct) {

@@ -11,19 +11,11 @@ import { Company } from '../models/company';
 */
 @Injectable()
 export class DataCompanyServiceProvider {
-  private company: Array<Company>;
-
   constructor(private api: ApiServiceProvider, private utility: UtilityServiceProvider) {}
 
-  getListCompany() {
+  getListCompany(): Promise<Array<Company>> {
     return new Promise((resolve, reject) => {
-      this.api.get('/company').subscribe(
-        sub => {
-          this.setCompany(sub);
-          resolve();
-        },
-        error => reject(error)
-      );
+      this.api.get('/company').subscribe(sub => resolve(sub), error => reject(error));
     });
   }
 
@@ -31,13 +23,5 @@ export class DataCompanyServiceProvider {
     return new Promise((resolve, reject) => {
       this.api.get('/company' + id).subscribe(sub => resolve(sub), error => reject(error));
     });
-  }
-
-  setCompany(data) {
-    if (data) this.company = data;
-  }
-
-  getCompany() {
-    return this.company;
   }
 }

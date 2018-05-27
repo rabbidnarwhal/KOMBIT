@@ -25,20 +25,22 @@ export class CompanyPage {
   public isSearching: boolean = true;
   constructor(public navCtrl: NavController, private dataCompany: DataCompanyServiceProvider, private utility: UtilityServiceProvider) {
     this.companies = new Array<Company>();
-    this.companies = this.dataCompany.getCompany() || [];
     this.filterItems();
   }
 
   ionViewDidLoad() {
-    if (this.companies.length) this.isSearching = false;
+    this.isSearching = true;
     this.dataCompany
       .getListCompany()
-      .then(() => {
-        this.companies = this.dataCompany.getCompany();
-        this.filterItems();
+      .then(res => {
         this.isSearching = false;
+        this.companies = res;
+        this.filterItems();
       })
-      .catch(err => this.utility.showToast(err));
+      .catch(err => {
+        this.isSearching = false;
+        this.utility.showToast(err);
+      });
   }
 
   filterItems() {
