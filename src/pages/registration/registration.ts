@@ -43,12 +43,20 @@ export class RegistrationPage {
     if (this.form.valid) {
       const loading = this.utility.showLoading();
       loading.present();
-      this.api.post('/users/register', this.registration).subscribe(sub => {
-        loading.dismiss();
-        this.utility.basicAlert('Register Success');
-        this.navCtrl.pop();
-      });
-    } else this.formValidator.getErrorMessage(this.form);
+      if (this.registration.Handphone[0] === '6') this.registration.Handphone = '+' + this.registration.Handphone;
+      else this.registration.Handphone = '+62' + this.registration.Handphone.slice(1);
+      this.api.post('/users/register', this.registration).subscribe(
+        sub => {
+          loading.dismiss();
+          this.utility.basicAlert('Register Success');
+          this.navCtrl.pop();
+        },
+        err => {
+          loading.dismiss();
+          this.utility.showToast(err);
+        }
+      );
+    } else this.utility.showToast(this.formValidator.getErrorMessage(this.form));
   }
 
   loadListCompany() {
