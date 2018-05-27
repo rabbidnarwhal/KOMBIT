@@ -13,8 +13,8 @@ import { MenuController } from 'ionic-angular/components/app/menu-controller';
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
   public rootPage: string = '';
-  public pages: Array<{ title: string; component: string; icon: string }>;
-
+  public pages: Array<{ title: string; component: string; icon: string; image: string }>;
+  public userName: string = '';
   constructor(
     private platform: Platform,
     private statusBar: StatusBar,
@@ -27,14 +27,14 @@ export class MyApp {
     this.initializeApp();
 
     this.pages = [
-      { title: 'Notification', component: '', icon: 'notifications' },
-      { title: 'Create new post', component: 'newPost', icon: 'paper-plane' },
-      { title: 'My post', component: 'myPost', icon: 'share' },
-      { title: 'Company', component: 'company', icon: 'pint' },
-      { title: 'Solution', component: 'solution', icon: 'bulb' },
-      { title: 'Setting', component: '', icon: 'settings' },
-      { title: 'Point', component: '', icon: 'star' },
-      { title: 'Logout', component: 'logout', icon: 'log-out' }
+      { title: 'Notification', component: '', icon: 'notifications', image: '' },
+      { title: 'Create new post', component: 'newPost', icon: 'paper-plane', image: '' },
+      { title: 'My post', component: 'myPost', icon: 'share', image: '' },
+      { title: 'Company', component: 'company', icon: '', image: 'assets/imgs/company.png' },
+      { title: 'Solution', component: 'solution', icon: '', image: 'assets/imgs/solution-menu.png' },
+      { title: 'Setting', component: '', icon: 'settings', image: '' },
+      { title: 'Point', component: '', icon: '', image: 'assets/imgs/points.png' },
+      { title: 'Logout', component: 'logout', icon: 'log-out', image: '' }
     ];
   }
 
@@ -77,6 +77,7 @@ export class MyApp {
           this.menu.enable(true, 'sideMenu');
           this.menu.swipeEnable(true, 'sideMenu');
         }
+        this.userName = this.auth.getPrincipal().name;
         this.rootPage = 'home';
       } else {
         if (this.menu.isEnabled('sideMenu')) {
@@ -87,5 +88,10 @@ export class MyApp {
       }
       this.splashScreen.hide();
     });
+  }
+
+  public profilePage() {
+    this.nav.push('profile', { id: this.auth.getPrincipal().id });
+    this.menu.close('sideMenu');
   }
 }
