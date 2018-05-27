@@ -19,20 +19,20 @@
     <ion-label no-margin class="box-label" *ngIf="data.isIncludePrice">
       <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
       <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-      <ion-label no-margin no-padding class="inline-flex box-content">{{data.price}}</ion-label>
+      <ion-label no-margin no-padding class="inline-flex box-content">{{data.price | number}}</ion-label>
     </ion-label>
     <ion-row>
       <ion-col no-padding>
         <button ion-button small class="interactionBtn" (click)="likeBtnClick()">
-          <ion-icon *ngIf="!lockBtn" [name]="data.isLike ? 'heart' : 'heart-outline'"></ion-icon>
-          <span>{{data.totalLike}}</span>
+          <ion-icon *ngIf="!lockBtn" [name]="data.interaction.isLike ? 'heart' : 'heart-outline'"></ion-icon>
+          <span>{{data.interaction.totalLike}}</span>
           <ion-spinner *ngIf="lockBtn"></ion-spinner>
         </button>
       </ion-col>
       <ion-col no-padding>
         <button ion-button small class="interactionBtn" (click)="changePage('comment')">
-          <ion-icon name="chatboxes"></ion-icon>
-          <span>{{data.totalComment}}</span>
+          <img class="btn-icon-img-comment" src="assets/imgs/comment-white.png" />
+          <span>{{data.interaction.totalComment}}</span>
         </button>
       </ion-col>
       <ion-col no-padding>

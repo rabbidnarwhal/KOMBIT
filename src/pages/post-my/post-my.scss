@@ -42,6 +42,11 @@ page-post-my {
     margin: 4px 6px;
     ion-icon {
       @include color-item();
+      margin-right: 2px;
+    }
+    img {
+      width: 9px;
+      margin-right: 2px;
     }
   }
 

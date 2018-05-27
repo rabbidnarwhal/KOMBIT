@@ -44,7 +44,7 @@
           <ion-label no-margin class="box-label" *ngIf="post.isIncludePrice">
             <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
             <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-            <ion-label no-margin no-padding class="inline-flex box-content">{{post.price}}</ion-label>
+            <ion-label no-margin no-padding class="inline-flex box-content">{{post.price | number}}</ion-label>
           </ion-label>
           <ion-row text-center class="box-icon">
             <ion-col no-padding>
@@ -56,7 +56,7 @@
               <span>{{post.totalChat}} Call</span>
             </ion-col>
             <ion-col no-padding>
-              <ion-icon name="star"></ion-icon>
+              <img src="assets/imgs/comment.png" />
               <span>{{post.totalComment}} Comment</span>
             </ion-col>
           </ion-row>
@@ -102,19 +102,19 @@
           <ion-label no-margin class="box-label" *ngIf="post.isIncludePrice">
             <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
             <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-            <ion-label no-margin no-padding class="inline-flex box-content">{{post.price}}</ion-label>
+            <ion-label no-margin no-padding class="inline-flex box-content">{{post.price | number}}</ion-label>
           </ion-label>
           <ion-row text-center class="box-icon">
             <ion-col no-padding>
-              <ion-icon name="star"></ion-icon>
+              <ion-icon name="eye"></ion-icon>
               <span>{{post.totalView}} View</span>
             </ion-col>
             <ion-col no-padding>
-              <ion-icon name="star"></ion-icon>
+              <ion-icon name="call"></ion-icon>
               <span>{{post.totalChat}} Call</span>
             </ion-col>
             <ion-col no-padding>
-              <ion-icon name="star"></ion-icon>
+              <img class="icon-img-comment" src="assets/imgs/comment.png" />
               <span>{{post.totalComment}} Comment</span>
             </ion-col>
           </ion-row>

@@ -43,19 +43,19 @@
             <ion-label no-margin class="box-label" *ngIf="data.isIncludePrice">
               <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
               <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-content">{{data.price}}</ion-label>
+              <ion-label no-margin no-padding class="inline-flex box-content">{{data.price | number}}</ion-label>
             </ion-label>
             <ion-row text-center class="box-icon">
               <ion-col no-padding>
-                <ion-icon name="star"></ion-icon>
+                <ion-icon name="eye"></ion-icon>
                 <span>{{data.totalView}} Views</span>
               </ion-col>
               <ion-col no-padding>
-                <ion-icon name="star"></ion-icon>
+                <ion-icon name="call"></ion-icon>
                 <span>{{data.totalChat}} Calls</span>
               </ion-col>
               <ion-col no-padding>
-                <ion-icon name="star"></ion-icon>
+                <img src="assets/imgs/comment.png" />
                 <span>{{data.totalComment}} Comments</span>
               </ion-col>
             </ion-row>
