@@ -73,9 +73,10 @@ export class AuthServiceProvider {
   }
 
   authenticate(data: LoginResponse) {
+    const date = new Date().getTime().toString();
     this.isLoggin = true;
     this.setPrincipal(data);
-    localStorage.setItem('token', data.idNumber + ':' + data.id);
+    localStorage.setItem('token', data.idNumber + ':' + data.id) + ':' + date;
     return new Promise(resolve => {
       resolve(true);
     });
