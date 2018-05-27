@@ -13,7 +13,7 @@
       <ion-item text-wrap *ngFor="let item of data.interaction.comment">
         <ion-icon item-start name="person"></ion-icon>
         <label class="title">{{item.commentBy}}</label>
-        <label class="time">{{item.commentDate}}</label>
+        <label class="time">{{item.commentDate | timeAgo}}</label>
         <br/>
         <span>{{item.content}}</span>
       </ion-item>

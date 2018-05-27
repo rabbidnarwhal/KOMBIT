@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { ProductDetail, Comment } from '../../models/products';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
+import { Events } from 'ionic-angular';
 
 /**
  * Generated class for the ProductCommentComponent component.
@@ -14,8 +15,9 @@ import { DataProductServiceProvider } from '../../providers/dataProduct-service'
 })
 export class ProductCommentComponent {
   @Input() data: ProductDetail;
+  @Input() page: string;
   public commentContent: string;
-  constructor(private dataProduct: DataProductServiceProvider) {}
+  constructor(private dataProduct: DataProductServiceProvider, private event: Events) {}
 
   sendComment() {
     if (this.commentContent) {
@@ -26,6 +28,9 @@ export class ProductCommentComponent {
         comment.isComment = true;
         comment.commentDate = new Date().toUTCString();
         this.data.interaction.comment.push(comment);
+        this.data.interaction.totalComment++;
+        if (this.page === 'home') this.event.publish('homeInteraction', { id: this.data.id, type:'comment' });
+        else this.event.publish('postInteraction', { id: this.data.id, type:'comment' });
       });
     }
   }
