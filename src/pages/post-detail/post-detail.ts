@@ -40,14 +40,12 @@ export class PostDetailPage {
       .getProductDetail(this.navParams.get('params').id)
       .then((res: ProductDetail) => {
         this.data = res;
-        
         this.isSearching = false;
         return this.dataProduct.addViewProduct(this.data.id);
       })
       .then(() => {
-        if (this.parentPage === 'home')
-          this.event.publish('homeInteraction', { id: this.navParams.get('params').id, type: 'view' });
-        else this.event.publish('postInteraction', { id: this.navParams.get('params').id, type: 'view' });;
+        if (this.parentPage === 'home') this.event.publish('homeInteraction', { id: this.navParams.get('params').id, type: 'view' });
+        else this.event.publish('postInteraction', { id: this.navParams.get('params').id, type: 'view' });
       })
       .catch(err => this.utility.showToast(err));
   }

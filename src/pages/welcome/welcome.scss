@@ -4,11 +4,11 @@ page-welcome {
   }
 
   [btn-kombit] {
-    margin-bottom: 0px !important;
-    border-radius: 0px !important;
+    border-radius: 20px !important;
   }
 
   ion-footer {
+    text-align: center;
     &::before {
       background-image: none !important;
     }

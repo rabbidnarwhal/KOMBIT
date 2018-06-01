@@ -20,9 +20,14 @@ export class ProductContactComponent {
 
   openWhatsapp() {
     const phone = this.data.contact.handphone.replace(/ |-|\+/g, '');
-    this.data.interaction.totalChat++;
-    if (this.page === 'home') this.event.publish('homeInteraction', { id: this.data.id, type: 'call' });
-    else this.event.publish('postInteraction', { id: this.data.id, type: 'call' });
+    this.dataProduct
+      .addChatProduct(this.data.id)
+      .then(() => {
+        this.data.interaction.totalChat++;
+        if (this.page === 'home') this.event.publish('homeInteraction', { id: this.data.id, type: 'call' });
+        else this.event.publish('postInteraction', { id: this.data.id, type: 'call' });
+      })
+      .catch(err => {});
     window.open('https://api.whatsapp.com/send?phone=' + phone);
   }
 }

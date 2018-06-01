@@ -70,7 +70,7 @@ ion-popover.popover-width .popover-content {
   .item-inner {
     border: 1px solid map-get($kombit-colors, 'text') !important;
     background-color: map-get($kombit-colors, 'text') !important;
-    box-shadow: none !important !important;
+    box-shadow: none !important;
     border-radius: 25px !important;
     padding: 0 12px !important;
     font-size: 12px !important;
@@ -99,6 +99,9 @@ ion-popover.popover-width .popover-content {
 }
 .margin-vertical-20 {
   margin: 20px 0 !important;
+}
+.toast-message {
+  white-space: pre-line;
 }
 [btn-kombit] {
   border-radius: 20px !important;
