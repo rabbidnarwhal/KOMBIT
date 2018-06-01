@@ -29,11 +29,13 @@ export class PostNewPage {
   @ViewChild('videoShow') video: ElementRef;
   private imagePath: string;
   private videoPath: string;
+  private isFotoUpload: boolean = false;
+  private isVideoUpload: boolean = false;
   public imagePathSecure: any;
   public videoPathPublic: any;
   public listCategory: Array<Category>;
   public data: NewProduct;
-  public price: string;
+  public price: string = '';
   @ViewChild('form') form: NgForm;
   constructor(
     private navCtrl: NavController,
@@ -58,19 +60,27 @@ export class PostNewPage {
     if (this.form.valid) {
       const loading = this.utility.showLoading();
       loading.present();
+      this.data.Price = +this.price.replace(/,/g, '');
       this.data.IsIncludePrice = this.data.Price ? true : false;
       const fileUpload = [];
-      if (this.imagePath) fileUpload.push(this.uploadMediaFile('foto', this.imagePath));
-      if (this.videoPath) fileUpload.push(this.uploadMediaFile('video', this.videoPath));
+      if (this.imagePath && !this.isFotoUpload) fileUpload.push(this.uploadMediaFile('foto', this.imagePath));
+      if (this.videoPath && !this.isVideoUpload) fileUpload.push(this.uploadMediaFile('video', this.videoPath));
       new Promise((resolve, reject) => {
         if (fileUpload.length) {
           Promise.all(fileUpload)
             .then(res => {
               if (this.imagePath) {
+                this.isFotoUpload = true;
                 this.data.FotoName = res[0].name;
                 this.data.FotoPath = res[0].path;
-                if (this.videoPath) this.data.VideoPath = res[1].path;
-              } else if (this.videoPath) this.data.VideoPath = res[0].path;
+                if (this.videoPath) {
+                  this.isVideoUpload = true;
+                  this.data.VideoPath = res[1].path;
+                }
+              } else if (this.videoPath) {
+                this.isVideoUpload = true;
+                this.data.VideoPath = res[0].path;
+              }
               resolve();
             })
             .catch(err => reject(err));
@@ -91,6 +101,7 @@ export class PostNewPage {
 
   getFilePath(type: string) {
     if (this.videoPathPublic && type === 'video') this.video.nativeElement.pause();
+
     const loading = this.utility.showLoading();
     const oldPath = type === 'foto' ? this.imagePath : this.videoPath;
     loading.present();
@@ -115,9 +126,8 @@ export class PostNewPage {
 
   private loadMediaFile(type) {
     return new Promise((resolve, reject) => {
-      if (!window['cordova']) {
-        alert('Not Supported on browser');
-      } else {
+      if (!window['cordova']) alert('Not Supported on browser');
+      else {
         const options: CameraOptions = {
           mediaType: type,
           sourceType: this.camera.PictureSourceType.PHOTOLIBRARY
@@ -127,9 +137,11 @@ export class PostNewPage {
           .then(filePath => {
             if (type === this.camera.MediaType.PICTURE) {
               this.imagePath = filePath;
+              this.isFotoUpload = false;
               return this.file.resolveLocalFilesystemUrl(filePath);
             } else {
               this.videoPath = 'file://' + filePath;
+              this.isVideoUpload = false;
               return this.file.resolveLocalFilesystemUrl(this.videoPath);
             }
           })
@@ -151,17 +163,13 @@ export class PostNewPage {
     });
   }
 
-  private uploadMediaFile(type, path) {
+  private uploadMediaFile(type, path): Promise<any> {
     return new Promise((resolve, reject) => {
       const fileTransfer: FileTransferObject = this.transfer.create();
       fileTransfer
         .upload(path, this.api.getUrl() + '/upload/' + type)
-        .then(data => {
-          resolve(JSON.parse(data.response));
-        })
-        .catch(error => {
-          reject('An error occured, unable to upload!');
-        });
+        .then(data => resolve(JSON.parse(data.response)))
+        .catch(error => reject('An error occured, unable to upload!'));
     });
   }
 
