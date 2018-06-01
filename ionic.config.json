@@ -5,7 +5,7 @@
   "proxies": [
     {
       "path": "/api",
-      "proxyUrl": "http://localhost:49205/api"
+      "proxyUrl": "http://kombit.org/api"
     }
   ],
   "integrations": {
