@@ -14,7 +14,7 @@ export class ApiServiceProvider {
   private url: string;
 
   constructor(private http: HttpClient) {
-    this.url = 'http://192.168.1.3:5003/api';
+    this.url = 'http://kombit.org/api';
   }
 
   getUrl() {
@@ -32,10 +32,11 @@ export class ApiServiceProvider {
   }
 
   private createRequestHeader(options?: any): any {
-    const headers = options.hasOwnProperty('headers') ? options.headers : new HttpHeaders();
-    headers.append('Content-Type', 'application/json');
-    headers.append('Access-Control-Allow-Origin', '*');
+    const headers = options.hasOwnProperty('headers') ? options.headers : {};
+    headers['Content-Type'] = 'application/json';
+    headers['Access-Control-Allow-Origin'] = '*';
     options.headers = headers;
+    console.log(headers);
     return options;
   }
 
@@ -45,7 +46,10 @@ export class ApiServiceProvider {
       if (error.error instanceof ErrorEvent) console.error('An error occurred:', error.error.message);
       else if (error.error && error.error.hasOwnProperty('Message')) return new ErrorObservable(error.error.Message);
       // return new ErrorObservable(error.error.ExceptionMessage);
-      else console.error(`error message`, error.message);
+      else if (error.error && error.error.hasOwnProperty('errorMessage')) {
+        if (error.error.errorMessage instanceof Array) return new ErrorObservable(error.error.errorMessage.join('\n'));
+        else return new ErrorObservable(error.error.errorMessage);
+      } else console.error(`error message`, error.message);
       return new ErrorObservable(`An error occured.`);
     }
   }

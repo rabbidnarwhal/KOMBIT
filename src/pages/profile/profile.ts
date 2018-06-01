@@ -4,6 +4,7 @@ import { AuthServiceProvider } from '../../providers/auth-service';
 import { User } from '../../models/user';
 import { ApiServiceProvider } from '../../providers/api-service';
 import { UtilityServiceProvider } from '../../providers/utility-service';
+import { HttpHeaders } from '@angular/common/http';
 
 /**
  * Generated class for the ProfilePage page.
@@ -35,7 +36,8 @@ export class ProfilePage {
 
   ionViewDidLoad() {
     this.isSearching = true;
-    this.api.get('/users/' + this.id).subscribe(
+    const header = {'Cache-Control': 'no-cache'}
+    this.api.get('/users/' + this.id, { headers: header }).subscribe(
       sub => {
         this.isSearching = false;
         this.data = sub;

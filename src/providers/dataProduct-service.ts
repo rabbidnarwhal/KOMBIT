@@ -3,6 +3,7 @@ import { ApiServiceProvider } from './api-service';
 import { UtilityServiceProvider } from './utility-service';
 import { Product, NewProduct, ProductDetail } from '../models/products';
 import { AuthServiceProvider } from './auth-service';
+import { HttpHeaders } from '@angular/common/http';
 
 /*
   Generated class for the AuthServiceProvider provider.
@@ -12,25 +13,28 @@ import { AuthServiceProvider } from './auth-service';
 */
 @Injectable()
 export class DataProductServiceProvider {
-  constructor(private api: ApiServiceProvider, private utility: UtilityServiceProvider, private auth: AuthServiceProvider) {}
+  private header: any;
+  constructor(private api: ApiServiceProvider, private utility: UtilityServiceProvider, private auth: AuthServiceProvider) {
+    this.header = { 'Cache-Control': 'no-cache' };
+  }
 
   getListAllProducts(): Promise<Array<Product>> {
     const userId = this.auth.getPrincipal().id;
     return new Promise((resolve, reject) => {
-      this.api.get('/product/interaction/user/' + userId).subscribe(sub => resolve(sub), error => reject(error));
+      this.api.get('/product/interaction/user/' + userId, { headers: this.header }).subscribe(sub => resolve(sub), error => reject(error));
     });
   }
 
   getListUserProducts(): Promise<Array<Product>> {
     const userId = this.auth.getPrincipal().id;
     return new Promise((resolve, reject) => {
-      this.api.get('/product/user/' + userId).subscribe(sub => resolve(sub), error => reject(error));
+      this.api.get('/product/user/' + userId, { headers: this.header }).subscribe(sub => resolve(sub), error => reject(error));
     });
   }
 
   getProductDetail(id): Promise<ProductDetail> {
     return new Promise((resolve, reject) => {
-      this.api.get('/product/' + id).subscribe(sub => resolve(sub), error => reject(error));
+      this.api.get('/product/' + id, { headers: this.header }).subscribe(sub => resolve(sub), error => reject(error));
     });
   }
 
