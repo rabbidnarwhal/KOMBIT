@@ -1,0 +1,46 @@
+<!--
+  Generated template for the RegisterPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header no-shadow>
+  <ion-navbar></ion-navbar>
+</ion-header>
+<ion-content padding>
+  <ion-row class="margin-20">
+    <ion-col>
+      <div text-center class="line">
+        <span>
+          <h2>Registration</h2>
+        </span>
+      </div>
+    </ion-col>
+  </ion-row>
+  <ion-row text-center>
+    <ion-col class="input-fields">
+      <form id="formRegistration" #formRegistration="ngForm">
+        <ion-item>
+          <ion-select class="input-area" [(ngModel)]="registration.CompanyId" name="HoldingCompany" placeholder="Holding Company" interface="popover" required>
+            <ion-option [value]="item.id" *ngFor="let item of listCompany">{{item.companyName}}</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-input type="text" [(ngModel)]="registration.Occupation" name="Occupation" placeholder="Occupation" required></ion-input>
+        <ion-input type="text" [(ngModel)]="registration.JobTitle" name="JobTitle" placeholder="JobTitle" required></ion-input>
+        <ion-item>
+          <ion-select class="input-area" [(ngModel)]="registration.IdType" name="IdType" placeholder="ID Type" interface="popover" required>
+            <ion-option [value]="item.id" *ngFor="let item of listIDType">{{item.descType}}</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-input type="tel" [(ngModel)]="registration.IdNumber" name="NIK" placeholder="ID Number" required></ion-input>
+        <ion-input type="text" [(ngModel)]="registration.Name" name="Name" placeholder="Name" required></ion-input>
+        <ion-input type="email" [(ngModel)]="registration.Email" name="CorporateEmail" placeholder="Corporate Email" required></ion-input>
+        <ion-input type="tel" [(ngModel)]="registration.Handphone" name="Handphone" placeholder="Handphone" pattern="^0|^62.*" required></ion-input>
+        <ion-input type="text" [(ngModel)]="registration.Address" name="Address" placeholder="Address" required></ion-input>
+        <ion-input type="text" [(ngModel)]="registration.Username" name="Username" placeholder="Username" required></ion-input>
+        <ion-input type="password" [(ngModel)]="registration.Password" name="Password" pattern="(?=.*[0-9A-z@#$%^&+=\s]).{1,}" placeholder="Password" required></ion-input>
+        <button ion-button btn-kombit small type="button" (click)="register()">Verification</button>
+      </form>
+    </ion-col>
+  </ion-row>
+</ion-content>

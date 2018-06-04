@@ -1,0 +1,31 @@
+<!--
+  Generated template for the SolutionPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header class="custom-background">
+
+  <ion-navbar>
+    <ion-item class="top-searchbar">
+      <ion-input type="text" placeholder="Solution" [(ngModel)]="filterText" (input)="filterItems()"></ion-input>
+      <ion-icon name="search" item-end></ion-icon>
+    </ion-item>
+  </ion-navbar>
+
+</ion-header>
+
+<ion-content padding>
+  <ion-row>
+    <ion-col>
+      <div class="searchable-select-spinner" *ngIf="isSearching">
+        <div class="searchable-select-spinner-background"></div>
+        <ion-spinner></ion-spinner>
+      </div>
+      <ion-list text-center>
+        <button ion-item no-lines *ngFor="let solution of filteredItems" (click)="solutionClicked(solution)">{{solution.category}}</button>
+      </ion-list>
+      <div text-center *ngIf="!filteredItems.length && !isSearching">Solution not found</div>
+    </ion-col>
+  </ion-row>
+</ion-content>

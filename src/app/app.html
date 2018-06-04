@@ -1,1 +1,20 @@
-<ion-nav [root]="rootPage"></ion-nav>
+<ion-menu [content]="content" id="sideMenu">
+  <ion-header>
+    <div class="menu-header">
+      <img src="assets/imgs/profile.png" (click)="profilePage()">
+      <h4 *ngIf="userName" text-center>{{userName}}</h4>
+    </div>
+  </ion-header>
+
+  <ion-content class="menu-content">
+    <ion-list no-margin>
+      <button menuClose ion-item no-lines padding-left *ngFor="let p of pages" (click)="openPage(p)">
+        <ion-icon *ngIf="p.icon" icon-small item-left [name]="p.icon"></ion-icon>
+        <img *ngIf="p.image" class="menu-icon-img" item-left [src]="p.image" /> {{p.title}}
+      </button>
+    </ion-list>
+  </ion-content>
+
+</ion-menu>
+
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

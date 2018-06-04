@@ -2,6 +2,12 @@
   "name": "KOMBIT",
   "app_id": "",
   "type": "ionic-angular",
+  "proxies": [
+    {
+      "path": "/api",
+      "proxyUrl": "http://kombit.org/api"
+    }
+  ],
   "integrations": {
     "cordova": {}
   }

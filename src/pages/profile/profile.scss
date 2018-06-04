@@ -1,0 +1,32 @@
+page-profile {
+  .box-content {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    width: calc(100% - 80px);
+    font-weight: 500;
+  }
+
+  .box-text {
+    width: 76px;
+  }
+
+  .divider-title ion-label {
+    font-weight: 500;
+  }
+
+  .box-container {
+    margin-bottom: 16px;
+    background: map-get($kombit-colors, 'text');
+    -ms-box-shadow: 0 4px 10px RGBA(0, 0, 0, 0.3);
+    box-shadow: 0 4px 10px RGBA(0, 0, 0, 0.3);
+    width: 100%;
+  }
+
+  .image-container {
+    text-align: center;
+    img {
+      width: 50%;
+    }
+  }
+}

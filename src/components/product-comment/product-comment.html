@@ -1,0 +1,22 @@
+<!-- Generated template for the ProductCommentComponent component -->
+<ion-row class="fixed-textarea-container">
+  <ion-col no-padding>
+    <ion-item>
+      <textarea [(ngModel)]="commentContent"></textarea>
+      <ion-icon item-end name="send" (click)="sendComment()"></ion-icon>
+    </ion-item>
+  </ion-col>
+</ion-row>
+<ion-row class="comment-box-container">
+  <ion-col>
+    <ion-list>
+      <ion-item text-wrap *ngFor="let item of data.interaction.comment">
+        <ion-icon item-start name="person"></ion-icon>
+        <label class="title">{{item.commentBy}}</label>
+        <label class="time">{{item.commentDate | timeAgo}}</label>
+        <br/>
+        <span>{{item.content}}</span>
+      </ion-item>
+    </ion-list>
+  </ion-col>
+</ion-row>
