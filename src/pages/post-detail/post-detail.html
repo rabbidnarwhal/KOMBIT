@@ -12,7 +12,7 @@
 
 <ion-content padding class="popover">
   <ion-scroll scrollY="true">
-    <div class="spinner-container" *ngIf="!isSearching">
+    <div class="spinner-container" *ngIf="isSearching">
       <ion-spinner></ion-spinner>
     </div>
     <product-detail *ngIf="selectedPage === 'detail' && !isSearching" [data]="data" [page]="parentPage" (selectedPage)="changePage($event)"></product-detail>
