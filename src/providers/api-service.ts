@@ -36,12 +36,10 @@ export class ApiServiceProvider {
     headers['Content-Type'] = 'application/json';
     headers['Access-Control-Allow-Origin'] = '*';
     options.headers = headers;
-    console.log(headers);
     return options;
   }
 
   private handleError(error: HttpErrorResponse) {
-    console.log('this is api', error);
     if (error.hasOwnProperty('error')) {
       if (error.error instanceof ErrorEvent) console.error('An error occurred:', error.error.message);
       else if (error.error && error.error.hasOwnProperty('Message')) return new ErrorObservable(error.error.Message);

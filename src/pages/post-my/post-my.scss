@@ -17,7 +17,7 @@ page-post-my {
     margin: 0px;
     font-weight: 200;
     text-transform: capitalize;
-    @include background-content(180deg);
+    @include color-background(180deg);
     border: none;
     color: map-get($kombit-colors, 'text');
     ion-icon + span {

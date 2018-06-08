@@ -1,4 +1,21 @@
 page-home {
+  .segment {
+    height: 2.8rem;
+    margin-bottom: 10px;
+  }
+
+  .segment-button {
+    height: 2.8rem !important;
+    line-height: 2.8rem !important;
+    @include color-item();
+  }
+
+  .segment-activated {
+    @include color-background(180deg);
+    color: map-get($kombit-colors, 'text') !important;
+    @include color-border();
+  }
+
   .post-list-box {
     margin-bottom: 16px;
     background: map-get($kombit-colors, 'text');
@@ -16,7 +33,7 @@ page-home {
     margin: 0px;
     font-weight: 200;
     text-transform: capitalize;
-    @include background-content(180deg);
+    @include color-background(180deg);
     border: none;
     color: map-get($kombit-colors, 'text');
     ion-icon + span {

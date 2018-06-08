@@ -13,13 +13,14 @@ import { Product } from '../../models/products';
 })
 export class HomePage {
   private listPost: Array<Product>;
+  public filteredItems: Array<Product>;
   public listPostLeft: Array<Product>;
   public listPostRight: Array<Product>;
-  public filteredItems: Array<Product>;
   public filterText: string = '';
   public isSearching: boolean = true;
   public lockBtn: boolean = false;
-  public selectedPost: any;
+  public selectedLikePost: any;
+  public solutionType: string;
   constructor(
     private navCtrl: NavController,
     private utility: UtilityServiceProvider,
@@ -27,10 +28,13 @@ export class HomePage {
     private event: Events
   ) {
     this.listPost = new Array<Product>();
+    this.solutionType = 'public';
     this.filterItems();
   }
+
   ionViewWillEnter() {
-    this.isSearching = true;
+    if (!this.listPost.length) this.isSearching = true;
+    this.solutionType = 'public';
     this.dataProduct
       .getListAllProducts()
       .then(res => {
@@ -58,9 +62,12 @@ export class HomePage {
           this.listPost[idx].totalLike--;
           this.listPost[idx].isLike = false;
         }
-
       this.filterItems();
     });
+  }
+
+  segmentChanged() {
+    this.filterItems();
   }
 
   showDetail(data) {
@@ -72,8 +79,12 @@ export class HomePage {
   }
 
   filterItems() {
-    if (this.listPost) {
-      this.filteredItems = this.listPost.filter(res => {
+    let data = [];
+    if (this.solutionType === 'public') data = this.listPost;
+    if (this.solutionType === 'holding') data = this.listPost.filter(res => res.holdingId === this.dataProduct.getHoldingId());
+    if (this.solutionType === 'favorite') data = this.listPost.filter(res => res.isLike);
+    if (data) {
+      this.filteredItems = data.filter(res => {
         for (const key in res) {
           if (res.hasOwnProperty(key)) {
             const element = res[key];
@@ -87,19 +98,19 @@ export class HomePage {
   }
 
   likeBtnClick(post) {
-    this.selectedPost = post;
+    this.selectedLikePost = post;
     post.isLike = !post.isLike;
     this.lockBtn = true;
     this.dataProduct.modifyLikeProduct(post.id, post.isLike).then(
       () => {
         this.lockBtn = false;
-        this.selectedPost = null;
+        this.selectedLikePost = null;
         post.totalLike = post.isLike ? post.totalLike + 1 : post.totalLike - 1;
         this.utility.showToast(post.isLike ? 'Product Liked' : 'Product Unliked', 1000);
       },
       err => {
         this.lockBtn = false;
-        this.selectedPost = null;
+        this.selectedLikePost = null;
         this.utility.showToast(err);
       }
     );

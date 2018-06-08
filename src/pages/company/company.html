@@ -9,8 +9,7 @@
 
 <ion-content padding>
   <ion-row>
-    <div class="searchable-select-spinner" *ngIf="isSearching">
-      <div class="searchable-select-spinner-background"></div>
+    <div class="spinner-container" *ngIf="isSearching">
       <ion-spinner></ion-spinner>
     </div>
     <ion-col col-4 *ngFor="let company of filteredItems">

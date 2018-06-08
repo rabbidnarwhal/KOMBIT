@@ -1,15 +1,4 @@
 page-post-new {
-  @mixin box() {
-    min-height: 1rem !important;
-    background-color: #fdfdfd;
-    border: 1px solid #fdfdfd;
-    border-radius: 20px !important;
-    padding: 4px 12px !important;
-    margin-bottom: 8px !important;
-    -ms-box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3) !important;
-    box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3) !important;
-  }
-
   ion-col {
     text-align: center;
   }
