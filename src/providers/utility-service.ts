@@ -38,12 +38,20 @@ export class UtilityServiceProvider {
     });
   }
 
-  basicAlert(content: string, title = '', btnText = 'Dismiss'): void {
+  basicAlert(content: string, title = '', btnText = 'Dismiss', callback?) {
     this.alertCtrl
       .create({
         title: title,
         subTitle: content,
-        buttons: [btnText]
+        buttons: [
+          {
+            text: btnText,
+            handler: () => {
+              if (callback) callback();
+              else return;
+            }
+          }
+        ]
       })
       .present();
   }

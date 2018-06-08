@@ -6,6 +6,7 @@ export class User {
   name: string;
   email: string;
   address: string;
+  addressKoordinat: string;
   occupation: string;
   handphone: string;
   jobTitle: string;
