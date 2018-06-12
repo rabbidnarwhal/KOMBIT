@@ -1,6 +1,7 @@
 export class Product {
   id: number;
   companyName: string;
+  holdingId: number;
   holdingName: string;
   productName: string;
   categoryName: string;

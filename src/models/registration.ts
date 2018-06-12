@@ -10,4 +10,5 @@ export class RegistrationRequest {
   Handphone: string;
   JobTitle: string;
   CompanyId: number;
+  AddressKoordinat: string;
 }

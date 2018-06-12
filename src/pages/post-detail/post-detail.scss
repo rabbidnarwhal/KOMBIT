@@ -40,6 +40,7 @@ page-post-detail {
     &[name~='close-circle'] {
       right: 20px;
       top: 0;
+      color: map-get($colors, 'danger');
     }
     &[name~='arrow-back'] {
       left: 20px;
@@ -78,7 +79,7 @@ page-post-detail {
     width: 100%;
     border: none;
     color: map-get($kombit-colors, 'text');
-    @include background-content(180deg);
+    @include color-background(180deg);
     ion-icon + span {
       margin-left: 6px;
     }

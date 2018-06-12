@@ -1,6 +1,6 @@
 page-solution {
   button.item {
-    @include background-content(90deg);
+    @include color-background(90deg);
     min-height: 1rem !important;
     border: 1px solid #fdfdfd;
     padding-left: 12px;

@@ -64,7 +64,7 @@
                 <button ion-button full small class="box-button" (click)="likeBtnClick(data)">
                   <ion-icon *ngIf="!lockBtn || data.id !== selectedProductId" [name]="data.isLike ? 'heart' : 'heart-outline'"></ion-icon>
                   <span *ngIf="!lockBtn || data.id !== selectedProductId">{{data.totalLike}}</span>
-                  <ion-spinner *ngIf="lockBtn && data.id === selectedProductId"></ion-spinner>
+                  <ion-spinner name="dots" *ngIf="lockBtn && data.id === selectedProductId"></ion-spinner>
                 </button>
               </ion-col>
               <ion-col no-padding>

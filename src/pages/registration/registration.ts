@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
 import { RegistrationRequest } from '../../models/registration';
 import { NgForm } from '@angular/forms';
 import { ApiServiceProvider } from '../../providers/api-service';
@@ -25,18 +25,26 @@ export class RegistrationPage {
   public registration: RegistrationRequest;
   public listIDType: any = [];
   public listCompany: any = [];
+  public listHoldingCompany: any = [];
+  public isLoading: boolean = false;
+  public holdingId: number;
   constructor(
     private navCtrl: NavController,
     private api: ApiServiceProvider,
     private formValidator: FormValidatorProvider,
-    private utility: UtilityServiceProvider
+    private utility: UtilityServiceProvider,
+    private events: Events
   ) {
     this.registration = new RegistrationRequest();
   }
 
   ionViewDidLoad() {
-    this.loadListCompany();
+    this.loadListHoldingCompany();
     this.loadListIDType();
+
+    this.events.subscribe('location', res => {
+      this.registration.AddressKoordinat = res.coordinate;
+    });
   }
 
   register() {
@@ -48,8 +56,7 @@ export class RegistrationPage {
       this.api.post('/users/register', this.registration).subscribe(
         sub => {
           loading.dismiss();
-          this.utility.basicAlert('Register Success');
-          this.navCtrl.pop();
+          this.utility.confirmAlert('Register Success', 'Ok', '').then(() => this.navCtrl.pop()).catch(() => this.navCtrl.pop());
         },
         err => {
           loading.dismiss();
@@ -59,8 +66,30 @@ export class RegistrationPage {
     } else this.utility.showToast(this.formValidator.getErrorMessage(this.form));
   }
 
-  loadListCompany() {
-    this.api.get('/company').subscribe(sub => (this.listCompany = sub), err => this.utility.showToast(err));
+  changeCompany() {
+    this.loadListCompany();
+  }
+
+  openMap() {
+    this.navCtrl.push('map-location', { type: 'choose', coordinate: this.registration.AddressKoordinat });
+  }
+
+  private loadListCompany() {
+    this.isLoading = true;
+    this.api.get('/holding/' + this.holdingId + '/company').subscribe(
+      sub => {
+        this.listCompany = sub;
+        this.isLoading = false;
+      },
+      err => {
+        this.utility.showToast(err);
+        this.isLoading = false;
+      }
+    );
+  }
+
+  private loadListHoldingCompany() {
+    this.api.get('/holding').subscribe(sub => (this.listHoldingCompany = sub), err => this.utility.showToast(err));
   }
 
   private loadListIDType() {

@@ -1,12 +1,28 @@
 page-login {
-  ion-content {
-    background-image: url('../assets/imgs/BackgroundLogin.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position-x: center;
-    background-position-y: -24px;
+  // ion-content {
+  // background-image: url('../assets/imgs/BackgroundLogin.png');
+  // background-size: cover;
+  // background-repeat: no-repeat;
+  // background-position-x: center;
+  // background-position-y: -24px;
+  // }
+  .login-background {
+    position: absolute;
+    width: 100%;
+    height: calc(100vh - 250px);
+    z-index: 1;
+    @include color-background(0deg);
+    &::after {
+      border-left: 86px solid #fff;
+      border-right: 86px solid #fff;
+      border-top: 36px solid transparent;
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0px;
+      right: 0px;
+    }
   }
-
   form {
     height: 100%;
   }
@@ -16,7 +32,7 @@ page-login {
     height: 100%;
     ion-row {
       padding: 0 24px;
-      margin-top: 158px;
+      margin-top: calc(100vh - 424px + 42px);
     }
   }
 
@@ -31,10 +47,22 @@ page-login {
       width: calc(100% - 8px - 24px) !important;
       margin: 6px 16px !important;
       text-align: center;
+      font-size: 16px;
     }
   }
 
   ion-footer {
+    a {
+      color: map-get($kombit-colors, 'btn');
+    }
+    button {
+      height: 2.4em !important;
+      width: 8em;
+      span {
+        font-weight: 400;
+        font-size: 16px;
+      }
+    }
     &::before {
       background-image: none !important;
     }

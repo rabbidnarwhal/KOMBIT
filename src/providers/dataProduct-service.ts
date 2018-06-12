@@ -99,4 +99,8 @@ export class DataProductServiceProvider {
   getCommentByName() {
     return this.auth.getPrincipal().name;
   }
+
+  getHoldingId() {
+    return this.auth.getPrincipal().holdingId;
+  }
 }

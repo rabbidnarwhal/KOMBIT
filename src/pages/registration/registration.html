@@ -21,12 +21,15 @@
     <ion-col class="input-fields">
       <form id="formRegistration" #formRegistration="ngForm">
         <ion-item>
-          <ion-select class="input-area" [(ngModel)]="registration.CompanyId" name="HoldingCompany" placeholder="Holding Company" interface="popover" required>
+          <ion-select class="input-area" [(ngModel)]="holdingId" name="Holding Company" placeholder="Holding Company" interface="popover" (ionChange)="changeCompany()" required>
+            <ion-option [value]="item.id" *ngFor="let item of listHoldingCompany">{{item.holdingName}}</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-select class="input-area" [(ngModel)]="registration.CompanyId" name="Company" placeholder="Company" interface="popover" [disabled]="!holdingId" required>
             <ion-option [value]="item.id" *ngFor="let item of listCompany">{{item.companyName}}</ion-option>
           </ion-select>
         </ion-item>
-        <ion-input type="text" [(ngModel)]="registration.Occupation" name="Occupation" placeholder="Occupation" required></ion-input>
-        <ion-input type="text" [(ngModel)]="registration.JobTitle" name="JobTitle" placeholder="JobTitle" required></ion-input>
         <ion-item>
           <ion-select class="input-area" [(ngModel)]="registration.IdType" name="IdType" placeholder="ID Type" interface="popover" required>
             <ion-option [value]="item.id" *ngFor="let item of listIDType">{{item.descType}}</ion-option>
@@ -37,9 +40,10 @@
         <ion-input type="email" [(ngModel)]="registration.Email" name="CorporateEmail" placeholder="Corporate Email" required></ion-input>
         <ion-input type="tel" [(ngModel)]="registration.Handphone" name="Handphone" placeholder="Handphone" pattern="^0|^62.*" required></ion-input>
         <ion-input type="text" [(ngModel)]="registration.Address" name="Address" placeholder="Address" required></ion-input>
+        <ion-input type="text" [(ngModel)]="registration.AddressKoordinat" name="Position" placeholder="Position" (click)="openMap()" readonly></ion-input>
         <ion-input type="text" [(ngModel)]="registration.Username" name="Username" placeholder="Username" required></ion-input>
         <ion-input type="password" [(ngModel)]="registration.Password" name="Password" pattern="(?=.*[0-9A-z@#$%^&+=\s]).{1,}" placeholder="Password" required></ion-input>
-        <button ion-button btn-kombit small type="button" (click)="register()">Verification</button>
+        <button ion-button btn-kombit type="button" (click)="register()">Verification</button>
       </form>
     </ion-col>
   </ion-row>
