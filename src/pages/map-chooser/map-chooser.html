@@ -8,25 +8,26 @@
   <ion-navbar>
     <ion-title>Location</ion-title>
   </ion-navbar>
+
 </ion-header>
 
 <ion-content no-padding no-margin>
-  <ion-grid no-padding no-margin>
-    <div class="spinner-container" *ngIf="!mapIsLoaded">
-      <ion-spinner></ion-spinner>
-    </div>
-    <ion-row *ngIf="mode === 'choose' && mapIsLoaded">
-      <ion-col>
-        <ion-item>
-          <ion-icon item-start name="pin"></ion-icon>
-          <ion-textarea [(ngModel)]="locationName" (ionChange)="adjustTextareaHeight()" readonly></ion-textarea>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row class="has-map">
-      <ion-col>
-        <div #map id="map" class="map"></div>
-      </ion-col>
-    </ion-row>
-  </ion-grid>
+
+  <!-- <ion-item>
+    <ion-label floating>Enter Address</ion-label>
+    <ion-input id="txtHome" type="text"></ion-input>
+  </ion-item> -->
+  <div class="spinner-container" *ngIf="!mapIsLoaded">
+    <ion-spinner></ion-spinner>
+  </div>
+  <ion-item *ngIf="mode === 'choose' && mapIsLoaded">
+    <ion-icon item-start name="pin"></ion-icon>
+    <ion-textarea id="location" [(ngModel)]="locationName" (input)="searchLocation()" (ionChange)="adjustTextareaHeight()"></ion-textarea>
+    <ion-icon item-end name="close" (click)="clearInput()"></ion-icon>
+  </ion-item>
+  <ion-list>
+    <ion-item *ngFor="let place of places" (touchstart)="selectPlace(place)">{{place.description}}</ion-item>
+  </ion-list>
+  <div #map id="map">
+  </div>
 </ion-content>

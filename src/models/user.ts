@@ -17,16 +17,24 @@ export class User {
   companyId: number;
   holdingName: string;
   holdingId: number;
+  image: string;
 }
 
 export class UserRequest {
-  id: number;
-  username: string;
-  name: string;
-  email: string;
-  address: string;
-  occupation: string;
-  handphone: string;
-  jobTitle: string;
-  companyId: number;
+  Address: string;
+  AddressKoordinat: string;
+  CompanyId: number;
+  // Email: string;
+  // Handphone: string;
+  JobTitle: string;
+  // Name: string;
+  Occupation: string;
+
+  constructor(req: User) {
+    this.Address = req.address;
+    this.AddressKoordinat = req.addressKoordinat;
+    this.CompanyId = req.companyId;
+    this.JobTitle = req.jobTitle;
+    this.Occupation = req.occupation;
+  }
 }

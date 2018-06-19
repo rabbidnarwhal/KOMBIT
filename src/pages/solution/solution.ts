@@ -44,4 +44,9 @@ export class SolutionPage {
       return res.category.toLowerCase().indexOf(this.filterText.trim().toLowerCase()) !== -1;
     });
   }
+
+  solutionClicked(solution) {
+    console.log(solution);
+    this.navCtrl.push('home', { solution: solution });
+  }
 }

@@ -1,7 +1,7 @@
 <ion-menu [content]="content" id="sideMenu">
   <ion-header>
     <div class="menu-header">
-      <img src="assets/imgs/profile.png" (click)="profilePage()">
+      <img [src]="picture" (click)="profilePage()">
       <h4 *ngIf="userName" text-center>{{userName}}</h4>
     </div>
   </ion-header>

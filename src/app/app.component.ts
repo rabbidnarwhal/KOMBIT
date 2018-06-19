@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Platform, Nav } from 'ionic-angular';
+import { Platform, Nav, Events } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Keyboard } from '@ionic-native/keyboard';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -15,6 +15,7 @@ export class MyApp {
   public rootPage: string = '';
   public pages: Array<{ title: string; component: string; icon: string; image: string }>;
   public userName: string = '';
+  public picture: string;
   constructor(
     private platform: Platform,
     private statusBar: StatusBar,
@@ -22,10 +23,11 @@ export class MyApp {
     private utility: UtilityServiceProvider,
     private auth: AuthServiceProvider,
     private menu: MenuController,
-    private keyboard: Keyboard
+    private keyboard: Keyboard,
+    private events: Events
   ) {
     this.initializeApp();
-
+    this.picture = 'assets/imgs/profile.png';
     this.pages = [
       { title: 'Notification', component: '', icon: 'notifications', image: '' },
       { title: 'Create new post', component: 'newPost', icon: 'paper-plane', image: '' },
@@ -52,17 +54,10 @@ export class MyApp {
     if (page.component === 'logout') {
       this.utility
         .confirmAlert('Are you sure to logout?', 'Logout')
-        .then(res => {
-          this.auth.logout();
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    } else if (page.component) {
-      this.nav.push(page.component);
-    } else {
-      alert('Not implemented yet');
-    }
+        .then(res => this.auth.logout())
+        .catch(err => console.error(err));
+    } else if (page.component) this.nav.push(page.component);
+    else alert('Not implemented yet');
   }
 
   private authCheck() {
@@ -78,6 +73,7 @@ export class MyApp {
           this.menu.swipeEnable(true, 'sideMenu');
         }
         this.userName = this.auth.getPrincipal().name;
+        this.picture = this.auth.getPrincipal().image ? this.auth.getPrincipal().image : this.picture;
         this.rootPage = 'home';
       } else {
         if (this.menu.isEnabled('sideMenu')) {
@@ -93,5 +89,10 @@ export class MyApp {
   public profilePage() {
     this.nav.push('profile', { id: this.auth.getPrincipal().id });
     this.menu.close('sideMenu');
+
+    this.events.subscribe('picture-changed', sub => {
+      this.picture = sub;
+      this.events.unsubscribe('picture-changed');
+    });
   }
 }

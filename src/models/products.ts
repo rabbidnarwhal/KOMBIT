@@ -5,8 +5,6 @@ export class Product {
   holdingName: string;
   productName: string;
   categoryName: string;
-  fotoPath: string;
-  fotoName: string;
   totalLike: number;
   totalComment: number;
   totalView: number;
@@ -20,23 +18,43 @@ export class Product {
 }
 
 export class NewProduct {
-  CompanyId: number;
-  HoldingId: number;
   CategoryId: number;
-  ProductName: string;
+  CompanyId: number;
+  Credentials: string;
   Description: string;
+  HoldingId: number;
   IsIncludePrice: boolean;
   Price: number;
-  Credentials: string;
-  VideoPath: string;
-  FotoName: string;
-  FotoPath: string;
+  ProductName: string;
   UserId: number;
+  VideoPath: string;
+  Foto: Array<Foto>;
 
   constructor(data) {
     this.CompanyId = data.companyId;
     this.HoldingId = data.holdingId;
     this.UserId = data.id;
+    this.Foto = [];
+  }
+
+  public init(data) {
+    this.CategoryId = data.categoryId;
+    this.CompanyId = data.companyId;
+    this.Credentials = data.credentials;
+    this.Description = data.description;
+    this.HoldingId = data.holdingId;
+    this.IsIncludePrice = data.isIncludePrice;
+    this.Price = data.price;
+    this.ProductName = data.productName;
+    this.UserId = data.userId;
+    this.VideoPath = data.videoPath;
+    this.Foto = data.foto.map(foto => {
+      const obj: Foto = new Foto();
+      obj.FotoName = foto.fotoName;
+      obj.FotoPath = foto.fotoPath;
+      obj.Id = foto.id;
+      return obj;
+    });
   }
 }
 
@@ -51,7 +69,7 @@ export class ProductDetail {
   price: number;
   credentials: string;
   videoPath: string;
-  fotoPath: string;
+  foto: Array<Foto>;
   contact: Contact;
   interaction: Interaction;
 }
@@ -64,6 +82,9 @@ export class Contact {
   handphone: string;
   address: string;
   foto: string;
+  image: string;
+  addressKoordinat: string;
+  addressMap: string;
 }
 
 export class Interaction {
@@ -80,4 +101,10 @@ export class Comment {
   commentBy: string;
   isComment: boolean;
   commentDate: string;
+}
+
+export class Foto {
+  FotoName: string;
+  FotoPath: string;
+  Id: number;
 }

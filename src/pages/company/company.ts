@@ -48,4 +48,9 @@ export class CompanyPage {
       return res.companyName.toLowerCase().indexOf(this.filterText.trim().toLowerCase()) !== -1;
     });
   }
+
+  companyClicked(company) {
+    console.log(company);
+    this.navCtrl.push('home', { company: company });
+  }
 }

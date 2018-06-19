@@ -3,6 +3,7 @@ import { ApiServiceProvider } from './api-service';
 import { UtilityServiceProvider } from './utility-service';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { LoginResponse, LoginRequest } from '../models/login';
+import { Config } from '../config/config';
 
 /*
   Generated class for the AuthServiceProvider provider.
@@ -37,6 +38,7 @@ export class AuthServiceProvider {
       (sub: LoginResponse) => {
         this.authenticate(sub).then(res => {
           loading.dismiss();
+          this.loadConfig();
           this.authNotifier.next(true);
         });
       },
@@ -62,6 +64,7 @@ export class AuthServiceProvider {
     this.api.get('/users/' + token[1] + '/' + token[0]).subscribe(
       (sub: LoginResponse) => {
         this.authenticate(sub).then(res => {
+          this.loadConfig();
           this.authNotifier.next(true);
         });
       },
@@ -92,5 +95,17 @@ export class AuthServiceProvider {
 
   getPrincipal() {
     return this.principal;
+  }
+
+  loadConfig() {
+    this.api.get('/config').subscribe(
+      sub => {
+        console.log(sub);
+        sub.forEach(element => {
+          if (element.paramCode === 'DEFAULT_CURRENCY') Config.setCurrency(element.paramValue);
+        });
+      },
+      err => console.error(err)
+    );
   }
 }

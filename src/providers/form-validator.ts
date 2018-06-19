@@ -26,6 +26,7 @@ export class FormValidatorProvider {
             break;
           case 'pattern':
             if (key === 'Password') errorMsgList.push('Pattern ' + key + ' is wrong, only number, word dan symbol "@#$%^&+=" is allowed.');
+            else if (key === 'Corporate Email') errorMsgList.push('Pattern ' + key + ' is wrong.');
             else if (key === 'Handphone') errorMsgList.push('Pattern ' + key + ' is wrong, only 6281xxx or 081xxx is allowed.');
             break;
           case 'validateEqual':

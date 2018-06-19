@@ -4,6 +4,7 @@ import { UtilityServiceProvider } from '../../providers/utility-service';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { Product } from '../../models/products';
 import { trigger, transition, style, animate } from '@angular/animations';
+import { AuthServiceProvider } from '../../providers/auth-service';
 
 /**
  * Generated class for the PostMyPage page.
@@ -30,13 +31,16 @@ export class PostMyPage {
   public selectedProductId: number = 0;
   public lockBtn: boolean = false;
   public isSearching: boolean = false;
+  public userId: number;
   constructor(
     public navCtrl: NavController,
     private utility: UtilityServiceProvider,
     private dataProduct: DataProductServiceProvider,
-    private event: Events
+    private event: Events,
+    private auth: AuthServiceProvider
   ) {
     this.listProducts = new Array<Product>();
+    this.userId = this.auth.getPrincipal().id;
   }
 
   ionViewDidEnter() {
@@ -92,5 +96,9 @@ export class PostMyPage {
         this.utility.showToast(err);
       }
     );
+  }
+
+  editPost(post) {
+    this.navCtrl.push('newPost', { id: post.id });
   }
 }
