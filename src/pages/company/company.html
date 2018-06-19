@@ -12,10 +12,11 @@
     <div class="spinner-container" *ngIf="isSearching">
       <ion-spinner></ion-spinner>
     </div>
-    <ion-col col-4 *ngFor="let company of filteredItems">
+    <ion-col col-4 *ngFor="let company of filteredItems" (click)="companyClicked(company)">
       <div class="image-container">
-        <p>{{company.companyName}}</p>
-        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+        <p *ngIf="!company.image">{{company.companyName}}</p>
+        <img *ngIf="!company.image" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+        <img *ngIf="company.image" [src]="company.image" alt="" />
       </div>
     </ion-col>
     <div text-center *ngIf="!filteredItems.length && !isSearching">Company not found</div>
