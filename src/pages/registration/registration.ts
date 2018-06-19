@@ -47,7 +47,12 @@ export class RegistrationPage {
     });
   }
 
+  ionViewWillUnload() {
+    this.events.unsubscribe('location');
+  }
+
   register() {
+    console.log(this.form);
     if (this.form.valid) {
       const loading = this.utility.showLoading();
       loading.present();
@@ -56,7 +61,10 @@ export class RegistrationPage {
       this.api.post('/users/register', this.registration).subscribe(
         sub => {
           loading.dismiss();
-          this.utility.confirmAlert('Register Success', 'Ok', '').then(() => this.navCtrl.pop()).catch(() => this.navCtrl.pop());
+          this.utility
+            .confirmAlert('Register Success', 'Ok', '')
+            .then(() => this.navCtrl.pop())
+            .catch(() => this.navCtrl.pop());
         },
         err => {
           loading.dismiss();

@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild, NgZone } from '@angular/core';
-import { Geolocation } from '@ionic-native/geolocation';
 import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
 import { UtilityServiceProvider } from '../../providers/utility-service';
+import { google } from 'google-maps';
 import {
   Geocoder,
   GoogleMap,
@@ -9,8 +9,11 @@ import {
   GoogleMaps,
   GoogleMapsEvent,
   LocationService,
-  MyLocationOptions
+  MyLocationOptions,
+  LatLng,
+  LatLngBounds
 } from '@ionic-native/google-maps';
+import { Config } from '../../config/config';
 /**
  * Generated class for the MapChooserPage page.
  *
@@ -28,42 +31,67 @@ import {
 export class MapChooserPage {
   @ViewChild('map') mapElement: ElementRef;
   private maps: GoogleMap;
-  private position: any;
-  public locationName: string;
+  private zoom: number;
+  private position: LatLng;
+  private currentPosition: LatLng;
+  private autocompleteService: any;
+  private placesService: any;
   private coordinate: string;
+  private apiKey: string;
+
+  public locationName: string;
+  public savedLocation: string;
   public mode: string;
-  public mapIsLoaded: boolean = false;
-  private zone: NgZone;
+  public places: any;
+  public mapIsLoaded: boolean = true;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private geolocation: Geolocation,
     private utility: UtilityServiceProvider,
     private events: Events,
+    private zone: NgZone,
     private element: ElementRef
   ) {
-    this.position = {
-      lat: -8.636012911829676,
-      lng: 115.21293640136719,
-      zoom: 8
-    };
-    this.mode = this.navParams.data.type;
-    this.zone = new NgZone({ enableLongStackTrace: false });
+    this.position = new LatLng(-8.636012911829676, 115.21293640136719);
+    this.zoom = 8;
+    this.apiKey = Config.GOOGLE_MAP_API_KEY;
+    this.mode = this.navParams.data.type || 'choose';
   }
 
   ionViewDidLoad() {
+    if (typeof google == 'undefined' || typeof google.maps == 'undefined') {
+      // console.log('Google maps JavaScript needs to be loaded.');
+      window['mapInit'] = () => {
+        this.initMap();
+      };
+
+      let script = document.createElement('script');
+      script.id = 'googleMaps';
+      if (this.apiKey) {
+        script.src = 'http://maps.google.com/maps/api/js?key=' + this.apiKey + '&callback=mapInit&libraries=places';
+      } else {
+        script.src = 'http://maps.google.com/maps/api/js?callback=mapInit';
+      }
+      document.body.appendChild(script);
+    } else {
+      this.initMap();
+    }
+  }
+
+  private initMap() {
     new Promise(resolve => {
-      if (this.navParams.data.coordinate) {
-        this.position.lat = this.navParams.data.coordinate.split(', ')[0];
-        this.position.lng = this.navParams.data.coordinate.split(', ')[1];
-        this.position.zoom = 14;
+      if (this.navParams.data.coordinate && this.mode === 'view') {
+        this.position = new LatLng(+this.navParams.data.coordinate.split(', ')[0], +this.navParams.data.coordinate.split(', ')[1]);
+        this.zoom = 14;
         resolve();
       } else {
         this.getPosition()
           .then(pos => {
-            this.position.lat = pos.latLng.lat;
-            this.position.lng = pos.latLng.lng;
-            this.position.zoom = 14;
+            this.zoom = 16;
+            if (this.navParams.data.coordinate && this.mode === 'direction') {
+              this.position = new LatLng(+this.navParams.data.coordinate.split(', ')[0], +this.navParams.data.coordinate.split(', ')[1]);
+              this.currentPosition = pos.latLng;
+            } else this.position = pos.latLng;
             resolve();
           })
           .catch(err => {
@@ -95,117 +123,180 @@ export class MapChooserPage {
           myLocationButton: true
         },
         camera: {
-          target: {
-            lat: this.position.lat,
-            lng: this.position.lng
-          },
-          zoom: this.position.zoom
+          target: this.position,
+          zoom: this.zoom
         }
       };
       this.maps = GoogleMaps.create(element, mapOptions);
-      this.maps.one(GoogleMapsEvent.MAP_READY).then(() => {
-        this.mapIsLoaded = true;
-        this.addMarker(this.position.lat, this.position.lng, this.mode === 'choose' ? 'Choose this location' : '');
-        return;
-      });
+      this.maps
+        .one(GoogleMapsEvent.MAP_READY)
+        .then(() => {
+          this.mapIsLoaded = true;
+          if (this.mode === 'direction') {
+            this.addMarker(this.currentPosition, '', false);
+            const directionsService = new google.maps.DirectionsService();
+            const directionRequest = {
+              origin: this.currentPosition,
+              destination: this.position,
+              travelMode: google.maps.TravelMode.DRIVING
+            };
+
+            directionsService.route(directionRequest, (response, status) => {
+              if (status === google.maps.DirectionsStatus.OK && response.routes.length) {
+                const directionPath = [];
+                const latLngBounds: LatLng = new LatLngBounds([this.currentPosition, this.position]).getCenter();
+                response.routes[0].overview_path.forEach(element => {
+                  const pos: LatLng = new LatLng(element.lat(), element.lng());
+                  directionPath.push(pos);
+                });
+                this.maps.addPolyline({ points: directionPath, width: 5, geodesic: true });
+                this.maps.moveCamera({ target: latLngBounds });
+              }
+            });
+          }
+          this.addMarker(this.position, this.mode === 'choose' ? 'Choose this location' : '');
+          return;
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
   }
 
-  private addMarker(lat, long, title) {
+  private addMarker(latLng: LatLng, title, centerCamera: boolean = true) {
     if (!window['cordova']) return;
+
     this.maps
       .addMarker({
         title: title,
         icon: 'orange',
         animation: 'DROP',
-        position: {
-          lat: lat,
-          lng: long
-        }
+        position: latLng
       })
       .then(marker => {
-        this.maps
-          .moveCamera({
-            target: {
-              lat: lat,
-              lng: long
-            },
-            zoom: 14
+        Promise.resolve()
+          .then(() => {
+            if (centerCamera) {
+              return this.maps.moveCamera({
+                target: latLng,
+                zoom: this.zoom
+              });
+            } else return Promise.resolve();
           })
-          .then(() => this.getLocationName(lat, long))
+          .then(() => this.getLocationName(latLng))
           .then(res => {
-            if (this.mode === 'choose') this.locationName = res;
-            else marker.setTitle(res);
-            marker.showInfoWindow();
+            if (this.mode === 'choose') {
+              this.locationName = res;
+              marker.showInfoWindow();
+            } else marker.setTitle(res);
           })
           .catch(err => this.utility.showToast(err));
 
         if (this.mode === 'choose') {
-          this.maps.on(GoogleMapsEvent.CAMERA_MOVE_START).subscribe(res => {
-            this.zone.run(() => {
-              this.locationName = 'Please wait...';
-            });
+          this.autocompleteService = new google.maps.places.AutocompleteService();
+          this.placesService = new google.maps.places.PlacesService(this.mapElement.nativeElement);
+
+          this.maps.on(GoogleMapsEvent.CAMERA_MOVE_START).subscribe(() => {
+            this.zone.run(() => (this.locationName = 'Please wait...'));
           });
 
           this.maps.on(GoogleMapsEvent.CAMERA_MOVE).subscribe(res => {
-            marker.setPosition({
-              lat: res[0].target.lat,
-              lng: res[0].target.lng
-            });
+            marker.setPosition(res[0].target);
           });
 
           this.maps.on(GoogleMapsEvent.CAMERA_MOVE_END).subscribe(res => {
-            marker.setPosition({
-              lat: res[0].target.lat,
-              lng: res[0].target.lng
-            });
+            marker.setPosition(res[0].target);
             marker.showInfoWindow();
             this.coordinate = res[0].target.lat + ', ' + res[0].target.lng;
-            this.getLocationName(res[0].target.lat, res[0].target.lng)
-              .then(res => {
-                this.zone.run(() => {
-                  this.locationName = res;
-                });
-              })
+            this.getLocationName(res[0].target)
+              .then(res => this.zone.run(() => (this.locationName = res)))
               .catch(err => this.utility.showToast(err));
           });
 
-          marker.on(GoogleMapsEvent.INFO_CLICK).subscribe(() => {
-            const location = { address: this.locationName, coordinate: this.coordinate };
+          const locationEvent = () => {
+            const location = {
+              address: this.locationName,
+              coordinate: this.coordinate
+            };
             this.events.publish('location', location);
             this.navCtrl.pop();
-          });
+          };
 
-          marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
-            const location = { address: this.locationName, coordinate: this.coordinate };
-            this.events.publish('location', location);
-            this.navCtrl.pop();
-          });
-        } else {
-          marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => {
-            marker.showInfoWindow();
-          });
-        }
+          marker.on(GoogleMapsEvent.INFO_CLICK).subscribe(() => locationEvent());
+
+          marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => locationEvent());
+
+          // let nativeHomeInputBox = document.getElementById('location').getElementsByTagName('input')[0];
+          // let autocomplete = new google.maps.places.Autocomplete(nativeHomeInputBox, {
+          //   types: ['address']
+          // });
+          // autocomplete.addListener('place_changed', () => {
+          //   this.zone.run(() => {
+          //     let place: google.maps.places.PlaceResult = autocomplete.getPlace();
+          //     if (place.geometry === undefined || place.geometry === null) {
+          //       return;
+          //     }
+          //     marker.setPosition({
+          //       lat: place.geometry.location.lat(),
+          //       lng: place.geometry.location.lng()
+          //     });
+          //     marker.showInfoWindow();
+          //     this.maps.moveCamera({
+          //       lat: place.geometry.location.lat(),
+          //       lng: place.geometry.location.lng()
+          //     });
+          //     this.coordinate = place.geometry.location.lat() + ', ' + place.geometry.location.lng();
+          //   });
+          // });
+        } else marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => marker.showInfoWindow());
       })
       .catch(err => this.utility.showToast(err));
   }
 
-  private getLocationName(lat, long): Promise<string> {
+  private getLocationName(latLng: LatLng): Promise<string> {
     return new Promise((resolve, reject) => {
-      Geocoder.geocode({
-        position: {
-          lat: lat,
-          lng: long
-        }
-      })
-        .then(res => {
-          resolve(res[0].extra.lines[0]);
-        })
+      Geocoder.geocode({ position: latLng })
+        .then(res => resolve(res[0].extra.lines[0]))
         .catch(err => reject(err));
     });
   }
 
-  private adjustTextareaHeight() {
+  searchLocation() {
+    if (this.locationName.length > 0) {
+      let config = {
+        types: ['address'],
+        input: this.locationName,
+        componentRestrictions: { country: 'id' }
+      };
+      this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+          this.places = [];
+          predictions.forEach(prediction => {
+            this.places.push(prediction);
+          });
+        }
+      });
+    } else this.places = [];
+  }
+
+  selectPlace(place) {
+    this.places = [];
+    this.placesService.getDetails({ placeId: place.place_id }, details => {
+      this.zone.run(() => {
+        this.coordinate = details.geometry.location.lat() + ', ' + details.geometry.location.lng();
+        this.maps.moveCamera({
+          target: new LatLng(details.geometry.location.lat(), details.geometry.location.lng())
+        });
+      });
+    });
+  }
+
+  clearInput() {
+    this.savedLocation = this.locationName;
+    this.locationName = '';
+  }
+
+  adjustTextareaHeight() {
     const textArea = this.element.nativeElement.getElementsByTagName('textarea')[0];
     textArea.style.height = '16px';
     textArea.style.height = textArea.scrollHeight + 'px';
