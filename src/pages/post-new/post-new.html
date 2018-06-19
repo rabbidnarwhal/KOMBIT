@@ -17,28 +17,46 @@
   <ion-row>
     <ion-col>
       <div class="wrapper">
-        <div class="placeholder" (click)="getFilePath('foto')" [style.background-image]="imagePathSecure ? imagePathSecure : 'transparent'">
+        <div class="image-wrapper" *ngFor="let image of imagePathSecure">
+          <ion-icon class="remove-image" name="close" (click)="removeImage(image)"></ion-icon>
+          <div class="image" [style.background-image]="image.sanitize">
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+          </div>
+        </div>
+        <div class="image-wrapper add-image-btn" (click)="getFilePath('foto')">
+          <div class="image">
+            <ion-icon name="camera"></ion-icon>
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+          </div>
+        </div>
+        <!-- <div class="placeholder" (click)="getFilePath('foto')" [style.background-image]="imagePathSecure ? imagePathSecure : 'transparent'">
           <ion-icon *ngIf="!imagePathSecure" name="camera"></ion-icon>
           <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" [style.width]="imagePathSecure ? '80%' : '20%'" />
-        </div>
+        </div> -->
       </div>
-      <ion-label>Upload Photo</ion-label>
+      <ion-label>Upload Photo
+        <span class="required">*</span>
+      </ion-label>
     </ion-col>
   </ion-row>
   <div class="divider"></div>
   <div class="input-fields">
     <form id="newPostForm" #form="ngForm">
-      <ion-label>Product Name</ion-label>
+      <ion-label>Product Names
+        <span class="required">*</span>
+      </ion-label>
       <ion-input type="text" [(ngModel)]="data.ProductName" name="ProductName" required></ion-input>
-      <ion-label>Price</ion-label>
-      <ion-input type="tel" [(ngModel)]="price" name="Price" (ionChange)="commaSeparated()"></ion-input>
-      <ion-label>Solution</ion-label>
+      <ion-label>Solution
+        <span class="required">*</span>
+      </ion-label>
       <ion-item>
         <ion-select class="input-area" [(ngModel)]="data.CategoryId" name="Solution" interface="popover" required>
           <ion-option [value]="item.id" *ngFor="let item of listCategory">{{item.category}}</ion-option>
         </ion-select>
       </ion-item>
-      <ion-label>Description</ion-label>
+      <ion-label>Description
+        <span class="required">*</span>
+      </ion-label>
       <ion-textarea [(ngModel)]="data.Description" name="Description" required></ion-textarea>
     </form>
   </div>
@@ -48,8 +66,10 @@
       <div class="input-fields">
         <ion-label>Success story or client review:</ion-label>
         <ion-textarea [(ngModel)]="data.Credentials"></ion-textarea>
+        <ion-label class="margin-top-10">Price</ion-label>
+        <ion-input type="tel" [(ngModel)]="price" name="Price" (ionChange)="commaSeparated()"></ion-input>
       </div>
-      <div class="wrapper margin-top-20">
+      <div class="video-wrapper margin-top-20">
         <div class="placeholder" (click)="getFilePath('video')">
           <ion-icon *ngIf="!videoPathPublic" name="logo-youtube"></ion-icon>
           <video *ngIf="videoPathPublic" controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer" #videoShow>

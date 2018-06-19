@@ -21,7 +21,7 @@ export class DataProductServiceProvider {
   getListAllProducts(): Promise<Array<Product>> {
     const userId = this.auth.getPrincipal().id;
     return new Promise((resolve, reject) => {
-      this.api.get('/product/interaction/user/' + userId, { headers: this.header }).subscribe(sub => resolve(sub), error => reject(error));
+      this.api.get('/product/like/user/' + userId, { headers: this.header }).subscribe(sub => resolve(sub), error => reject(error));
     });
   }
 
@@ -35,6 +35,12 @@ export class DataProductServiceProvider {
   getProductDetail(id): Promise<ProductDetail> {
     return new Promise((resolve, reject) => {
       this.api.get('/product/' + id, { headers: this.header }).subscribe(sub => resolve(sub), error => reject(error));
+    });
+  }
+
+  getProductContentEdit(id): Promise<NewProduct> {
+    return new Promise((resolve, reject) => {
+      this.api.get('/product/' + id + '/edit', { headers: this.header }).subscribe(sub => resolve(sub), error => reject(error));
     });
   }
 
