@@ -24,6 +24,7 @@
               <ion-label no-padding no-margin class="inline-flex box-text">Product</ion-label>
               <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
               <ion-label no-margin no-padding class="inline-flex box-content">{{data.productName}}</ion-label>
+              <ion-icon *ngIf="post.userId === userId" name="create" (click)="editPost(post)"></ion-icon>
             </ion-label>
             <ion-label no-margin class="box-label">
               <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>

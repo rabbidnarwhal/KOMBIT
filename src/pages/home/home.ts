@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { NavController, IonicPage, Events } from 'ionic-angular';
+import { NavController, IonicPage, Events, NavParams } from 'ionic-angular';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { Product } from '../../models/products';
+import { Config } from '../../config/config';
+import { AuthServiceProvider } from '../../providers/auth-service';
 
 @IonicPage({
   name: 'home'
@@ -21,15 +23,21 @@ export class HomePage {
   public lockBtn: boolean = false;
   public selectedLikePost: any;
   public solutionType: string;
+  public currency: string;
+  public userId: number;
   constructor(
     private navCtrl: NavController,
+    private navParams: NavParams,
     private utility: UtilityServiceProvider,
     private dataProduct: DataProductServiceProvider,
-    private event: Events
+    private event: Events,
+    private auth: AuthServiceProvider
   ) {
+    this.currency = Config.CURRENCY;
     this.listPost = new Array<Product>();
     this.solutionType = 'public';
     this.filterItems();
+    this.userId = auth.getPrincipal().id;
   }
 
   ionViewWillEnter() {
@@ -39,7 +47,9 @@ export class HomePage {
       .getListAllProducts()
       .then(res => {
         this.isSearching = false;
-        this.listPost = res;
+        if (this.navParams.data.solution) this.listPost = res.filter(x => x.categoryName === this.navParams.data.solution.category);
+        else if (this.navParams.data.company) this.listPost = res.filter(x => x.companyName === this.navParams.data.company.companyName);
+        else this.listPost = res;
         this.filterItems();
       })
       .catch(err => {
@@ -114,5 +124,9 @@ export class HomePage {
         this.utility.showToast(err);
       }
     );
+  }
+
+  editPost(post) {
+    this.navCtrl.push('newPost', { id: post.id });
   }
 }
