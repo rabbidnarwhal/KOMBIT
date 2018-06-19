@@ -11,4 +11,5 @@ export class LoginResponse {
   email: string;
   companyId: number;
   holdingId: number;
+  image: string;
 }

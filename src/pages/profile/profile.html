@@ -15,74 +15,117 @@
 <ion-content padding>
   <ion-row>
     <div class="image-container">
-      <img src="assets/imgs/profile.png" />
+      <img [src]="picture" (click)="selectPicture()" />
     </div>
   </ion-row>
-  <ion-row>
-    <ion-col class="box-container">
-      <ion-label no-margin class="box-label">
-        <ion-label no-padding no-margin class="inline-flex box-text">Name</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-divider"> : </ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-content">{{data.name}}</ion-label>
-      </ion-label>
-      <ion-label no-margin class="box-label">
-        <ion-label no-padding no-margin class="inline-flex box-text">Address</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-content">{{data.address}}</ion-label>
-      </ion-label>
-      <ion-label no-margin class="box-label">
-        <ion-label no-padding no-margin class="inline-flex box-text">Occupation</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-content">{{data.occupation}}</ion-label>
-      </ion-label>
-      <ion-label no-margin class="box-label">
-        <ion-label no-padding no-margin class="inline-flex box-text">Handphone</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-content">{{data.handphone}}</ion-label>
-      </ion-label>
-      <ion-label no-margin class="box-label">
-        <ion-label no-padding no-margin class="inline-flex box-text">Job Title</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-content">{{data.jobTitle}}</ion-label>
-      </ion-label>
-    </ion-col>
-  </ion-row>
-  <ion-row>
-    <ion-col>
-      <ion-label no-margin class="box-label divider-title">
-        <ion-label no-padding no-margin class="inline-flex">Company Profile</ion-label>
-      </ion-label>
-    </ion-col>
-  </ion-row>
-  <ion-row>
+  <div *ngIf="!isEdit">
+    <ion-row>
+      <ion-col>
+        <ion-label no-margin class="box-label divider-title">
+          <ion-label no-padding no-margin class="inline-flex">Profile</ion-label>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="box-container">
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Name</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider"> : </ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.name}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Handphone</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.handphone}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Occupation</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.occupation}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Job Title</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.jobTitle}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Address</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.address}}</ion-label>
+        </ion-label>
+        <div class="static-map-container">
+          <img *ngIf="mapImage" [src]="mapImage" (click)="openMap('show')" />
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-label no-margin class="box-label divider-title">
+          <ion-label no-padding no-margin class="inline-flex">Company Profile</ion-label>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col class="box-container">
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Holding</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.holdingName}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.companyName}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Fixed call</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.companyFixedCall}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Address</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.companyAddress}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-content">
+            <a [href]="data.companyCoordinate">Show Address Map</a>
+          </ion-label>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row text-center>
+      <ion-col>
+        <button ion-button btn-kombit (click)="edit()">Edit</button>
+      </ion-col>
+    </ion-row>
+  </div>
 
-    <ion-col class="box-container">
-      <ion-label no-margin class="box-label">
-        <ion-label no-padding no-margin class="inline-flex box-text">Holding</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-content">{{data.holdingName}}</ion-label>
-      </ion-label>
-      <ion-label no-margin class="box-label">
-        <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-content">{{data.companyName}}</ion-label>
-      </ion-label>
-      <ion-label no-margin class="box-label">
-        <ion-label no-padding no-margin class="inline-flex box-text">Address</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-content">{{data.companyAddress}}</ion-label>
-      </ion-label>
-      <ion-label no-margin class="box-label">
-        <ion-label no-padding no-margin class="inline-flex box-text">Fixed call</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-        <ion-label no-margin no-padding class="inline-flex box-content">{{data.companyFixedCall}}</ion-label>
-      </ion-label>
-    </ion-col>
-
-  </ion-row>
-  <!-- <ion-row>
-    <ion-col>
-      <button ion-button small class="interactionBtn" (click)="edit()">Edit</button>
-    </ion-col>
-  </ion-row> -->
+  <div *ngIf="isEdit">
+    <div class="input-fields">
+      <form id="formProfile" #formProfile="ngForm">
+        <ion-label>Holding Company</ion-label>
+        <ion-item>
+          <ion-select class="input-area" [(ngModel)]="data.holdingId" name="Holding Company" interface="popover" (ionChange)="changeCompany()" required>
+            <ion-option [value]="item.id" *ngFor="let item of listHoldingCompany">{{item.holdingName}}</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-label>Company</ion-label>
+        <ion-item>
+          <ion-select class="input-area" [(ngModel)]="data.companyId" name="Company" interface="popover" [disabled]="!data.holdingId" required>
+            <ion-option [value]="item.id" *ngFor="let item of listCompany">{{item.companyName}}</ion-option>
+          </ion-select>
+        </ion-item>
+        <ion-label>Occupation</ion-label>
+        <ion-input type="text" [(ngModel)]="data.occupation" name="Occupation"></ion-input>
+        <ion-label>Job Title</ion-label>
+        <ion-input type="text" [(ngModel)]="data.jobTitle" name="Job Title"></ion-input>
+        <ion-label>Address</ion-label>
+        <ion-textarea type="text" [(ngModel)]="data.address" rows="3" name="Address" required></ion-textarea>
+        <ion-label>Position</ion-label>
+        <ion-input type="text" [(ngModel)]="data.addressKoordinat" name="Position" (click)="openMap('choose')" readonly></ion-input>
+        <button ion-button btn-kombit type="button" (click)="save()">Save</button>
+      </form>
+    </div>
+  </div>
 </ion-content>

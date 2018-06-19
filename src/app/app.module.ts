@@ -27,14 +27,14 @@ import { Keyboard } from '@ionic-native/keyboard';
   bootstrap: [IonicApp],
   entryComponents: [MyApp],
   providers: [
-    Keyboard,
-    StatusBar,
-    SplashScreen,
-    { provide: ErrorHandler, useClass: IonicErrorHandler },
     ApiServiceProvider,
     AuthServiceProvider,
+    FormValidatorProvider,
+    Keyboard,
+    SplashScreen,
+    StatusBar,
     UtilityServiceProvider,
-    FormValidatorProvider
+    { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
 export class AppModule {}
