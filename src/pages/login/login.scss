@@ -23,19 +23,23 @@ page-login {
       right: 0px;
     }
   }
+  .logo-container {
+    height: 264px;
+    position: relative;
+    top: calc(100vh - 690px);
+    left: -8px;
+  }
   form {
     height: 100%;
   }
-
   ion-grid {
-    justify-content: center;
+    // justify-content: center;
     height: 100%;
     ion-row {
       padding: 0 24px;
-      margin-top: calc(100vh - 424px + 42px);
+      margin-top: calc(100vh - 564px);
     }
   }
-
   ion-input {
     background-color: #fdfdfd;
     border: 1px solid #fdfdfd;
@@ -50,7 +54,6 @@ page-login {
       font-size: 16px;
     }
   }
-
   ion-footer {
     a {
       color: map-get($kombit-colors, 'btn');
