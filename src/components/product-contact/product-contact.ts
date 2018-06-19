@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { ProductDetail } from '../../models/products';
-import { Events } from 'ionic-angular';
+import { Events, NavController } from 'ionic-angular';
 
 /**
  * Generated class for the ProductContactComponent component.
@@ -16,7 +16,8 @@ import { Events } from 'ionic-angular';
 export class ProductContactComponent {
   @Input() data: ProductDetail;
   @Input() page: string;
-  constructor(private dataProduct: DataProductServiceProvider, private event: Events) {}
+  @Input() addressMap: string;
+  constructor(private navCtrl: NavController, private dataProduct: DataProductServiceProvider, private event: Events) {}
 
   openWhatsapp() {
     const phone = this.data.contact.handphone.replace(/ |-|\+/g, '');
@@ -29,5 +30,9 @@ export class ProductContactComponent {
       })
       .catch(err => {});
     window.open('https://api.whatsapp.com/send?phone=' + phone);
+  }
+
+  openMap() {
+    this.navCtrl.push('map-popover', { coordinate: this.data.contact.addressKoordinat });
   }
 }

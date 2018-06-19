@@ -2,6 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError } from 'rxjs/operators';
+import { Config } from '../config/config';
 
 /*
   Generated class for the ApiServiceProvider provider.
@@ -14,7 +15,7 @@ export class ApiServiceProvider {
   private url: string;
 
   constructor(private http: HttpClient) {
-    this.url = 'http://kombit.org/api';
+    this.url = Config.API_URL;
   }
 
   getUrl() {
