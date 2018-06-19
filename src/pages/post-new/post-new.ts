@@ -38,6 +38,8 @@ export class PostNewPage {
   public data: NewProduct;
   private postId: number;
   public price: string = '';
+  public btnText: string;
+  public pageTitle: string;
   @ViewChild('form') form: NgForm;
   constructor(
     private actionSheetCtrl: ActionSheetController,
@@ -55,10 +57,16 @@ export class PostNewPage {
   ) {
     this.listCategory = new Array<Category>();
     this.data = new NewProduct(this.auth.getPrincipal());
+    this.pageTitle = 'Create New Post';
+    this.btnText = 'Publish';
   }
 
   ionViewDidLoad() {
-    if (this.navParams.data.id) this.loadContent();
+    if (this.navParams.data.id) {
+      this.pageTitle = 'Edit Post';
+      this.btnText = 'Save';
+      this.loadContent();
+    }
     this.loadCategory();
   }
 
