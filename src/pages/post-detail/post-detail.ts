@@ -41,22 +41,25 @@ export class PostDetailPage {
       .getProductDetail(this.navParams.get('params').id)
       .then((res: ProductDetail) => {
         this.data = res;
-        // this.data.interaction.comment = this.data.interaction.comment.map(item => {
-        //   const obj = item;
-        //   const time = new Date(item.commentDate);
-        //   time.setHours(time.getHours() + -time.getTimezoneOffset() / 60);
-        //   obj.commentDate = time.toUTCString();
-        //   return obj;
-        // });
+        this.data.interaction.comment = this.data.interaction.comment.map(item => {
+          const obj = item;
+          const time = new Date(item.commentDate);
+          time.setUTCHours(time.getUTCHours() + -time.getTimezoneOffset() / 60);
+          obj.commentDate = time.toLocaleString();
+          return obj;
+        });
         this.createMap();
         this.isSearching = false;
         return this.dataProduct.addViewProduct(this.data.id);
       })
       .then(() => {
-        if (this.parentPage === 'home') this.event.publish('homeInteraction', { id: this.navParams.get('params').id, type: 'view' });
-        else this.event.publish('postInteraction', { id: this.navParams.get('params').id, type: 'view' });
+        if (this.parentPage === 'home') this.event.publish('homeInteraction', { id: this.data.id, type: 'view' });
+        else this.event.publish('postInteraction', { id: this.data.id, type: 'view' });
       })
-      .catch(err => this.utility.showToast(err));
+      .catch(err => {
+        console.error('e', err);
+        this.utility.showToast(err);
+      });
   }
 
   createMap() {

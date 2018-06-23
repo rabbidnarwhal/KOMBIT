@@ -32,6 +32,7 @@ export class ProductCommentComponent {
           comment.commentDate = new Date().toUTCString();
           this.data.interaction.comment.push(comment);
           this.data.interaction.totalComment++;
+          this.commentContent = '';
           if (this.page === 'home') this.event.publish('homeInteraction', { id: this.data.id, type: 'comment' });
           else this.event.publish('postInteraction', { id: this.data.id, type: 'comment' });
         })

@@ -20,11 +20,8 @@ export class ProductDetailComponent {
   @Input() page: string;
   @Output() selectedPage = new EventEmitter<string>();
   @ViewChild('slider') slider: Slides;
-  public currency: string;
   public lockBtn: boolean = false;
-  constructor(private dataProduct: DataProductServiceProvider, private utility: UtilityServiceProvider, private event: Events) {
-    this.currency = Config.CURRENCY;
-  }
+  constructor(private dataProduct: DataProductServiceProvider, private utility: UtilityServiceProvider, private event: Events) {}
 
   likeBtnClick() {
     this.data.interaction.isLike = !this.data.interaction.isLike;

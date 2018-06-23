@@ -32,11 +32,12 @@ export class PostNewPage {
   private videoPath: string;
   private imagePath: string;
   private isVideoUpload: boolean = false;
+  private postId: number;
+  private currency: string;
   public imagePathSecure: any = [];
   public videoPathPublic: any;
   public listCategory: Array<Category>;
   public data: NewProduct;
-  private postId: number;
   public price: string = '';
   public btnText: string;
   public pageTitle: string;
@@ -59,6 +60,7 @@ export class PostNewPage {
     this.data = new NewProduct(this.auth.getPrincipal());
     this.pageTitle = 'Create New Post';
     this.btnText = 'Publish';
+    this.currency = Config.CURRENCY;
   }
 
   ionViewDidLoad() {
@@ -79,7 +81,7 @@ export class PostNewPage {
       .then(res => {
         loading.dismiss();
         this.data.init(res);
-
+        this.currency = this.data.Currency ? this.data.Currency : this.currency;
         this.price = this.data.Price ? '' + this.data.Price : '';
         this.commaSeparated();
 
@@ -110,8 +112,9 @@ export class PostNewPage {
       if (this.imagePathSecure.length > 0) {
         const loading = this.utility.showLoading();
         const fileUpload = [];
-        this.data.Price = +this.price.replace(Config.CURRENCY + ' ', '').replace(/,/g, '');
+        this.data.Price = +this.price.replace(this.currency + ' ', '').replace(/,/g, '');
         this.data.IsIncludePrice = this.data.Price ? true : false;
+        this.data.Currency = this.currency;
         if (this.videoPath && !this.isVideoUpload) fileUpload.push(this.uploadMediaFile('video', this.videoPath));
         if (this.imagePathSecure.length) {
           this.imagePathSecure = this.imagePathSecure.map((element, index) => {
@@ -325,9 +328,9 @@ export class PostNewPage {
 
   public commaSeparated() {
     this.price = String(this.price)
-      .replace(Config.CURRENCY + ' ', '')
+      .replace(this.currency + ' ', '')
       .replace(/,/g, '')
       .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-    this.price = this.price ? Config.CURRENCY + ' ' + this.price : '';
+    this.price = this.price ? this.currency + ' ' + this.price : '';
   }
 }
