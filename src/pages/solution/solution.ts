@@ -46,7 +46,6 @@ export class SolutionPage {
   }
 
   solutionClicked(solution) {
-    console.log(solution);
     this.navCtrl.push('home', { solution: solution });
   }
 }

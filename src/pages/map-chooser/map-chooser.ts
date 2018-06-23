@@ -60,7 +60,6 @@ export class MapChooserPage {
 
   ionViewDidLoad() {
     if (typeof google == 'undefined' || typeof google.maps == 'undefined') {
-      // console.log('Google maps JavaScript needs to be loaded.');
       window['mapInit'] = () => {
         this.initMap();
       };
@@ -85,19 +84,25 @@ export class MapChooserPage {
         this.zoom = 14;
         resolve();
       } else {
-        this.getPosition()
-          .then(pos => {
-            this.zoom = 16;
-            if (this.navParams.data.coordinate && this.mode === 'direction') {
-              this.position = new LatLng(+this.navParams.data.coordinate.split(', ')[0], +this.navParams.data.coordinate.split(', ')[1]);
-              this.currentPosition = pos.latLng;
-            } else this.position = pos.latLng;
-            resolve();
-          })
-          .catch(err => {
-            this.utility.showToast('Unable to get location');
-            resolve();
-          });
+        if (this.navParams.data.coordinate && this.mode === 'choose') {
+          this.position = new LatLng(+this.navParams.data.coordinate.split(', ')[0], +this.navParams.data.coordinate.split(', ')[1]);
+          this.zoom = 16;
+          resolve();
+        } else {
+          this.getPosition()
+            .then(pos => {
+              this.zoom = 16;
+              if (this.navParams.data.coordinate && this.mode === 'direction') {
+                this.position = new LatLng(+this.navParams.data.coordinate.split(', ')[0], +this.navParams.data.coordinate.split(', ')[1]);
+                this.currentPosition = pos.latLng;
+              } else this.position = pos.latLng;
+              resolve();
+            })
+            .catch(err => {
+              this.utility.showToast('Unable to get location');
+              resolve();
+            });
+        }
       }
     }).then(() => {
       this.loadMap();

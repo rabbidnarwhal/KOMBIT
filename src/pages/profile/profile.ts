@@ -71,7 +71,6 @@ export class ProfilePage {
 
   createMap() {
     const position = this.data.addressKoordinat ? this.data.addressKoordinat.split(', ') : [];
-    console.log(position);
     if (position.length)
       this.mapImage =
         'https://maps.googleapis.com/maps/api/staticmap?center=' +
@@ -84,7 +83,6 @@ export class ProfilePage {
         position[1] +
         '&zoom=12&size=400x200&key=' +
         Config.GOOGLE_MAP_API_KEY;
-    console.log(this.mapImage);
   }
 
   edit() {
@@ -161,14 +159,12 @@ export class ProfilePage {
     loading.present();
     return new Promise((resolve, reject) => {
       if (!window['cordova']) {
-        console.log('changePic', image);
         const xhrBlob = new XMLHttpRequest();
         xhrBlob.open('GET', image, true);
         xhrBlob.responseType = 'blob';
         xhrBlob.onload = e => {
           if (xhrBlob['status'] !== 200) {
             this.utility.showToast(`Your browser doesn't support blob API`);
-            console.error(e, xhrBlob);
             reject(xhrBlob);
           } else {
             const blob = xhrBlob['response'];
@@ -178,7 +174,6 @@ export class ProfilePage {
             xhrApi.onreadystatechange = () => {
               if (xhrApi.readyState === 4) {
                 if (xhrApi.status === 200) {
-                  console.log(JSON.parse(xhrApi.response));
                   loading.dismiss();
                   resolve(JSON.parse(xhrApi.response));
                 } else {

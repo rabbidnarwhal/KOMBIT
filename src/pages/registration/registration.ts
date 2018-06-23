@@ -52,7 +52,6 @@ export class RegistrationPage {
   }
 
   register() {
-    console.log(this.form);
     if (this.form.valid) {
       const loading = this.utility.showLoading();
       loading.present();
