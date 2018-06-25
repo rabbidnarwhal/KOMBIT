@@ -7,6 +7,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { UtilityServiceProvider } from '../providers/utility-service';
 import { AuthServiceProvider } from '../providers/auth-service';
 import { MenuController } from 'ionic-angular/components/app/menu-controller';
+import { PushNotificationProvider } from '../providers/push-notification';
 @Component({
   templateUrl: 'app.html'
 })
@@ -24,7 +25,8 @@ export class MyApp {
     private auth: AuthServiceProvider,
     private menu: MenuController,
     private keyboard: Keyboard,
-    private events: Events
+    private events: Events,
+    private pushNotification: PushNotificationProvider
   ) {
     this.initializeApp();
     this.picture = 'assets/imgs/profile.png';
@@ -41,13 +43,18 @@ export class MyApp {
   }
 
   private initializeApp() {
-    this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
-      this.menu.enable(false, 'sideMenu');
-      this.menu.swipeEnable(false, 'sideMenu');
-      this.keyboard.disableScroll(true);
-      this.authCheck();
-    });
+    this.platform
+      .ready()
+      .then(() => {
+        this.statusBar.styleDefault();
+        this.menu.enable(false, 'sideMenu');
+        this.menu.swipeEnable(false, 'sideMenu');
+        this.keyboard.disableScroll(true);
+        return this.pushNotification.init();
+      })
+      .then(() => {
+        this.authCheck();
+      });
   }
 
   openPage(page) {

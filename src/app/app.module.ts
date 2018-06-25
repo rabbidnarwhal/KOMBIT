@@ -1,17 +1,18 @@
+import { HttpClientModule } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { Keyboard } from '@ionic-native/keyboard';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-
+import { Push } from '@ionic-native/push';
 import { MyApp } from './app.component';
 import { ApiServiceProvider } from '../providers/api-service';
 import { AuthServiceProvider } from '../providers/auth-service';
 import { UtilityServiceProvider } from '../providers/utility-service';
 import { FormValidatorProvider } from '../providers/form-validator';
-import { HttpClientModule } from '@angular/common/http';
-import { Keyboard } from '@ionic-native/keyboard';
+import { PushNotificationProvider } from '../providers/push-notification';
 
 @NgModule({
   declarations: [MyApp],
@@ -34,7 +35,9 @@ import { Keyboard } from '@ionic-native/keyboard';
     SplashScreen,
     StatusBar,
     UtilityServiceProvider,
-    { provide: ErrorHandler, useClass: IonicErrorHandler }
+    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    PushNotificationProvider,
+    Push
   ]
 })
 export class AppModule {}

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1054728202436",
+    "firebase_url": "https://kombit-1529135384638.firebaseio.com",
+    "project_id": "kombit-1529135384638",
+    "storage_bucket": "kombit-1529135384638.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1054728202436:android:1a787b5b030be18e",
+        "android_client_info": {
+          "package_name": "org.kombits"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1054728202436-kuf24sp93pr83c9bvb8te4o80semtkor.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnxER78rb8MmFDOxokNiLu1ZEs_ZMSmBw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

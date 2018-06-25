@@ -4,6 +4,7 @@ import { UtilityServiceProvider } from './utility-service';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { LoginResponse, LoginRequest } from '../models/login';
 import { Config } from '../config/config';
+import { PushNotificationProvider } from './push-notification';
 
 /*
   Generated class for the AuthServiceProvider provider.
@@ -17,7 +18,7 @@ export class AuthServiceProvider {
   private isLoggin: boolean;
   private principal: LoginResponse;
 
-  constructor(private api: ApiServiceProvider, private utility: UtilityServiceProvider) {
+  constructor(private api: ApiServiceProvider, private utility: UtilityServiceProvider, private push: PushNotificationProvider) {
     this.isLoggin = false;
     this.authCheck();
   }
@@ -79,7 +80,8 @@ export class AuthServiceProvider {
     const date = new Date().getTime().toString();
     this.isLoggin = true;
     this.setPrincipal(data);
-    localStorage.setItem('token', data.idNumber + ':' + data.id) + ':' + date;
+    this.push.subscribeToTopic('combits');
+    localStorage.setItem('token', data.idNumber + ':' + data.id + ':' + date);
     return new Promise(resolve => {
       resolve(true);
     });
