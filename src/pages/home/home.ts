@@ -23,7 +23,6 @@ export class HomePage {
   public lockBtn: boolean = false;
   public selectedLikePost: any;
   public solutionType: string;
-  public currency: string;
   public userId: number;
   constructor(
     private navCtrl: NavController,
@@ -33,7 +32,6 @@ export class HomePage {
     private event: Events,
     private auth: AuthServiceProvider
   ) {
-    this.currency = Config.CURRENCY;
     this.listPost = new Array<Product>();
     this.solutionType = 'public';
     this.filterItems();

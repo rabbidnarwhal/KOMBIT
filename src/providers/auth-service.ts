@@ -100,7 +100,6 @@ export class AuthServiceProvider {
   loadConfig() {
     this.api.get('/config').subscribe(
       sub => {
-        console.log(sub);
         sub.forEach(element => {
           if (element.paramCode === 'DEFAULT_CURRENCY') Config.setCurrency(element.paramValue);
         });

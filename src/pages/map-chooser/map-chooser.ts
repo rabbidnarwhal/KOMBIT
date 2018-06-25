@@ -60,7 +60,6 @@ export class MapChooserPage {
 
   ionViewDidLoad() {
     if (typeof google == 'undefined' || typeof google.maps == 'undefined') {
-      // console.log('Google maps JavaScript needs to be loaded.');
       window['mapInit'] = () => {
         this.initMap();
       };
@@ -80,9 +79,9 @@ export class MapChooserPage {
 
   private initMap() {
     new Promise(resolve => {
-      if (this.navParams.data.coordinate && this.mode === 'view') {
+      if (this.navParams.data.coordinate && this.mode === 'show') {
         this.position = new LatLng(+this.navParams.data.coordinate.split(', ')[0], +this.navParams.data.coordinate.split(', ')[1]);
-        this.zoom = 14;
+        this.zoom = 16;
         resolve();
       } else {
         this.getPosition()

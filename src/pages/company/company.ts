@@ -50,7 +50,6 @@ export class CompanyPage {
   }
 
   companyClicked(company) {
-    console.log(company);
     this.navCtrl.push('home', { company: company });
   }
 }

@@ -24,7 +24,7 @@
               <ion-label no-padding no-margin class="inline-flex box-text">Product</ion-label>
               <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
               <ion-label no-margin no-padding class="inline-flex box-content">{{data.productName}}</ion-label>
-              <ion-icon *ngIf="post.userId === userId" name="create" (click)="editPost(post)"></ion-icon>
+              <ion-icon *ngIf="data.userId === userId" name="create" (click)="editPost(data)"></ion-icon>
             </ion-label>
             <ion-label no-margin class="box-label">
               <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>
@@ -44,7 +44,7 @@
             <ion-label no-margin class="box-label" *ngIf="data.isIncludePrice">
               <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
               <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-content">{{data.price | number}}</ion-label>
+              <ion-label no-margin no-padding class="inline-flex box-content">{{data.currency}} {{data.price | number}}</ion-label>
             </ion-label>
             <ion-row text-center class="box-icon">
               <ion-col no-padding>

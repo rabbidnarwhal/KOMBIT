@@ -19,7 +19,7 @@
     <ion-label no-margin class="box-label" *ngIf="data.isIncludePrice">
       <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
       <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-      <ion-label no-margin no-padding class="inline-flex box-content">{{currency}} {{data.price | number}}</ion-label>
+      <ion-label no-margin no-padding class="inline-flex box-content">{{data.currency}} {{data.price | number}}</ion-label>
     </ion-label>
     <ion-row>
       <ion-col no-padding>
@@ -49,9 +49,6 @@
       </ion-slide>
     </ion-slides>
   </div>
-  <!-- <div class="margin-top-10" *ngIf="data.fotoPath">
-    <img [src]="data.fotoPath" [alt]="data.fotoName" />
-  </div> -->
   <div>
     <h6>Description:</h6>
     <p>{{data.description}}</p>

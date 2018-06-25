@@ -9,6 +9,7 @@ export class Product {
   totalComment: number;
   totalView: number;
   totalChat: number;
+  currency: string;
   price: number;
   isIncludePrice: boolean;
   isLike: boolean;
@@ -24,6 +25,7 @@ export class NewProduct {
   Description: string;
   HoldingId: number;
   IsIncludePrice: boolean;
+  Currency: string;
   Price: number;
   ProductName: string;
   UserId: number;
@@ -44,6 +46,7 @@ export class NewProduct {
     this.Description = data.description;
     this.HoldingId = data.holdingId;
     this.IsIncludePrice = data.isIncludePrice;
+    this.Currency = data.currency;
     this.Price = data.price;
     this.ProductName = data.productName;
     this.UserId = data.userId;
@@ -66,12 +69,18 @@ export class ProductDetail {
   categoryName: string;
   description: string;
   isIncludePrice: boolean;
+  currency: string;
   price: number;
   credentials: string;
   videoPath: string;
   foto: Array<Foto>;
   contact: Contact;
   interaction: Interaction;
+
+  constructor() {
+    this.interaction = new Interaction();
+    this.contact = new Contact();
+  }
 }
 
 export class Contact {
@@ -94,6 +103,13 @@ export class Interaction {
   totalChat: number;
   isLike: boolean;
   comment: Array<Comment>;
+
+  constructor() {
+    this.totalChat = 0;
+    this.totalComment = 0;
+    this.totalLike = 0;
+    this.totalView = 0;
+  }
 }
 
 export class Comment {
