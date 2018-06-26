@@ -12,7 +12,7 @@ import { MenuController } from 'ionic-angular/components/app/menu-controller';
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
-  public rootPage: string = '';
+  public rootPage: string = 'home';
   public pages: Array<{ title: string; component: string; icon: string; image: string }>;
   public userName: string = '';
   public picture: string;
