@@ -79,8 +79,8 @@
         "GEOLOCATION_USAGE_DESCRIPTION": "To locate myself"
       },
       "cordova-plugin-googlemaps": {
-        "API_KEY_FOR_ANDROID": "AIzaSyAzQw7rByVXrl7iLt6cxb8qCGwEI0EJOxw",
-        "API_KEY_FOR_IOS": "AIzaSyAzQw7rByVXrl7iLt6cxb8qCGwEI0EJOxw",
+        "API_KEY_FOR_ANDROID": "AIzaSyCNX9Xn6WmecGQAKS9sclNlkqmtwZOZzk8",
+        "API_KEY_FOR_IOS": "AIzaSyCNX9Xn6WmecGQAKS9sclNlkqmtwZOZzk8",
         "ANDROID_SUPPORT_V4_VERSION": "25.4.0",
         "PLAY_SERVICES_VERSION": "15.0.1"
       },
@@ -88,7 +88,7 @@
         "ANDROID_SUPPORT_VERSION": "25.+"
       },
       "phonegap-plugin-push": {
-        "SENDER_ID": "1054728202436"
+        "SENDER_ID": "508994591424"
       }
     },
     "platforms": [
