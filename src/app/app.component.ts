@@ -13,7 +13,7 @@ import { PushNotificationProvider } from '../providers/push-notification';
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
-  public rootPage: string = 'home';
+  public rootPage: string = 'login';
   public pages: Array<{ title: string; component: string; icon: string; image: string }>;
   public userName: string = '';
   public picture: string;
@@ -31,7 +31,7 @@ export class MyApp {
     this.initializeApp();
     this.picture = 'assets/imgs/profile.png';
     this.pages = [
-      { title: 'Notification', component: '', icon: 'notifications', image: '' },
+      { title: 'Notification', component: 'notification', icon: 'notifications', image: '' },
       { title: 'Create new post', component: 'newPost', icon: 'paper-plane', image: '' },
       { title: 'My post', component: 'myPost', icon: 'share', image: '' },
       { title: 'Company', component: 'company', icon: '', image: 'assets/imgs/company.png' },
@@ -43,18 +43,14 @@ export class MyApp {
   }
 
   private initializeApp() {
-    this.platform
-      .ready()
-      .then(() => {
-        this.statusBar.styleDefault();
-        this.menu.enable(false, 'sideMenu');
-        this.menu.swipeEnable(false, 'sideMenu');
-        this.keyboard.disableScroll(true);
-        return this.pushNotification.init();
-      })
-      .then(() => {
-        this.authCheck();
-      });
+    this.platform.ready().then(() => {
+      this.statusBar.styleDefault();
+      this.menu.enable(false, 'sideMenu');
+      this.menu.swipeEnable(false, 'sideMenu');
+      this.keyboard.disableScroll(true);
+      this.pushNotification.init();
+      this.authCheck();
+    });
   }
 
   openPage(page) {

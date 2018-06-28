@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
 import { ApiServiceProvider } from './api-service';
-import { UtilityServiceProvider } from './utility-service';
 import { BehaviorSubject } from 'rxjs/Rx';
-import { LoginResponse, LoginRequest } from '../models/login';
 import { Config } from '../config/config';
+import { Injectable } from '@angular/core';
+import { LoginResponse, LoginRequest } from '../models/login';
 import { PushNotificationProvider } from './push-notification';
+import { UtilityServiceProvider } from './utility-service';
 
 /*
   Generated class for the AuthServiceProvider provider.
@@ -56,6 +56,8 @@ export class AuthServiceProvider {
     localStorage.removeItem('token');
     setTimeout(() => {
       loading.dismiss();
+      this.push.topicNotifier.next({ sub: false, topic: 'combits', id: this.principal.id });
+      this.setPrincipal(null);
       this.authNotifier.next(false);
     }, 1500);
   }
@@ -80,7 +82,7 @@ export class AuthServiceProvider {
     const date = new Date().getTime().toString();
     this.isLoggin = true;
     this.setPrincipal(data);
-    this.push.subscribeToTopic('combits');
+    this.push.topicNotifier.next({ sub: true, topic: 'combits', id: data.id });
     localStorage.setItem('token', data.idNumber + ':' + data.id + ':' + date);
     return new Promise(resolve => {
       resolve(true);
