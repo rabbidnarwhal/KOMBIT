@@ -19,6 +19,6 @@
         <img *ngIf="company.image" [src]="company.image" alt="" />
       </div>
     </ion-col>
-    <div text-center *ngIf="!filteredItems.length && !isSearching">Company not found</div>
+    <div text-center class="not-found-text" *ngIf="!filteredItems.length && !isSearching">Company not found</div>
   </ion-row>
 </ion-content>

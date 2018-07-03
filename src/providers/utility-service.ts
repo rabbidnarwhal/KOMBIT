@@ -93,15 +93,12 @@ export class UtilityServiceProvider {
     return this.modalCtrl.create(component, { params });
   }
 
-  showPopover(page, params: any = '') {
-    return this.popoverCtrl.create(
-      page,
-      { params },
-      {
-        cssClass: 'popover-width',
-        showBackdrop: true,
-        enableBackdropDismiss: true
-      }
-    );
+  showPopover(page, params: any = '', isFullScreen = false) {
+    const style = {
+      cssClass: isFullScreen ? 'popover-width-full' : 'popover-width',
+      showBackdrop: true,
+      enableBackdropDismiss: true
+    };
+    return this.popoverCtrl.create(page, { params }, style);
   }
 }

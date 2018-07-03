@@ -24,7 +24,7 @@
       <ion-list text-center>
         <button ion-item no-lines *ngFor="let solution of filteredItems" (click)="solutionClicked(solution)">{{solution.category}}</button>
       </ion-list>
-      <div text-center *ngIf="!filteredItems.length && !isSearching">Solution not found</div>
+      <div text-center class="not-found-text" *ngIf="!filteredItems.length && !isSearching">Solution not found</div>
     </ion-col>
   </ion-row>
 </ion-content>

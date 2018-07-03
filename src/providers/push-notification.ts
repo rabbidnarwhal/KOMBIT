@@ -19,7 +19,7 @@ export class PushNotificationProvider {
 
   init() {
     const options: PushOptions = {
-      android: { senderID: '1054728202436' }
+      android: { senderID: '508994591424' }
     };
 
     this.pushObject = this.push.init(options);

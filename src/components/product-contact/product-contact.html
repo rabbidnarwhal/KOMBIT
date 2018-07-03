@@ -1,7 +1,7 @@
 <!-- Generated template for the ProductContactComponent component -->
 <ion-row>
   <div>
-    <div class="margin-top-10">
+    <div class="margin-top-10 image-container">
       <img *ngIf="data.contact.image" [src]="data.contact.image" [alt]="data.contact.name" />
       <img *ngIf="!data.contact.image" src="assets/imgs/profile.png" alt="placeholder" />
     </div>
@@ -30,9 +30,6 @@
       <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
       <ion-label no-margin no-padding class="inline-flex box-content">{{data.contact.address}}</ion-label>
     </ion-label>
-    <div class="static-map-container">
-      <img *ngIf="data.contact.addressMap" [src]="data.contact.addressMap" (click)="openMap()" />
-    </div>
     <ion-row>
       <ion-col>
         <button ion-button small class="interactionBtn" (click)="openWhatsapp()">
@@ -40,5 +37,8 @@
         </button>
       </ion-col>
     </ion-row>
+    <div class="static-map-container">
+      <img *ngIf="data.contact.addressMap" [src]="data.contact.addressMap" (click)="openMap()" />
+    </div>
   </div>
 </ion-row>
