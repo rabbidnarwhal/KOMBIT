@@ -40,6 +40,7 @@
         <ion-input type="email" [(ngModel)]="registration.Email" name="Corporate Email" placeholder="Corporate Email" pattern="(?!(^[.-].*|[^@]*[.-]@|.*\\.{2,}.*)|^.{254}.)([a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~.-]+@)(?!-.*|.*-\\.)([a-zA-Z0-9-]{1,63}\\.)+[a-zA-Z]{2,15}" required></ion-input>
         <ion-input type="tel" [(ngModel)]="registration.Handphone" name="Handphone" placeholder="Handphone" pattern="^0|^62.*" required></ion-input>
         <ion-input type="text" [(ngModel)]="registration.Address" name="Address" placeholder="Address" required></ion-input>
+        <ion-input type="text" [(ngModel)]="city" name="City" placeholder="City, Province" (click)="selectCity()" readonly></ion-input>
         <ion-input type="text" [(ngModel)]="registration.AddressKoordinat" name="Position" placeholder="Position" (click)="openMap()" readonly></ion-input>
         <ion-input type="text" [(ngModel)]="registration.Username" name="Username" placeholder="Username" required></ion-input>
         <ion-input type="password" [(ngModel)]="registration.Password" name="Password" pattern="(?=.*[0-9A-z@#$%^&+=\\s]).{1,}" placeholder="Password" required></ion-input>

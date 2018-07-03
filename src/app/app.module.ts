@@ -13,6 +13,8 @@ import { AuthServiceProvider } from '../providers/auth-service';
 import { UtilityServiceProvider } from '../providers/utility-service';
 import { FormValidatorProvider } from '../providers/form-validator';
 import { PushNotificationProvider } from '../providers/push-notification';
+import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
+import { TimeAgoPipe } from 'time-ago-pipe';
 
 @NgModule({
   declarations: [MyApp],
@@ -37,6 +39,7 @@ import { PushNotificationProvider } from '../providers/push-notification';
     UtilityServiceProvider,
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     PushNotificationProvider,
+    DataProvinceServiceProvider,
     Push
   ]
 })

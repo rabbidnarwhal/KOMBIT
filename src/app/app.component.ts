@@ -8,6 +8,7 @@ import { UtilityServiceProvider } from '../providers/utility-service';
 import { AuthServiceProvider } from '../providers/auth-service';
 import { MenuController } from 'ionic-angular/components/app/menu-controller';
 import { PushNotificationProvider } from '../providers/push-notification';
+import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
 @Component({
   templateUrl: 'app.html'
 })
@@ -26,7 +27,8 @@ export class MyApp {
     private menu: MenuController,
     private keyboard: Keyboard,
     private events: Events,
-    private pushNotification: PushNotificationProvider
+    private pushNotification: PushNotificationProvider,
+    private dataProvince: DataProvinceServiceProvider
   ) {
     this.initializeApp();
     this.picture = 'assets/imgs/profile.png';
@@ -49,6 +51,7 @@ export class MyApp {
       this.menu.swipeEnable(false, 'sideMenu');
       this.keyboard.disableScroll(true);
       this.pushNotification.init();
+      this.loadProvinceData();
       this.authCheck();
     });
   }
@@ -97,5 +100,14 @@ export class MyApp {
       this.picture = sub;
       this.events.unsubscribe('picture-changed');
     });
+  }
+
+  private loadProvinceData() {
+    Promise.all([this.dataProvince.getListProvince(), this.dataProvince.getListCity()])
+      .then(res => {
+        this.dataProvince.setProvince(res[0]);
+        this.dataProvince.setCity(res[1]);
+      })
+      .catch(err => console.error(err));
   }
 }
