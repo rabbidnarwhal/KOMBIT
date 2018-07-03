@@ -1,0 +1,22 @@
+page-notification {
+  ion-item {
+    border-bottom: 1px solid map-get($kombit-colors, 'bg-high') !important;
+    border-radius: 20px;
+    .item-inner {
+      border-bottom: none !important;
+      label.title {
+        font-weight: 500;
+        font-size: 16px;
+        padding-right: 8px;
+      }
+      label.time {
+        font-size: 12px;
+        color: #757575;
+        float: right;
+      }
+      p {
+        font-size: 12px;
+      }
+    }
+  }
+}

@@ -8,6 +8,7 @@ import { Config } from '../../config/config';
 import { DomSanitizer } from '@angular/platform-browser';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
+import { DataProvinceServiceProvider } from '../../providers/dataProvince-service';
 
 /**
  * Generated class for the ProfilePage page.
@@ -32,6 +33,7 @@ export class ProfilePage {
   public listHoldingCompany: any = [];
   public mapImage: string;
   public picture: any;
+  public city: string;
   @ViewChild('formProfile') form: NgForm;
   @ViewChild(Navbar) navBar: Navbar;
   constructor(
@@ -43,7 +45,7 @@ export class ProfilePage {
     private actionSheetCtrl: ActionSheetController,
     private camera: Camera,
     private transfer: FileTransfer,
-    private sanitize: DomSanitizer
+    private dataProvince: DataProvinceServiceProvider
   ) {
     this.data = new User();
     this.picture = 'assets/imgs/profile.png';
@@ -68,6 +70,8 @@ export class ProfilePage {
       else this.isEdit = false;
     };
   }
+
+  ionViewWillUnload() {}
 
   createMap() {
     const position = this.data.addressKoordinat ? this.data.addressKoordinat.split(', ') : [];
@@ -113,6 +117,17 @@ export class ProfilePage {
     });
   }
 
+  selectCity() {
+    this.navCtrl.push('searchable-select', { type: 'province' });
+
+    this.events.subscribe('province-location', sub => {
+      this.city = `${sub.city.name}, ${sub.province.name}`;
+      this.data.provinsiId = sub.province.id;
+      this.data.kabKotaId = sub.city.id;
+      this.events.unsubscribe('province-location');
+    });
+  }
+
   changeCompany() {
     this.loadListCompany();
   }
@@ -123,6 +138,11 @@ export class ProfilePage {
       this.api.get('/users/' + this.id, { headers: header }).subscribe(
         sub => {
           this.data = sub;
+          if (this.data.kabKotaId && this.data.provinsiId) {
+            const city = this.dataProvince.getCity().filter(x => x.id === this.data.kabKotaId);
+            const province = this.dataProvince.getProvince().filter(x => x.id === this.data.provinsiId);
+            this.city = `${city[0].name}, ${province[0].name}`;
+          }
           this.createMap();
           this.picture = this.data.image ? this.data.image : 'assets/imgs/profile.png';
           resolve();

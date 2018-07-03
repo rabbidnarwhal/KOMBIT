@@ -7,12 +7,14 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { UtilityServiceProvider } from '../providers/utility-service';
 import { AuthServiceProvider } from '../providers/auth-service';
 import { MenuController } from 'ionic-angular/components/app/menu-controller';
+import { PushNotificationProvider } from '../providers/push-notification';
+import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
-  public rootPage: string = '';
+  public rootPage: string = 'login';
   public pages: Array<{ title: string; component: string; icon: string; image: string }>;
   public userName: string = '';
   public picture: string;
@@ -24,12 +26,14 @@ export class MyApp {
     private auth: AuthServiceProvider,
     private menu: MenuController,
     private keyboard: Keyboard,
-    private events: Events
+    private events: Events,
+    private pushNotification: PushNotificationProvider,
+    private dataProvince: DataProvinceServiceProvider
   ) {
     this.initializeApp();
     this.picture = 'assets/imgs/profile.png';
     this.pages = [
-      { title: 'Notification', component: '', icon: 'notifications', image: '' },
+      { title: 'Notification', component: 'notification', icon: 'notifications', image: '' },
       { title: 'Create new post', component: 'newPost', icon: 'paper-plane', image: '' },
       { title: 'My post', component: 'myPost', icon: 'share', image: '' },
       { title: 'Company', component: 'company', icon: '', image: 'assets/imgs/company.png' },
@@ -46,6 +50,8 @@ export class MyApp {
       this.menu.enable(false, 'sideMenu');
       this.menu.swipeEnable(false, 'sideMenu');
       this.keyboard.disableScroll(true);
+      this.pushNotification.init();
+      this.loadProvinceData();
       this.authCheck();
     });
   }
@@ -94,5 +100,14 @@ export class MyApp {
       this.picture = sub;
       this.events.unsubscribe('picture-changed');
     });
+  }
+
+  private loadProvinceData() {
+    Promise.all([this.dataProvince.getListProvince(), this.dataProvince.getListCity()])
+      .then(res => {
+        this.dataProvince.setProvince(res[0]);
+        this.dataProvince.setCity(res[1]);
+      })
+      .catch(err => console.error(err));
   }
 }

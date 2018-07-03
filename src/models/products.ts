@@ -16,6 +16,9 @@ export class Product {
   description: string;
   credentials: string;
   videoPath: string;
+  position: string;
+  provinsi: number;
+  kabKota: number;
 }
 
 export class NewProduct {

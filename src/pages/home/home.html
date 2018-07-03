@@ -9,10 +9,13 @@
     </ion-item>
     <ion-label (click)="createNewPost()">New Post</ion-label>
   </ion-navbar>
+  <div class="location-indicator" *ngIf="locationEnabled" (click)="locationIndicatorClicked()">
+    <span>{{locationIndicatorText}}</span>
+  </div>
 </ion-header>
 
 <ion-content padding>
-  <ion-segment [(ngModel)]="solutionType" (ionChange)="segmentChanged()">
+  <ion-segment [(ngModel)]="postType" (ionChange)="segmentChanged()">
     <ion-segment-button value="public">
       Public
     </ion-segment-button>
@@ -22,41 +25,45 @@
     <ion-segment-button value="favorite">
       Favorite
     </ion-segment-button>
+    <ion-segment-button value="location">
+      Location
+    </ion-segment-button>
   </ion-segment>
+
   <ion-row>
     <div class="spinner-container" *ngIf="isSearching">
       <ion-spinner></ion-spinner>
     </div>
-    <ion-col col-6>
+    <!-- <ion-col col-6>
       <ion-row *ngFor="let post of listPostLeft">
         <div class="post-list-box">
           <img *ngIf="post.fotoPath" [src]="post.fotoPath" />
-          <ion-label no-margin class="box-label">
+          <div no-margin class="box-label">
             <ion-label no-padding no-margin class="inline-flex box-text">Product</ion-label>
             <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
             <ion-label no-margin no-padding class="inline-flex box-content">{{post.productName}}</ion-label>
             <ion-icon *ngIf="post.userId === userId" name="create" (click)="editPost(post)"></ion-icon>
-          </ion-label>
-          <ion-label no-margin class="box-label">
+          </div>
+          <div no-margin class="box-label">
             <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>
             <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
             <ion-label no-margin no-padding class="inline-flex box-content">{{post.companyName}}</ion-label>
-          </ion-label>
-          <ion-label no-margin class="box-label">
+          </div>
+          <div no-margin class="box-label">
             <ion-label no-padding no-margin class="inline-flex box-text">Holding</ion-label>
             <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
             <ion-label no-margin no-padding class="inline-flex box-content">{{post.holdingName}}</ion-label>
-          </ion-label>
-          <ion-label no-margin class="box-label">
+          </div>
+          <div no-margin class="box-label">
             <ion-label no-padding no-margin class="inline-flex box-text">Solution</ion-label>
             <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
             <ion-label no-margin no-padding class="inline-flex box-content">{{post.categoryName}}</ion-label>
-          </ion-label>
-          <ion-label no-margin class="box-label" *ngIf="post.isIncludePrice">
+          </div>
+          <div no-margin class="box-label" *ngIf="post.isIncludePrice">
             <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
             <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
             <ion-label no-margin no-padding class="inline-flex box-content">{{post.currency}} {{post.price | number}}</ion-label>
-          </ion-label>
+          </div>
           <ion-row text-center class="box-icon">
             <ion-col no-padding>
               <ion-icon name="eye"></ion-icon>
@@ -91,37 +98,39 @@
           </ion-row>
         </div>
       </ion-row>
-    </ion-col>
-    <ion-col col-6>
-      <ion-row *ngFor="let post of listPostRight">
+    </ion-col> -->
+    <ion-col col-6 *ngFor="let post of filteredItems">
+      <ion-row>
         <div class="post-list-box">
-          <img *ngIf="post.fotoPath" [src]="post.fotoPath" />
-          <ion-label no-margin class="box-label">
-            <ion-label no-padding no-margin class="inline-flex box-text">Product</ion-label>
-            <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-            <ion-label no-margin no-padding class="inline-flex box-content">{{post.productName}}</ion-label>
-            <ion-icon *ngIf="post.userId === userId" name="create" (click)="editPost(post)"></ion-icon>
-          </ion-label>
-          <ion-label no-margin class="box-label">
-            <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>
-            <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-            <ion-label no-margin no-padding class="inline-flex box-content">{{post.companyName}}</ion-label>
-          </ion-label>
-          <ion-label no-margin class="box-label">
-            <ion-label no-padding no-margin class="inline-flex box-text">Holding</ion-label>
-            <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-            <ion-label no-margin no-padding class="inline-flex box-content">{{post.holdingName}}</ion-label>
-          </ion-label>
-          <ion-label no-margin class="box-label">
-            <ion-label no-padding no-margin class="inline-flex box-text">Solution</ion-label>
-            <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-            <ion-label no-margin no-padding class="inline-flex box-content">{{post.categoryName}}</ion-label>
-          </ion-label>
-          <ion-label no-margin class="box-label" *ngIf="post.isIncludePrice">
-            <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
-            <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-            <ion-label no-margin no-padding class="inline-flex box-content">{{post.currency}} {{post.price | number}}</ion-label>
-          </ion-label>
+          <img *ngIf="post.fotoPath" class="post-image" [src]="post.fotoPath" />
+          <div class="box-label-container">
+            <div no-margin class="box-label">
+              <ion-label no-padding no-margin class="inline-flex box-text">Product</ion-label>
+              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+              <ion-label no-margin no-padding class="inline-flex box-content">{{post.productName}}</ion-label>
+              <ion-icon *ngIf="post.userId === userId" name="create" (click)="editPost(post)"></ion-icon>
+            </div>
+            <div no-margin class="box-label">
+              <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>
+              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+              <ion-label no-margin no-padding class="inline-flex box-content">{{post.companyName}}</ion-label>
+            </div>
+            <div no-margin class="box-label">
+              <ion-label no-padding no-margin class="inline-flex box-text">Holding</ion-label>
+              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+              <ion-label no-margin no-padding class="inline-flex box-content">{{post.holdingName}}</ion-label>
+            </div>
+            <div no-margin class="box-label">
+              <ion-label no-padding no-margin class="inline-flex box-text">Solution</ion-label>
+              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+              <ion-label no-margin no-padding class="inline-flex box-content">{{post.categoryName}}</ion-label>
+            </div>
+            <div no-margin class="box-label" *ngIf="post.isIncludePrice">
+              <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
+              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+              <ion-label no-margin no-padding class="inline-flex box-content">{{post.currency}} {{post.price | number}}</ion-label>
+            </div>
+          </div>
           <ion-row text-center class="box-icon">
             <ion-col no-padding>
               <ion-icon name="eye"></ion-icon>
@@ -157,6 +166,6 @@
         </div>
       </ion-row>
     </ion-col>
-    <div text-center *ngIf="!filteredItems.length && !isSearching">Post not found</div>
+    <div text-center class="not-found-text" *ngIf="!filteredItems.length && !isSearching">Post not found</div>
   </ion-row>
 </ion-content>

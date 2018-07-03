@@ -28,6 +28,8 @@ export class RegistrationPage {
   public listHoldingCompany: any = [];
   public isLoading: boolean = false;
   public holdingId: number;
+  public city: string;
+
   constructor(
     private navCtrl: NavController,
     private api: ApiServiceProvider,
@@ -45,10 +47,17 @@ export class RegistrationPage {
     this.events.subscribe('location', res => {
       this.registration.AddressKoordinat = res.coordinate;
     });
+
+    this.events.subscribe('province-location', sub => {
+      this.city = `${sub.city.name}, ${sub.province.name}`;
+      this.registration.ProvinsiId = sub.province.id;
+      this.registration.KabKotaId = sub.city.id;
+    });
   }
 
   ionViewWillUnload() {
     this.events.unsubscribe('location');
+    this.events.unsubscribe('province-location');
   }
 
   register() {
@@ -61,7 +70,7 @@ export class RegistrationPage {
         sub => {
           loading.dismiss();
           this.utility
-            .confirmAlert('Register Success', 'Ok', '')
+            .confirmAlert('Register Success', '', 'Ok')
             .then(() => this.navCtrl.pop())
             .catch(() => this.navCtrl.pop());
         },
@@ -79,6 +88,10 @@ export class RegistrationPage {
 
   openMap() {
     this.navCtrl.push('map-location', { type: 'choose', coordinate: this.registration.AddressKoordinat });
+  }
+
+  selectCity() {
+    this.navCtrl.push('searchable-select', { type: 'province' });
   }
 
   private loadListCompany() {

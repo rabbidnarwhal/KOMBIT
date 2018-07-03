@@ -1,0 +1,28 @@
+page-searchable-select {
+  [hideBackButton] button {
+    background-color: transparent;
+    ion-icon {
+      font-size: 24px;
+      display: inline-block;
+      position: relative; // color: #fdfdfd;
+      margin: 3px 11px 3px 11px;
+      top: 3px;
+    }
+  }
+  ion-input {
+    width: calc(100% - 54px);
+    display: inline-block;
+  }
+  button {
+    &[ion-item] {
+      min-height: 2.8rem !important;
+      ion-label {
+        margin: 8px 8px 8px 0 !important;
+      }
+      ion-icon {
+        margin: 0px !important;
+        font-size: 2rem !important;
+      }
+    }
+  }
+}

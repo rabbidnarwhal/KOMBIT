@@ -33,6 +33,7 @@ export class ProductContactComponent {
   }
 
   openMap() {
-    this.navCtrl.push('map-popover', { coordinate: this.data.contact.addressKoordinat });
+    location.href = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=' + this.data.contact.addressKoordinat.replace(' ', '');
+    // this.navCtrl.push('map-popover', { coordinate: this.data.contact.addressKoordinat });
   }
 }

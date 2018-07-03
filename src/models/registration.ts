@@ -11,4 +11,6 @@ export class RegistrationRequest {
   JobTitle: string;
   CompanyId: number;
   AddressKoordinat: string;
+  ProvinsiId: number;
+  KabKotaId: number;
 }
