@@ -261,19 +261,28 @@ export class MapChooserPage {
   }
 
   searchLocation() {
+    console.log('im run');
     if (this.locationName.length > 0) {
       let config = {
-        types: ['address'],
+        types: ['establishment'],
         input: this.locationName,
         componentRestrictions: { country: 'id' }
       };
-      this.autocompleteService.getPlacePredictions(config, (predictions, status) => {
-        if (status === google.maps.places.PlacesServiceStatus.OK && predictions) {
+      this.autocompleteService.getPlacePredictions(config, (predictionsPlace, statusPlace) => {
+        config.types = ['address'];
+        if (statusPlace === google.maps.places.PlacesServiceStatus.OK && predictionsPlace) {
           this.places = [];
-          predictions.forEach(prediction => {
+          predictionsPlace.forEach(prediction => {
             this.places.push(prediction);
           });
         }
+        this.autocompleteService.getPlacePredictions(config, (predictionsAddress, statusAddress) => {
+          if (statusAddress === google.maps.places.PlacesServiceStatus.OK && predictionsAddress) {
+            predictionsAddress.forEach(prediction => {
+              this.places.push(prediction);
+            });
+          }
+        });
       });
     } else this.places = [];
   }
