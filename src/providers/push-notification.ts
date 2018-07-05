@@ -3,6 +3,7 @@ import { Push, PushObject, PushOptions } from '@ionic-native/push';
 import { UtilityServiceProvider } from './utility-service';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { ApiServiceProvider } from './api-service';
+import { Events } from 'ionic-angular';
 
 /*
   Generated class for the PushNotificationProvider provider.
@@ -15,7 +16,7 @@ export class PushNotificationProvider {
   private token: string;
   private pushObject: PushObject;
   public topicNotifier: BehaviorSubject<any> = new BehaviorSubject(null);
-  constructor(private push: Push, private utility: UtilityServiceProvider, private api: ApiServiceProvider) {}
+  constructor(private push: Push, private utility: UtilityServiceProvider, private api: ApiServiceProvider, private events: Events) {}
 
   init() {
     const options: PushOptions = {
@@ -31,10 +32,10 @@ export class PushNotificationProvider {
       this.topicNotifier.filter(res => res !== null).subscribe(res => {
         if (res.sub) {
           this.subscribeToTopic(res.topic);
-          this.api.post('/users/push/' + this.token + '/' + res.id, {});
+          this.api.post(`/users/${res.id}/subscribe/${this.token}`, {}).subscribe(() => {}, err => console.error(err));
         } else {
           this.unsubscribeToTopic(res.topic);
-          this.api.post('/users/push/' + this.token, {});
+          this.api.post(`/users/${res.id}/unsubscribe`, {}).subscribe(() => {}, err => console.error(err));
         }
       });
     });
@@ -42,7 +43,11 @@ export class PushNotificationProvider {
     this.pushObject.on('notification').subscribe(sub => {
       if (sub.additionalData.foreground) {
         console.log('foreground', sub);
-        this.utility.basicAlert(sub.message, sub.title, 'Ok');
+        if (sub.additionalData.newPost && sub.additionalData.newPost === 'True') {
+          this.events.publish('postReload');
+        } else {
+          this.utility.showToast(sub.message);
+        }
       } else {
         console.log('background', sub);
       }

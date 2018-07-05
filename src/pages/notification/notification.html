@@ -18,7 +18,9 @@
     <ion-col>
       <ion-list>
         <div class="spinner-container" *ngIf="isSearching">
-          <ion-spinner></ion-spinner>
+          <div class="spinner-background">
+            <ion-spinner></ion-spinner>
+          </div>
         </div>
         <div text-center *ngIf="!listNotification.length && !isSearching">Notification Empty</div>
         <ion-item *ngFor="let item of listNotification">

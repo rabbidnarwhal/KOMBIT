@@ -18,7 +18,9 @@
     <ion-input id="txtHome" type="text"></ion-input>
   </ion-item> -->
   <div class="spinner-container" *ngIf="!mapIsLoaded">
-    <ion-spinner></ion-spinner>
+    <div class="spinner-background">
+      <ion-spinner></ion-spinner>
+    </div>
   </div>
   <ion-item *ngIf="mode === 'choose' && mapIsLoaded">
     <ion-icon item-start name="pin"></ion-icon>

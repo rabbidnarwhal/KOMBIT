@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { NavController, IonicPage, Events, NavParams } from 'ionic-angular';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
@@ -36,11 +36,12 @@ export class HomePage {
     private utility: UtilityServiceProvider,
     private dataProduct: DataProductServiceProvider,
     private events: Events,
-    private auth: AuthServiceProvider
+    private auth: AuthServiceProvider,
+    private zone: NgZone
   ) {
     this.listPost = new Array<Product>();
     this.postType = 'public';
-    this.filterItems();
+    this.filterItems(this.locationEnabled);
     console.log('auth', this.auth.getPrincipal());
     this.userId = this.auth.getPrincipal().id;
   }
@@ -48,19 +49,7 @@ export class HomePage {
   ionViewWillEnter() {
     if (!this.listPost.length) this.isSearching = true;
     this.postType = 'public';
-    this.dataProduct
-      .getListAllProducts()
-      .then(res => {
-        this.isSearching = false;
-        if (this.navParams.data.solution) this.listPost = res.filter(x => x.categoryName === this.navParams.data.solution.category);
-        else if (this.navParams.data.company) this.listPost = res.filter(x => x.companyName === this.navParams.data.company.companyName);
-        else this.listPost = res;
-        this.filterItems();
-      })
-      .catch(err => {
-        this.isSearching = false;
-        this.utility.showToast(err);
-      });
+    this.loadPostData();
   }
 
   ionViewDidLoad() {
@@ -77,7 +66,7 @@ export class HomePage {
           this.listPost[idx].totalLike--;
           this.listPost[idx].isLike = false;
         }
-      this.filterItems();
+      this.filterItems(this.locationEnabled);
     });
 
     this.events.subscribe('homeLocation', sub => {
@@ -86,34 +75,61 @@ export class HomePage {
       this.locationEnabled = true;
       if (sub.nearme) {
         this.distance = sub.distance;
-        this.filterItems(true);
+        this.filterItems(this.locationEnabled);
         this.isSearching = false;
         this.locationIndicatorText = `Near me : ${sub.distance} km`;
       } else {
         this.distance = 0;
         this.selectedCity = sub.city.id;
         this.selectedProvince = sub.province.id;
-        this.filterItems(true);
+        this.filterItems(this.locationEnabled);
         this.isSearching = false;
         this.locationIndicatorText = sub.city.id ? `${sub.city.name}, ${sub.province.name}` : `SELURUH ${sub.province.name}`;
       }
     });
+
+    this.events.subscribe('postReload', () => {
+      this.zone.run(() => {
+        this.isSearching = true;
+        this.loadPostData(true);
+      });
+    });
+
+    this.events.subscribe('backFromLocation', () => {
+      this.postType = 'public';
+    });
   }
+
   locationIndicatorClicked() {
+    this.locationEnabled = false;
     this.utility.showPopover('home-location', '', true).present();
+  }
+
+  loadPostData(isReload = false) {
+    this.dataProduct
+      .getListAllProducts()
+      .then(res => {
+        this.isSearching = false;
+        if (this.navParams.data.solution) this.listPost = res.filter(x => x.categoryName === this.navParams.data.solution.category);
+        else if (this.navParams.data.company) this.listPost = res.filter(x => x.companyName === this.navParams.data.company.companyName);
+        else this.listPost = res;
+        this.filterItems(this.locationEnabled);
+      })
+      .catch(err => {
+        this.isSearching = false;
+        if (!isReload) this.utility.showToast(err);
+      });
   }
 
   segmentChanged() {
     if (this.postType === 'location') {
-      this.postType = 'public';
       this.selectedCity = 0;
       this.selectedProvince = 0;
       this.distance = 0;
       this.utility.showPopover('home-location', '', true).present();
-      // this.navCtrl.push('home-location');
     } else {
       this.locationEnabled = false;
-      this.filterItems();
+      this.filterItems(this.locationEnabled);
     }
   }
 
@@ -125,7 +141,7 @@ export class HomePage {
     this.navCtrl.push('newPost');
   }
 
-  filterItems(isLocation = false) {
+  filterItems(isLocation) {
     let data = [];
     if (this.postType === 'public') data = this.listPost;
     if (this.postType === 'holding') data = this.listPost.filter(res => res.holdingId === this.dataProduct.getHoldingId());
@@ -140,8 +156,6 @@ export class HomePage {
           }
         }
       });
-      // this.listPostRight = this.filteredItems.filter((e, i) => i % 2);
-      // this.listPostLeft = this.filteredItems.filter((e, i) => !(i % 2));
     };
 
     if (isLocation && this.distance) {
@@ -189,11 +203,9 @@ export class HomePage {
         .then(pos => {
           resolve(
             this.listPost.filter(x => {
-              console.log(x.position);
               if (x.position) {
                 const target = x.position.split(', ');
                 const distance = this.calculateDistance(pos.latLng.lat, pos.latLng.lng, target[0], target[1]);
-                console.log('distance', distance, dist);
                 return distance <= dist;
               }
             })

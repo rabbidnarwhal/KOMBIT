@@ -141,9 +141,21 @@ ion-popover.popover-width-full .popover-content {
   text-align: center;
   margin-top: 10%;
   width: 100%;
-  ion-spinner {
-    width: 48px !important;
-    height: 48px !important;
+  position: absolute;
+  z-index: 10000;
+  right: 0px;
+  left: 0px;
+  .spinner-background {
+    margin-right: calc(50% - 18px);
+    margin-left: calc(50% - 18px);
+    background-color: white;
+    border-radius: 50%;
+    box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.5);
+    ion-spinner {
+      width: 32px;
+      height: 32px;
+      top: 2px;
+    }
   }
 }
 

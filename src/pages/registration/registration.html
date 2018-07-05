@@ -35,7 +35,7 @@
             <ion-option [value]="item.id" *ngFor="let item of listIDType">{{item.descType}}</ion-option>
           </ion-select>
         </ion-item>
-        <ion-input type="tel" [(ngModel)]="registration.IdNumber" name="NIK" placeholder="ID Number" required></ion-input>
+        <ion-input type="text" [(ngModel)]="registration.IdNumber" name="NIK" placeholder="ID Number" required></ion-input>
         <ion-input type="text" [(ngModel)]="registration.Name" name="Name" placeholder="Name" required></ion-input>
         <ion-input type="email" [(ngModel)]="registration.Email" name="Corporate Email" placeholder="Corporate Email" pattern="(?!(^[.-].*|[^@]*[.-]@|.*\\.{2,}.*)|^.{254}.)([a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~.-]+@)(?!-.*|.*-\\.)([a-zA-Z0-9-]{1,63}\\.)+[a-zA-Z]{2,15}" required></ion-input>
         <ion-input type="tel" [(ngModel)]="registration.Handphone" name="Handphone" placeholder="Handphone" pattern="^0|^62.*" required></ion-input>

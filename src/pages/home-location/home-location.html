@@ -42,7 +42,9 @@
   <ion-row padding *ngIf="locationType==='setLocation'">
     <ion-col>
       <div class="spinner-container" *ngIf="isSearching">
-        <ion-spinner></ion-spinner>
+        <div class="spinner-background">
+          <ion-spinner></ion-spinner>
+        </div>
       </div>
       <ion-list no-margin>
         <button ion-item detail-none *ngIf="type==='city'" (click)="select(0)">
