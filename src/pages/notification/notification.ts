@@ -39,7 +39,8 @@ export class NotificationPage {
   private loadListNotification() {
     this.isSearching = true;
     const userId = this.auth.getPrincipal().id;
-    this.api.get('/notification/user/' + userId).subscribe(
+    const header = { 'Cache-Control': 'no-cache' };
+    this.api.get('/notification/user/' + userId, { headers: header }).subscribe(
       sub => {
         this.listNotification = sub.map(item => {
           const obj = item;

@@ -10,7 +10,9 @@
 <ion-content padding>
   <ion-row>
     <div class="spinner-container" *ngIf="isSearching">
-      <ion-spinner></ion-spinner>
+      <div class="spinner-background">
+        <ion-spinner></ion-spinner>
+      </div>
     </div>
     <ion-col col-4 *ngFor="let company of filteredItems" (click)="companyClicked(company)">
       <div class="image-container">

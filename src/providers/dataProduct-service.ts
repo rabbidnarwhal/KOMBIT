@@ -33,8 +33,9 @@ export class DataProductServiceProvider {
   }
 
   getProductDetail(id): Promise<ProductDetail> {
+    const userId = this.auth.getPrincipal().id;
     return new Promise((resolve, reject) => {
-      this.api.get('/product/' + id, { headers: this.header }).subscribe(sub => resolve(sub), error => reject(error));
+      this.api.get('/product/' + id + '/user/' + userId, { headers: this.header }).subscribe(sub => resolve(sub), error => reject(error));
     });
   }
 

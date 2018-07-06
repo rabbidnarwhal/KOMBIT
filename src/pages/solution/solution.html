@@ -19,7 +19,9 @@
   <ion-row>
     <ion-col>
       <div class="spinner-container" *ngIf="isSearching">
-        <ion-spinner></ion-spinner>
+        <div class="spinner-background">
+          <ion-spinner></ion-spinner>
+        </div>
       </div>
       <ion-list text-center>
         <button ion-item no-lines *ngFor="let solution of filteredItems" (click)="solutionClicked(solution)">{{solution.category}}</button>

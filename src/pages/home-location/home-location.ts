@@ -93,6 +93,7 @@ export class HomeLocationPage {
     if (this.locationType === 'setLocation' && this.type === 'city') {
       this.backButtonHandler;
     } else {
+      this.events.publish('backFromLocation');
       this.navCtrl.pop();
     }
   }

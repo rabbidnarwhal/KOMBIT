@@ -18,7 +18,9 @@
 
 <ion-content padding>
   <div class="spinner-container" *ngIf="isSearching">
-    <ion-spinner></ion-spinner>
+    <div class="spinner-background">
+      <ion-spinner></ion-spinner>
+    </div>
   </div>
   <ion-list no-margin>
     <button ion-item detail-none *ngFor="let item of filteredItems" (click)="select(item)">
