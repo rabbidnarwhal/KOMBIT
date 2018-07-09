@@ -46,10 +46,12 @@ export class MyApp {
 
   private initializeApp() {
     this.platform.ready().then(() => {
-      this.statusBar.styleDefault();
+      this.statusBar.styleLightContent();
+      this.statusBar.overlaysWebView(false);
+      this.statusBar.backgroundColorByHexString('#f2703f');
       this.menu.enable(false, 'sideMenu');
       this.menu.swipeEnable(false, 'sideMenu');
-      this.keyboard.disableScroll(true);
+      this.keyboard.disableScroll(false);
       this.pushNotification.init();
       this.loadProvinceData();
       this.authCheck();
