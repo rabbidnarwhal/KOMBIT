@@ -45,6 +45,9 @@ ion-header.custom-background {
       font-weight: 100 !important;
       font-size: 16px !important;
     }
+    div.toolbar-title-ios {
+      margin-right: 0px !important;
+    }
   }
 }
 
@@ -76,6 +79,7 @@ ion-popover.popover-width .popover-content {
   width: 90% !important;
   max-height: calc(100% - 64px) !important;
   height: 100% !important;
+  left: calc(100vw - 95%) !important;
 }
 
 ion-popover.popover-width-full .popover-content {
@@ -83,6 +87,8 @@ ion-popover.popover-width-full .popover-content {
   max-height: 100% !important;
   height: 100% !important;
   left: 0px !important;
+  border-radius: 0px;
+  top: 0px !important;
 }
 
 .top-searchbar {
@@ -94,7 +100,7 @@ ion-popover.popover-width-full .popover-content {
   box-shadow: 0 4px 10px RGBA(0, 0, 0, 0.3) !important;
   margin-left: 16px !important;
   padding-left: 0px !important;
-  border-radius: 25px;
+  border-radius: 25px !important;
   .item-inner {
     border: 1px solid map-get($kombit-colors, 'text') !important;
     background-color: map-get($kombit-colors, 'text') !important;

@@ -225,6 +225,9 @@ export class MapChooserPage {
 
           marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => locationEvent());
 
+          /**
+           * Another method for auto complete
+           */
           // let nativeHomeInputBox = document.getElementById('location').getElementsByTagName('input')[0];
           // let autocomplete = new google.maps.places.Autocomplete(nativeHomeInputBox, {
           //   types: ['address']
@@ -255,7 +258,7 @@ export class MapChooserPage {
   private getLocationName(latLng: LatLng): Promise<string> {
     return new Promise((resolve, reject) => {
       Geocoder.geocode({ position: latLng })
-        .then(res => resolve(res[0].extra.lines[0]))
+        .then(res => resolve(res[0].extra.lines.join(', ')))
         .catch(err => reject(err));
     });
   }

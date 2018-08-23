@@ -9,7 +9,7 @@
   <ion-content class="menu-content">
     <ion-list no-margin>
       <button menuClose ion-item no-lines padding-left *ngFor="let p of pages" (click)="openPage(p)">
-        <ion-icon *ngIf="p.icon" icon-small item-left [name]="p.icon"></ion-icon>
+        <ion-icon *ngIf="p.icon" icon-small item-left [name]="p.icon" class="menu-icon"></ion-icon>
         <img *ngIf="p.image" class="menu-icon-img" item-left [src]="p.image" /> {{p.title}}
       </button>
     </ion-list>

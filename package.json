@@ -10,7 +10,9 @@
     "lint": "ionic-app-scripts lint",
     "ionic:build": "ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve",
-    "build:prod": "ionic cordova build android --prod --release"
+    "build:prod": "ionic cordova build android --prod --release",
+    "install:apk": "adb install -r platforms\\android\\app\\build\\outputs\\apk\\debug\\app-debug.apk",
+    "build:install": "npm run build && npm run install:apk"
   },
   "dependencies": {
     "@angular/animations": "5.2.10",
@@ -62,6 +64,7 @@
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.1.10",
+    "@ionic/lab": "1.0.6",
     "typescript": "~2.6.2"
   },
   "description": "An Ionic project",

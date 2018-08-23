@@ -17,11 +17,11 @@
 
 
 <ion-content no-padding>
-  <ion-segment padding [(ngModel)]="locationType" (ionChange)="segmentChanged()">
-    <ion-segment-button value="nearMe">
+  <ion-segment padding class="segment-location" [(ngModel)]="locationType" (ionChange)="segmentChanged()">
+    <ion-segment-button class="segment-location-button" value="nearMe">
       Near Me
     </ion-segment-button>
-    <ion-segment-button value="setLocation">
+    <ion-segment-button class="segment-location-button" value="setLocation">
       Set Location
     </ion-segment-button>
   </ion-segment>

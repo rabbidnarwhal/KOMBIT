@@ -45,6 +45,7 @@ export class MyApp {
   }
 
   private initializeApp() {
+
     this.platform.ready().then(() => {
       this.statusBar.styleLightContent();
       this.statusBar.overlaysWebView(false);
@@ -69,6 +70,10 @@ export class MyApp {
   }
 
   private authCheck() {
+    if (window['IonicDevServer'])  {
+      const routeUrl = document.URL.split('/#/');
+      if (routeUrl.length > 1) window.location.href = routeUrl[0];
+    }
     let isFirstTime = localStorage.getItem('firstTime') || '';
     this.auth.authNotifier.filter(res => res !== null).subscribe(res => {
       if (!isFirstTime || isFirstTime !== 'false') {

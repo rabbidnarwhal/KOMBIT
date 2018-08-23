@@ -19,8 +19,8 @@ import { Province } from '../../models/province';
   templateUrl: 'home-location.html'
 })
 export class HomeLocationPage {
-  listProvince: Province[];
-  listCity: City[];
+  listProvince: Province[] = [];
+  listCity: City[] = [];
   filteredItems: any = [];
   isSearching: boolean = false;
   type: string = 'province';
@@ -37,8 +37,16 @@ export class HomeLocationPage {
     private dataProvince: DataProvinceServiceProvider,
     private platform: Platform
   ) {
-    this.listCity = this.dataProvince.getCity();
-    this.listProvince = this.dataProvince.getProvince();
+  }
+
+  ionViewWillLoad(){
+    Promise.all([
+      this.dataProvince.getCity(),
+      this.dataProvince.getProvince()
+    ]).then(res => {
+      this.listCity = res[0];
+      this.listProvince = res[1];
+    })
   }
 
   filterItems() {
@@ -46,7 +54,14 @@ export class HomeLocationPage {
     if (this.type === 'city') {
       this.filteredItems = [];
       setTimeout(() => {
-        this.filteredItems = this.listCity.filter(x => x.provinsiId === this.selectedProvince.id);
+        if (!this.listCity.length) {
+          this.dataProvince.getCity().then(res => {
+            this.listCity = res;
+            this.filteredItems = this.listCity.filter(x => x.provinsiId === this.selectedProvince.id);
+          })    
+        } else {
+          this.filteredItems = this.listCity.filter(x => x.provinsiId === this.selectedProvince.id);
+        }
       }, 50);
     } else {
       this.filteredItems = this.listProvince;
@@ -91,7 +106,7 @@ export class HomeLocationPage {
 
   revertState() {
     if (this.locationType === 'setLocation' && this.type === 'city') {
-      this.backButtonHandler;
+      this.backButtonHandler();
     } else {
       this.events.publish('backFromLocation');
       this.navCtrl.pop();

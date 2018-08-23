@@ -11,8 +11,8 @@ import { City } from '../models/city';
 */
 @Injectable()
 export class DataProvinceServiceProvider {
-  private listCity: Array<City>;
-  private listProvince: Array<Province>;
+  private listCity: Array<City> = [];
+  private listProvince: Array<Province> = [];
 
   constructor(private api: ApiServiceProvider) {}
 
@@ -34,12 +34,34 @@ export class DataProvinceServiceProvider {
     });
   }
 
-  getCity() {
-    return this.listCity;
+  getCity(): Promise<City[]> {
+    return new Promise(resolve => {
+      if (this.listCity.length){
+        resolve(this.listCity);
+      } else {
+        this.getListCity().then(res => {
+          this.listCity = res;
+          resolve(res);
+        }).catch (err => {
+          resolve([]);
+        })
+      }
+    })
   }
 
-  getProvince() {
-    return this.listProvince;
+  getProvince():Promise<Province[]> {
+    return new Promise(resolve => {
+      if (this.listProvince.length){
+        resolve(this.listProvince);
+      } else {
+        this.getListProvince().then(res => {
+          this.listProvince = res;
+          resolve(res);
+        }).catch (err => {
+          resolve([]);
+        })
+      }
+    })
   }
 
   setCity(city) {

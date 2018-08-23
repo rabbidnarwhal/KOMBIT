@@ -1,0 +1,15 @@
+page-home-location {
+  ion-header ion-title {
+    margin-top: 12px;
+  }
+  ion-segment {
+    margin-top: 8px;
+    .segment-location-button.segment-button{
+      border: none;
+      &.segment-activated {
+        background-color: transparent;
+        border-bottom: 2px solid;
+      }
+    }
+  }
+}

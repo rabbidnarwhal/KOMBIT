@@ -13,6 +13,7 @@ import { IonicPage, NavController, NavParams, ActionSheetController } from 'ioni
 import { FormValidatorProvider } from '../../providers/form-validator';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { Config } from '../../config/config';
+import { Platform } from 'ionic-angular/platform/platform';
 /**
  * Generated class for the PostNewPage page.
  *
@@ -54,7 +55,8 @@ export class PostNewPage {
     private navParams: NavParams,
     private sanitization: DomSanitizer,
     private transfer: FileTransfer,
-    private utility: UtilityServiceProvider
+    private utility: UtilityServiceProvider,
+    private platform: Platform
   ) {
     this.listCategory = new Array<Category>();
     this.data = new NewProduct(this.auth.getPrincipal());
@@ -161,7 +163,6 @@ export class PostNewPage {
   getFilePath(type: string) {
     this.imagePath = '';
     if (this.videoPathPublic && type === 'video') this.video.nativeElement.pause();
-
     const loading = this.utility.showLoading();
     const oldPath = type === 'foto' ? '' : this.videoPath;
     loading.present();
@@ -255,10 +256,10 @@ export class PostNewPage {
           .getPicture(options)
           .then(filePath => {
             if (type === this.camera.MediaType.PICTURE) {
-              this.imagePath = filePath;
+              this.imagePath = this.platform.is('ios') ? filePath.replace('file://', '') : filePath;
               return this.file.resolveLocalFilesystemUrl(filePath);
             } else {
-              this.videoPath = 'file://' + filePath;
+              this.videoPath = this.platform.is('ios') ? filePath.replace('file://', '') : 'file://' + filePath;
               this.isVideoUpload = false;
               return this.file.resolveLocalFilesystemUrl(this.videoPath);
             }

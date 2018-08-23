@@ -34,6 +34,8 @@ export class ProductContactComponent {
 
   openMap() {
     location.href = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&destination=' + this.data.contact.addressKoordinat.replace(' ', '');
+
+    // use below code if not going to open map to external app/browser
     // this.navCtrl.push('map-popover', { coordinate: this.data.contact.addressKoordinat });
   }
 }

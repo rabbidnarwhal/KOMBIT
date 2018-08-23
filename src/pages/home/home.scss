@@ -13,6 +13,7 @@ page-home {
     margin-bottom: 10px;
   }
   .segment-button {
+    border: none !important;
     height: 2.8rem !important;
     line-height: 2.8rem !important;
     @include color-item();

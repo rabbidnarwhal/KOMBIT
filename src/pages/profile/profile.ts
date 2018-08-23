@@ -5,7 +5,6 @@ import { ApiServiceProvider } from '../../providers/api-service';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { NgForm } from '@angular/forms';
 import { Config } from '../../config/config';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 import { DataProvinceServiceProvider } from '../../providers/dataProvince-service';
@@ -53,14 +52,18 @@ export class ProfilePage {
   }
 
   ionViewDidLoad() {
+    const loading = this.utility.showLoading();
+    loading.present()
     this.isSearching = true;
     this.loadUserData()
       .then(() => {
+        loading.dismiss();
         this.isSearching = false;
         this.loadListHoldingCompany();
         this.loadListCompany();
       })
       .catch(err => {
+        loading.dismiss();
         this.isSearching = false;
         this.utility.showToast(err);
       });
@@ -139,9 +142,14 @@ export class ProfilePage {
         sub => {
           this.data = sub;
           if (this.data.kabKotaId && this.data.provinsiId) {
-            const city = this.dataProvince.getCity().filter(x => x.id === this.data.kabKotaId);
-            const province = this.dataProvince.getProvince().filter(x => x.id === this.data.provinsiId);
-            this.city = `${city[0].name}, ${province[0].name}`;
+            Promise.all([
+              this.dataProvince.getCity(),         
+              this.dataProvince.getProvince()
+            ]).then (res => {
+              const city = res[0].filter(x => x.id === this.data.kabKotaId);
+              const province = res[1].filter(x => x.id === this.data.provinsiId);
+              this.city = `${city[0].name}, ${province[0].name}`;
+            })
           }
           this.createMap();
           this.picture = this.data.image ? this.data.image : 'assets/imgs/profile.png';

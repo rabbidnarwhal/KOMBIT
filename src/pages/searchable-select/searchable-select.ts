@@ -19,8 +19,8 @@ import { City } from '../../models/city';
   templateUrl: 'searchable-select.html'
 })
 export class SearchableSelectPage {
-  listProvince: Province[];
-  listCity: City[];
+  listProvince: Province[] = [];
+  listCity: City[] = [];
   filteredItems: any = [];
   isSearching: boolean = false;
   type: string = 'province';
@@ -29,13 +29,18 @@ export class SearchableSelectPage {
   filterText: string;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, private dataProvince: DataProvinceServiceProvider, private events: Events) {
-    this.listCity = this.dataProvince.getCity();
-    this.listProvince = this.dataProvince.getProvince();
     this.type = this.navParams.data.type;
   }
 
   ionViewDidLoad() {
-    this.init();
+    Promise.all([
+      this.dataProvince.getCity(),
+      this.dataProvince.getProvince()
+    ]).then(res => {
+      this.listCity = res[0];
+      this.listProvince = res[1];
+      this.init();
+    })
   }
 
   filterItems() {
