@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { LoginResponse, LoginRequest } from '../models/login';
 import { PushNotificationProvider } from './push-notification';
 import { UtilityServiceProvider } from './utility-service';
+import { Platform } from 'ionic-angular';
 
 /*
   Generated class for the AuthServiceProvider provider.
@@ -17,10 +18,17 @@ export class AuthServiceProvider {
   public authNotifier: BehaviorSubject<any> = new BehaviorSubject(null);
   private isLoggin: boolean;
   private principal: LoginResponse;
+  private isAndroid: boolean;
 
-  constructor(private api: ApiServiceProvider, private utility: UtilityServiceProvider, private push: PushNotificationProvider) {
+  constructor(
+    private api: ApiServiceProvider,
+    private utility: UtilityServiceProvider,
+    private push: PushNotificationProvider,
+    private platform: Platform
+  ) {
     this.isLoggin = false;
     this.authCheck();
+    this.isAndroid = this.platform.is('android');
   }
 
   authCheck() {
@@ -56,7 +64,10 @@ export class AuthServiceProvider {
     localStorage.removeItem('token');
     setTimeout(() => {
       loading.dismiss();
-      this.push.topicNotifier.next({ sub: false, topic: 'combits', id: this.principal.id });
+
+      if (this.isAndroid) this.push.topicNotifier.next({ sub: false, topic: 'combits-android', id: this.principal.id });
+      else this.push.topicNotifier.next({ sub: false, topic: 'combits-ios', id: this.principal.id });
+
       this.setPrincipal(null);
       this.authNotifier.next(false);
     }, 1500);
@@ -82,7 +93,8 @@ export class AuthServiceProvider {
     const date = new Date().getTime().toString();
     this.isLoggin = true;
     this.setPrincipal(data);
-    this.push.topicNotifier.next({ sub: true, topic: 'combits', id: data.id });
+    if (this.isAndroid) this.push.topicNotifier.next({ sub: true, topic: 'combits-android', id: data.id });
+    else this.push.topicNotifier.next({ sub: true, topic: 'combits-ios', id: data.id });
     localStorage.setItem('token', data.idNumber + ':' + data.id + ':' + date);
     return new Promise(resolve => {
       resolve(true);
