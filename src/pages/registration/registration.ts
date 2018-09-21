@@ -30,6 +30,12 @@ export class RegistrationPage {
   public holdingId: number;
   public city: string;
 
+  //Role (19Sept,11:50PM)
+  public role: any[] = [
+    { id: 1, name: "Consumer" },
+    { id: 2, name: "Supplier" }
+  ];
+
   constructor(
     private navCtrl: NavController,
     private api: ApiServiceProvider,
@@ -59,7 +65,11 @@ export class RegistrationPage {
     this.events.unsubscribe('location');
     this.events.unsubscribe('province-location');
   }
-
+  test_register() {
+    if (this.form.valid) {
+      console.log(this.registration);
+    }
+  }
   register() {
     if (this.form.valid) {
       const loading = this.utility.showLoading();

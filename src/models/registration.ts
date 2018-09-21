@@ -3,6 +3,9 @@ export class RegistrationRequest {
   Password: string;
   IdNumber: string;
   IdType: number;
+  //
+  idRole: number;
+  //
   Name: string;
   Email: string;
   Address: string;
