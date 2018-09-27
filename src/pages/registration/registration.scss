@@ -21,18 +21,40 @@ page-registration {
     padding-right: 16px;
   }
 
-  ion-item {
-    min-height: 1rem !important;
-    padding: 8px 16px !important;
-    margin-bottom: 8px !important;
-    border-radius: 20px !important;
+  .role-item {
+    background-color: transparent;
+    min-height: 1rem;
+    .item-inner {
+      border-bottom: none !important;
+      .role-label {
+        color: $colorText;
+        font-size: 18px;
+      }
+      .role-radio {
+        top: 16px;
+        right: 32px;
+        .radio-checked {
+          border-color: $colorText;
+          .radio-inner {
+            background-color: $colorText;
+          }
+        }
+      }
+    }
+  }
+
+  .form-select-item {
+    min-height: 1rem;
+    padding: 8px 16px;
+    margin-bottom: 8px;
+    border-radius: 20px;
     .item-inner {
       border-bottom: none !important;
       ion-select {
-        font-size: 14px !important;
-        max-width: 100% !important;
-        width: 100% !important;
-        padding: 0 2px 0 0 !important;
+        font-size: 14px;
+        max-width: 100%;
+        width: 100%;
+        padding: 0 2px 0 0;
         text-align: center;
         div.select-text,
         div.select-placeholder {

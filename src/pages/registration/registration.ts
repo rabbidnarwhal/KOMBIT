@@ -6,13 +6,6 @@ import { ApiServiceProvider } from '../../providers/api-service';
 import { FormValidatorProvider } from '../../providers/form-validator';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 
-/**
- * Generated class for the RegistrationPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
 @IonicPage({
   name: 'registration'
 })
@@ -21,11 +14,12 @@ import { UtilityServiceProvider } from '../../providers/utility-service';
   templateUrl: 'registration.html'
 })
 export class RegistrationPage {
-  @ViewChild('formRegistration') form: NgForm;
+  @ViewChild('formRegistration')
+  form: NgForm;
   public registration: RegistrationRequest;
-  public listIDType: any = [];
-  public listCompany: any = [];
-  public listHoldingCompany: any = [];
+  public listIDType: Array<any> = [];
+  public listCompany: Array<any> = [];
+  public listHoldingCompany: Array<any> = [];
   public isLoading: boolean = false;
   public holdingId: number;
   public city: string;
@@ -38,11 +32,12 @@ export class RegistrationPage {
     private events: Events
   ) {
     this.registration = new RegistrationRequest();
+    this.registration.IdRole = 1;
   }
 
   ionViewDidLoad() {
     this.loadListHoldingCompany();
-    this.loadListIDType();
+    // this.loadListIDType();
 
     this.events.subscribe('location', res => {
       this.registration.AddressKoordinat = res.coordinate;
@@ -59,18 +54,18 @@ export class RegistrationPage {
     this.events.unsubscribe('location');
     this.events.unsubscribe('province-location');
   }
-
   register() {
     if (this.form.valid) {
       const loading = this.utility.showLoading();
       loading.present();
-      if (this.registration.Handphone[0] === '6') this.registration.Handphone = '+' + this.registration.Handphone;
-      else this.registration.Handphone = '+62' + this.registration.Handphone.slice(1);
+      if (this.registration.Handphone[0] === '0') {
+        this.registration.Handphone = '62' + this.registration.Handphone.slice(1);
+      }
       this.api.post('/users/register', this.registration).subscribe(
         sub => {
           loading.dismiss();
           this.utility
-            .confirmAlert('Register Success', '', 'Ok')
+            .confirmAlert('Register Success', '', 'Ok', '')
             .then(() => this.navCtrl.pop())
             .catch(() => this.navCtrl.pop());
         },

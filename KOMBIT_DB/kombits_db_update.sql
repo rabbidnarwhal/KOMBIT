@@ -50,3 +50,19 @@ CREATE TABLE `m_provinsi` (
 	`provinsi_name` VARCHAR(255) NOT NULL,
 	PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE `m_user`
+	ADD COLUMN `id_role` INT(2) NOT NULL AFTER `id_type`;
+
+ALTER TABLE `m_user`
+	CHANGE COLUMN `id_number` `id_number` VARCHAR(50) NULL DEFAULT NULL AFTER `push_id`,
+	CHANGE COLUMN `id_type` `id_type` INT(11) NULL DEFAULT NULL AFTER `id_number`,
+	CHANGE COLUMN `name` `name` VARCHAR(100) NULL DEFAULT NULL AFTER `id_role`,
+	CHANGE COLUMN `address` `address` VARCHAR(255) NULL DEFAULT NULL AFTER `email`,
+	CHANGE COLUMN `handphone` `handphone` VARCHAR(15) NULL DEFAULT NULL AFTER `occupation`,
+	CHANGE COLUMN `company_id` `company_id` INT(11) NULL DEFAULT NULL AFTER `job_title`;
+
+ALTER TABLE `product`
+	CHANGE COLUMN `description` `description` TEXT NULL DEFAULT NULL COMMENT 'High Level dan Low level detail' AFTER `product_name`,
+	CHANGE COLUMN `credentials` `credentials` TEXT NULL DEFAULT NULL COMMENT 'success stories, client name' AFTER `price`,
+	CHANGE COLUMN `video_path` `video_path` TEXT NULL DEFAULT NULL COMMENT 'video about product or testimoni' AFTER `credentials`;
