@@ -22,7 +22,7 @@
       <ion-row radio-group [(ngModel)]="registration.IdRole">
         <ion-col col-6>
           <ion-item class="role-item">
-            <ion-label class="role-label">Costumer</ion-label>
+            <ion-label class="role-label">Customer</ion-label>
             <ion-radio class="role-radio" value="1" checked></ion-radio>
           </ion-item>
         </ion-col>
@@ -38,10 +38,10 @@
           <ion-col>
             <ion-input type="text" [(ngModel)]="registration.Name" name="Name" placeholder="Name" required></ion-input>
             <ion-input type="tel" [(ngModel)]="registration.Handphone" name="Handphone" placeholder="Handphone" pattern="^0|^62.*" required></ion-input>
-            <ion-input type="email" [(ngModel)]="registration.Email" name="Email" placeholder="Email" pattern="(?!(^[.-].*|[^@]*[.-]@|.*\\.{2,}.*)|^.{254}.)([a-zA-Z0-9!#$%&'*+\\/=?^_`{|}~.-]+@)(?!-.*|.*-\\.)([a-zA-Z0-9-]{1,63}\\.)+[a-zA-Z]{2,15}" required></ion-input>
+            <ion-input type="email" [(ngModel)]="registration.Email" name="Email" placeholder="Email" required></ion-input>
           </ion-col>
         </ion-row>
-        <ion-row *ngIf="registration.IdRole==2">
+        <ion-row *ngIf="registration.IdRole === 2">
           <ion-col>
             <ion-item class="form-select-item">
               <ion-select class="input-area" [(ngModel)]="holdingId" name="Holding Company" placeholder="Holding Company" interface="popover" (ionChange)="changeCompany()" required>
