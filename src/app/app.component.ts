@@ -13,7 +13,8 @@ import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
   templateUrl: 'app.html'
 })
 export class MyApp {
-  @ViewChild(Nav) nav: Nav;
+  @ViewChild(Nav)
+  nav: Nav;
   public rootPage: string = 'login';
   public pages: Array<{ title: string; component: string; icon: string; image: string }>;
   public userName: string = '';
@@ -34,7 +35,7 @@ export class MyApp {
     this.picture = 'assets/imgs/profile.png';
     this.pages = [
       { title: 'Notification', component: 'notification', icon: 'notifications', image: '' },
-      { title: 'Create new post', component: 'newPost', icon: 'paper-plane', image: '' },
+      // { title: 'Create new post', component: 'newPost', icon: 'paper-plane', image: '' },
       { title: 'My post', component: 'myPost', icon: 'share', image: '' },
       { title: 'Company', component: 'company', icon: '', image: 'assets/imgs/company.png' },
       { title: 'Solution', component: 'solution', icon: '', image: 'assets/imgs/solution-menu.png' },
@@ -45,7 +46,6 @@ export class MyApp {
   }
 
   private initializeApp() {
-
     this.platform.ready().then(() => {
       this.statusBar.styleLightContent();
       this.statusBar.overlaysWebView(false);
@@ -69,8 +69,18 @@ export class MyApp {
     else alert('Not implemented yet');
   }
 
+  private changeSideMenus(role: string) {
+    let createPost = { title: 'Create new post', component: 'newPost', icon: 'paper-plane', image: '' };
+
+    if (role === 'Supplier') {
+      if (this.pages[1] !== createPost) this.pages.splice(1, 0, createPost);
+    } else if (role === 'Customer') {
+      if (this.pages[1] === createPost) this.pages.splice(1, 1);
+    }
+  }
+
   private authCheck() {
-    if (window['IonicDevServer'])  {
+    if (window['IonicDevServer']) {
       const routeUrl = document.URL.split('/#/');
       if (routeUrl.length > 1) window.location.href = routeUrl[0];
     }
@@ -88,6 +98,7 @@ export class MyApp {
         this.userName = this.auth.getPrincipal().name;
         this.picture = this.auth.getPrincipal().image ? this.auth.getPrincipal().image : this.picture;
         this.rootPage = 'home';
+        this.changeSideMenus(this.auth.getPrincipal().role);
       } else {
         if (this.menu.isEnabled('sideMenu')) {
           this.menu.enable(false, 'sideMenu');

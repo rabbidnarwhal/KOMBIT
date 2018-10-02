@@ -5,6 +5,7 @@ export class LoginRequest {
 
 export class LoginResponse {
   id: number;
+  role: string;
   idNumber: string;
   username: string;
   name: string;

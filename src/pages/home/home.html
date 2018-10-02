@@ -7,14 +7,64 @@
       <ion-input type="text" placeholder="search" [(ngModel)]="filterText" (input)="filterItems()"></ion-input>
       <ion-icon name="search" item-end></ion-icon>
     </ion-item>
-    <ion-label (click)="createNewPost()">New Post</ion-label>
   </ion-navbar>
+
   <div class="location-indicator" *ngIf="locationEnabled" (click)="locationIndicatorClicked()">
     <span>{{locationIndicatorText}}</span>
   </div>
 </ion-header>
 
 <ion-content padding>
+
+  <ion-row class="random-images-slides">
+    <ion-slides *ngIf="randomProduct.length" pager="true" autoplay="4000" loop="true">
+      <ion-slide *ngFor="let slide of randomProduct">
+        <img src="{{slide.fotoPath}}" />
+      </ion-slide>
+    </ion-slides>
+  </ion-row>
+
+  <ion-row class="promoted-product">
+    <div class="spinner-container" *ngIf="isSearching">
+      <div class="spinner-background">
+        <ion-spinner></ion-spinner>
+      </div>
+    </div>
+    <ion-label text-left class="show-label">Promoted</ion-label>
+    <ion-label text-right class="show-label" (click)="showPromotedProduct()">View All</ion-label>
+    <div text-center class="not-found-text" *ngIf="!promotedProduct.length && !isSearching">Promoted Product not found!</div>
+    <ion-scroll class="side-scroll-item" scrollX="true">
+      <div class="post-list-box promoted" *ngFor="let post of promotedProduct" (click)="showDetail(post)">
+        <div class="promoted-image-container">
+          <img *ngIf="post.fotoPath" class="post-image" [src]="post.fotoPath" />
+        </div>
+        <div class="box-label-container">
+          <ion-label no-margin no-padding class="inline-flex box-content">{{post.productName}}</ion-label>
+          <ion-icon text-right *ngIf="!lockBtn || post !== selectedLikePost" [name]="post.isLike ? 'heart' : 'heart-outline'"></ion-icon>
+        </div>
+      </div>
+    </ion-scroll>
+  </ion-row>
+
+  <ion-row class="category-product">
+    <div class="spinner-container" *ngIf="isSearchingSolution">
+      <div class="spinner-background">
+        <ion-spinner></ion-spinner>
+      </div>
+    </div>
+    <ion-label text-left class="show-label">Solution</ion-label>
+    <ion-label text-right class="show-label" (click)="showSolutions()">View All</ion-label>
+    <div text-center class="not-found-text" *ngIf="!listSolution.length && !isSearchingSolution">Solution not found!</div>
+    <ion-scroll class="side-scroll-item" scrollX="true">
+      <div class="post-list-box solution" *ngFor="let solution of listSolution" (click)="showDetail(solution)">
+        <!-- <img *ngIf="post.fotoPath" class="post-image" [src]="post.fotoPath" /> -->
+        <div class="box-label-container">
+          <ion-label no-margin no-padding class="inline-flex box-content">{{solution.category}}</ion-label>
+        </div>
+      </div>
+    </ion-scroll>
+  </ion-row>
+
   <ion-segment [(ngModel)]="postType" (ionChange)="segmentChanged()">
     <ion-segment-button value="public">
       Public
@@ -72,19 +122,19 @@
             <ion-col no-padding>
               <ion-icon name="eye"></ion-icon>
               <span>{{post.totalView}}</span>
-              <br/>
+              <br />
               <span>View</span>
             </ion-col>
             <ion-col no-padding>
               <ion-icon name="call"></ion-icon>
               <span>{{post.totalChat}}</span>
-              <br/>
+              <br />
               <span>Call</span>
             </ion-col>
             <ion-col no-padding>
               <img class="icon-img-comment" src="assets/imgs/comment.png" />
               <span>{{post.totalComment}}</span>
-              <br/>
+              <br />
               <span>Comment</span>
             </ion-col>
           </ion-row>
@@ -105,4 +155,10 @@
     </ion-col>
     <div text-center class="not-found-text" *ngIf="!filteredItems.length && !isSearching">Post not found</div>
   </ion-row>
+
+  <ion-fab right bottom class="fab-button" *ngIf="newPostEnabled">
+    <button ion-fab color="light" (click)="createNewPost()">
+      <ion-icon name="create"></ion-icon>
+    </button>
+  </ion-fab>
 </ion-content>

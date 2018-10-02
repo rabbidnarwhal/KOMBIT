@@ -24,6 +24,53 @@ page-home {
     @include color-border();
   }
   .post-list-box {
+    &.promoted {
+      width: 100px;
+      display: inline-block;
+      margin-right: 2px;
+      margin-left: 2px;
+      @include color-background(0deg);
+      .promoted-image-container {
+        padding: 4px;
+        .post-image {
+          height: 70px;
+        }
+      }
+      .box-label-container {
+        min-height: 28px;
+        padding: 0 4px;
+        font-size: 12px;
+        color: map-get($kombit-colors, 'text');
+        ion-label {
+          width: 80%;
+          font-weight: 100;
+        }
+        ion-icon {
+          float: right;
+        }
+      }
+    }
+    &.solution {
+      width: 80px;
+      height: 70px;
+      display: inline-block;
+      margin-right: 2px;
+      margin-left: 2px;
+      .box-label-container {
+        height: 60px;
+        width: 100%;
+        padding: 0 4px;
+        font-size: 12px;
+        color: map-get($kombit-colors, 'btn');
+        display: flex;
+        ion-label {
+          width: 100%;
+          font-size: 14px;
+          white-space: normal;
+        }
+      }
+    }
+
     margin-bottom: 16px;
     background: map-get($kombit-colors, 'text');
     -ms-box-shadow: 0 4px 10px RGBA(0, 0, 0, 0.3);
@@ -49,7 +96,7 @@ page-home {
     @include color-background(180deg);
     border: none;
     color: map-get($kombit-colors, 'text');
-    ion-icon+span {
+    ion-icon + span {
       margin-left: 6px;
     }
   }
@@ -81,7 +128,7 @@ page-home {
     }
   }
   .top-searchbar {
-    +ion-label {
+    + ion-label {
       margin: 0;
       float: right;
       font-size: 12px;
@@ -89,5 +136,42 @@ page-home {
       margin-right: 8px;
       color: map-get($kombit-colors, 'text');
     }
+  }
+
+  .category-product {
+    .side-scroll-item {
+      height: 80px;
+    }
+  }
+
+  .side-scroll-item {
+    height: 120px;
+    white-space: nowrap;
+    width: 100%;
+    .scroll-content {
+      padding-left: 0 !important;
+      padding-top: 0 !important;
+    }
+  }
+
+  .show-label {
+    margin: 4px;
+    @include color-item();
+  }
+
+  .fab-button {
+    bottom: 36px;
+    button {
+      width: 48px;
+      height: 48px;
+      @include color-background(180deg);
+      ion-icon {
+        color: map-get($kombit-colors, 'text');
+      }
+    }
+  }
+  .random-images-slides {
+    height: 100px;
+    margin-bottom: 12px;
   }
 }

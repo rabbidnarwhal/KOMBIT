@@ -1,10 +1,12 @@
-import { Component, NgZone } from '@angular/core';
-import { NavController, IonicPage, Events, NavParams } from 'ionic-angular';
+import { Component, NgZone, ViewChild } from '@angular/core';
+import { NavController, IonicPage, Events, NavParams, Slides } from 'ionic-angular';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { Product } from '../../models/products';
 import { AuthServiceProvider } from '../../providers/auth-service';
 import { LocationService, MyLocationOptions } from '@ionic-native/google-maps';
+import { Category } from '../../models/category';
+import { DataCategoryServiceProvider } from '../../providers/dataCategory-service';
 
 @IonicPage({
   name: 'home'
@@ -14,12 +16,20 @@ import { LocationService, MyLocationOptions } from '@ionic-native/google-maps';
   templateUrl: 'home.html'
 })
 export class HomePage {
+  @ViewChild(Slides)
+  slides: Slides;
+
   private listPost: Array<Product>;
   public filteredItems: Array<Product>;
   public listPostLeft: Array<Product>;
   public listPostRight: Array<Product>;
+  public listSolution: Array<Category>;
+  public randomProduct: Array<Product>;
+  public promotedProduct: Array<Product>;
+
   public filterText: string = '';
   public isSearching: boolean = true;
+  public isSearchingSolution: boolean = true;
   public lockBtn: boolean = false;
   public selectedLikePost: any;
   public postType: string;
@@ -28,28 +38,42 @@ export class HomePage {
   public selectedProvince: number;
   public selectedCity: number;
   public locationEnabled: boolean = false;
+  public newPostEnabled: boolean;
   public locationIndicatorText: string;
-
+  public numberRandomImages: number;
   constructor(
     private navCtrl: NavController,
     private navParams: NavParams,
     private utility: UtilityServiceProvider,
     private dataProduct: DataProductServiceProvider,
+    private dataCategory: DataCategoryServiceProvider,
     private events: Events,
     private auth: AuthServiceProvider,
     private zone: NgZone
   ) {
     this.listPost = new Array<Product>();
+    this.listSolution = new Array<Category>();
+    this.promotedProduct = new Array<Product>();
+    this.randomProduct = new Array<Product>();
     this.postType = 'public';
     this.filterItems(this.locationEnabled);
-    console.log('auth', this.auth.getPrincipal());
     this.userId = this.auth.getPrincipal().id;
+    this.newPostEnabled = this.auth.getPrincipal().role === 'Supplier' ? true : false;
+    this.isSearchingSolution = true;
+    this.numberRandomImages = 5;
   }
 
   ionViewWillEnter() {
     if (!this.listPost.length) this.isSearching = true;
     this.postType = 'public';
     this.loadPostData();
+    this.loadSolution();
+    const slidesCheck = setInterval(() => {
+      if (this.slides) {
+        this.slides.autoplayDisableOnInteraction = false;
+        clearInterval(slidesCheck);
+      }
+    }, 1000);
   }
 
   ionViewDidLoad() {
@@ -84,7 +108,9 @@ export class HomePage {
         this.selectedProvince = sub.province.id;
         this.filterItems(this.locationEnabled);
         this.isSearching = false;
-        this.locationIndicatorText = sub.city.id ? `${sub.city.name}, ${sub.province.name}` : `SELURUH ${sub.province.name}`;
+        this.locationIndicatorText = sub.city.id
+          ? `${sub.city.name}, ${sub.province.name}`
+          : `SELURUH ${sub.province.name}`;
       }
     });
 
@@ -109,9 +135,15 @@ export class HomePage {
     this.dataProduct
       .getListAllProducts()
       .then(res => {
+        this.getRandomProduct(res, this.numberRandomImages);
+        this.getPromotedProduct(res);
+        console.log(this.randomProduct);
+
         this.isSearching = false;
-        if (this.navParams.data.solution) this.listPost = res.filter(x => x.categoryName === this.navParams.data.solution.category);
-        else if (this.navParams.data.company) this.listPost = res.filter(x => x.companyName === this.navParams.data.company.companyName);
+        if (this.navParams.data.solution)
+          this.listPost = res.filter(x => x.categoryName === this.navParams.data.solution.category);
+        else if (this.navParams.data.company)
+          this.listPost = res.filter(x => x.companyName === this.navParams.data.company.companyName);
         else this.listPost = res;
         this.filterItems(this.locationEnabled);
       })
@@ -119,6 +151,17 @@ export class HomePage {
         this.isSearching = false;
         if (!isReload) this.utility.showToast(err);
       });
+  }
+
+  loadSolution() {
+    if (this.listSolution.length) this.isSearchingSolution = false;
+    this.dataCategory
+      .getListCategory()
+      .then(sub => {
+        this.listSolution = sub;
+        this.isSearchingSolution = false;
+      })
+      .catch(err => this.utility.showToast(err));
   }
 
   segmentChanged() {
@@ -144,7 +187,8 @@ export class HomePage {
   filterItems(isLocation) {
     let data = [];
     if (this.postType === 'public') data = this.listPost;
-    if (this.postType === 'holding') data = this.listPost.filter(res => res.holdingId === this.dataProduct.getHoldingId());
+    if (this.postType === 'holding')
+      data = this.listPost.filter(res => res.holdingId === this.dataProduct.getHoldingId());
     if (this.postType === 'favorite') data = this.listPost.filter(res => res.isLike);
 
     const filtering = () => {
@@ -197,6 +241,10 @@ export class HomePage {
     this.navCtrl.push('newPost', { id: post.id });
   }
 
+  showPromotedProduct() {}
+
+  showSolutions() {}
+
   private nearMePost(dist): Promise<any> {
     return new Promise(resolve => {
       this.getPosition()
@@ -216,6 +264,21 @@ export class HomePage {
           resolve([]);
         });
     });
+  }
+
+  private getRandomProduct(products: Array<Product>, n: number) {
+    if (products.length < n) n = products.length;
+    let temp = [];
+    while (n--) {
+      var product = products[Math.floor(Math.random() * products.length)];
+      if (temp.findIndex(x => x.id === product.id) < 0) temp.push(product);
+      else n++;
+    }
+    this.randomProduct = temp;
+  }
+
+  private getPromotedProduct(products: Array<Product>) {
+    this.promotedProduct = products.slice(0, 5);
   }
 
   private getPosition() {
