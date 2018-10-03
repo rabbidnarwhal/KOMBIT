@@ -7,6 +7,9 @@
       <ion-input type="text" placeholder="search" [(ngModel)]="filterText" (input)="filterItems()"></ion-input>
       <ion-icon name="search" item-end></ion-icon>
     </ion-item>
+    <button ion-button class="notification-button">
+      <ion-icon name="megaphone"></ion-icon>
+    </button>
   </ion-navbar>
 
   <div class="location-indicator" *ngIf="locationEnabled" (click)="locationIndicatorClicked()">
@@ -16,7 +19,7 @@
 
 <ion-content padding>
 
-  <ion-row class="random-images-slides">
+  <ion-row *ngIf="sliderEnabled" class="random-images-slides">
     <ion-slides *ngIf="randomProduct.length" pager="true" autoplay="4000" loop="true">
       <ion-slide *ngFor="let slide of randomProduct">
         <img src="{{slide.fotoPath}}" />
@@ -24,14 +27,14 @@
     </ion-slides>
   </ion-row>
 
-  <ion-row class="promoted-product">
+  <ion-row *ngIf="promotedEnabled" class="promoted-product">
     <div class="spinner-container" *ngIf="isSearching">
       <div class="spinner-background">
         <ion-spinner></ion-spinner>
       </div>
     </div>
     <ion-label text-left class="show-label">Promoted</ion-label>
-    <ion-label text-right class="show-label" (click)="showPromotedProduct()">View All</ion-label>
+    <ion-label text-right class="show-label" (click)="showAllPromotedProduct()">View All</ion-label>
     <div text-center class="not-found-text" *ngIf="!promotedProduct.length && !isSearching">Promoted Product not found!</div>
     <ion-scroll class="side-scroll-item" scrollX="true">
       <div class="post-list-box promoted" *ngFor="let post of promotedProduct" (click)="showDetail(post)">
@@ -46,17 +49,17 @@
     </ion-scroll>
   </ion-row>
 
-  <ion-row class="category-product">
+  <ion-row *ngIf="solutionEnabled" class="category-product">
     <div class="spinner-container" *ngIf="isSearchingSolution">
       <div class="spinner-background">
         <ion-spinner></ion-spinner>
       </div>
     </div>
     <ion-label text-left class="show-label">Solution</ion-label>
-    <ion-label text-right class="show-label" (click)="showSolutions()">View All</ion-label>
+    <ion-label text-right class="show-label" (click)="showAllSolutions()">View All</ion-label>
     <div text-center class="not-found-text" *ngIf="!listSolution.length && !isSearchingSolution">Solution not found!</div>
     <ion-scroll class="side-scroll-item" scrollX="true">
-      <div class="post-list-box solution" *ngFor="let solution of listSolution" (click)="showDetail(solution)">
+      <div class="post-list-box solution" *ngFor="let solution of listSolution" (click)="filterSolutions(solution)">
         <!-- <img *ngIf="post.fotoPath" class="post-image" [src]="post.fotoPath" /> -->
         <div class="box-label-container">
           <ion-label no-margin no-padding class="inline-flex box-content">{{solution.category}}</ion-label>

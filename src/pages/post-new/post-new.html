@@ -1,9 +1,3 @@
-<!--
-  Generated template for the PostNewPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header class="custom-background">
 
   <ion-navbar>
@@ -29,23 +23,37 @@
             <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
           </div>
         </div>
-        <!-- <div class="placeholder" (click)="getFilePath('foto')" [style.background-image]="imagePathSecure ? imagePathSecure : 'transparent'">
-          <ion-icon *ngIf="!imagePathSecure" name="camera"></ion-icon>
-          <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" [style.width]="imagePathSecure ? '80%' : '20%'" />
-        </div> -->
       </div>
       <ion-label>Upload Photo
         <span class="required">*</span>
       </ion-label>
     </ion-col>
   </ion-row>
-  <div class="divider"></div>
+
+  <ion-segment padding class="segment-product" [(ngModel)]="segmentName">
+    <ion-segment-button class="segment-product-button" value="Description">
+      Description
+    </ion-segment-button>
+    <ion-segment-button class="segment-product-button" value="Feature">
+      Feature
+    </ion-segment-button>
+    <ion-segment-button class="segment-product-button" value="Benefit">
+      Benefit
+    </ion-segment-button>
+    <ion-segment-button class="segment-product-button" value="Implementation">
+      Implementation
+    </ion-segment-button>
+    <ion-segment-button class="segment-product-button" value="Faq">
+      Faq
+    </ion-segment-button>
+  </ion-segment>
+
   <div class="input-fields">
     <form id="newPostForm" #form="ngForm">
       <ion-label>Product Names
         <span class="required">*</span>
       </ion-label>
-      <ion-input type="text" [(ngModel)]="data.ProductName" name="ProductName" required></ion-input>
+      <ion-input type="text" [(ngModel)]="data.ProductName" name="Product Name" required></ion-input>
       <ion-label>Solution
         <span class="required">*</span>
       </ion-label>
@@ -54,33 +62,201 @@
           <ion-option [value]="item.id" *ngFor="let item of listCategory">{{item.category}}</ion-option>
         </ion-select>
       </ion-item>
-      <ion-label>Description
-        <span class="required">*</span>
-      </ion-label>
-      <ion-textarea [(ngModel)]="data.Description" name="Description" required></ion-textarea>
     </form>
   </div>
-  <div class="divider"></div>
-  <ion-row>
-    <ion-col>
-      <div class="input-fields">
-        <ion-label>Success story or client review:</ion-label>
-        <ion-textarea [(ngModel)]="data.Credentials"></ion-textarea>
-        <ion-label class="margin-top-10">Price</ion-label>
-        <ion-input type="tel" [(ngModel)]="price" name="Price" (ionChange)="commaSeparated()"></ion-input>
-      </div>
-      <div class="video-wrapper margin-top-20">
-        <div class="placeholder" (click)="getFilePath('video')">
-          <ion-icon *ngIf="!videoPathPublic" name="logo-youtube"></ion-icon>
-          <video *ngIf="videoPathPublic" controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer" #videoShow>
-            <source [src]="videoPathPublic" type="video/mp4" /> Not Supported
-          </video>
-          <img *ngIf="!videoPathPublic" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+
+  <div *ngIf="segmentName === 'Description'">
+    <ion-row>
+      <ion-col>
+        <ion-label>Description
+          <span class="required">*</span>
+        </ion-label>
+        <ion-card class="card-container">
+          <quill-editor (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Description" required="true">
+            <div id="toolbar" quill-editor-toolbar>
+              <span class="ql-formats" (click)="addImageToText(segmentName)">
+                <button ion-button icon-start round outline small class="toolbar-button">
+                  <ion-icon name="image"></ion-icon>
+                  <span>Add Image</span>
+                </button>
+              </span>
+            </div>
+          </quill-editor>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="input-fields">
+          <ion-label>Business Target</ion-label>
+          <ion-textarea [(ngModel)]="data.Target"></ion-textarea>
         </div>
-      </div>
-      <ion-label>Upload Video</ion-label>
-    </ion-col>
-  </ion-row>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="input-fields">
+          <ion-label>Supplier as Contact Person?</ion-label>
+          <ion-toggle class="contact-toggle" checked="true" [(ngModel)]="supplierAsContact"></ion-toggle>
+          <form id="newContactForm" *ngIf="!supplierAsContact" #formContact="ngForm">
+            <ion-label>Name
+              <span class="required">*</span>
+            </ion-label>
+            <ion-input type="text" [(ngModel)]="data.ContactName" name="Name" required></ion-input>
+            <ion-label>Handphone
+              <span class="required">*</span>
+            </ion-label>
+            <ion-input type="tel" [(ngModel)]="data.ContactPhone" name="Handphone" required></ion-input>
+            <ion-label>Email
+              <span class="required">*</span>
+            </ion-label>
+            <ion-input type="email" [(ngModel)]="data.ContactMail" name="Email" required></ion-input>
+          </form>
+        </div>
+      </ion-col>
+    </ion-row>
+  </div>
+
+  <div *ngIf="segmentName === 'Feature'">
+    <ion-row>
+      <ion-col>
+        <ion-label>Feature</ion-label>
+        <ion-card class="card-container">
+          <quill-editor (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Feature">
+            <div id="toolbar" quill-editor-toolbar>
+              <span class="ql-formats" (click)="addImageToText(segmentName)">
+                <button ion-button icon-start round outline small class="toolbar-button">
+                  <ion-icon name="image"></ion-icon>
+                  <span>Add Image</span>
+                </button>
+              </span>
+            </div>
+          </quill-editor>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="input-fields">
+          <ion-label class="margin-top-10">Price</ion-label>
+          <ion-input type="tel" [(ngModel)]="price" name="Price" (ionChange)="commaSeparated()"></ion-input>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="input-fields">
+          <ion-label>Attach File</ion-label>
+          <ion-item class="attachment-item" *ngFor="let file of attachmentFile">
+            <ion-label>{{file.name}}</ion-label>
+            <ion-icon item-end name="close" (click)="removeAttachmentFile(file)"></ion-icon>
+          </ion-item>
+          <button ion-button icon-only class="attachment-button" (click)="addAttachmentFile()">
+            <ion-icon name="add-circle"></ion-icon>
+          </button>
+        </div>
+      </ion-col>
+    </ion-row>
+  </div>
+
+  <div *ngIf="segmentName === 'Benefit'">
+    <ion-row>
+      <ion-col>
+        <ion-label>Benefit</ion-label>
+        <ion-card class="card-container">
+          <quill-editor (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Benefit">
+            <div id="toolbar" quill-editor-toolbar>
+              <span class="ql-formats" (click)="addImageToText(segmentName)">
+                <button ion-button icon-start round outline small class="toolbar-button">
+                  <ion-icon name="image"></ion-icon>
+                  <span>Add Image</span>
+                </button>
+              </span>
+            </div>
+          </quill-editor>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </div>
+
+  <div *ngIf="segmentName === 'Implementation'">
+    <ion-row>
+      <ion-col>
+        <ion-label>Implementation</ion-label>
+        <ion-card class="card-container">
+          <quill-editor (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Implementation">
+            <div id="toolbar" quill-editor-toolbar>
+              <span class="ql-formats" (click)="addImageToText(segmentName)">
+                <button ion-button icon-start round outline small class="toolbar-button">
+                  <ion-icon name="image"></ion-icon>
+                  <span>Add Image</span>
+                </button>
+              </span>
+            </div>
+          </quill-editor>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-label>Success story or client review:</ion-label>
+        <ion-card class="card-container">
+          <quill-editor (onEditorCreated)="editorCreated($event, segmentName, 'Credentials')" [(ngModel)]="data.Credentials">
+            <div id="toolbar" quill-editor-toolbar>
+              <span class="ql-formats" (click)="addImageToText(segmentName, 'Credentials')">
+                <button ion-button icon-start round outline small class="toolbar-button">
+                  <ion-icon name="image"></ion-icon>
+                  <span>Add Image</span>
+                </button>
+              </span>
+            </div>
+          </quill-editor>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="video-wrapper margin-top-20">
+          <div class="placeholder" (click)="getFilePath('video')">
+            <ion-icon *ngIf="!videoPathPublic" name="logo-youtube"></ion-icon>
+            <video *ngIf="videoPathPublic" controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer" #videoShow>
+              <source [src]="videoPathPublic" type="video/mp4" /> Not Supported
+            </video>
+            <img *ngIf="!videoPathPublic" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+          </div>
+        </div>
+        <ion-label>Upload Video</ion-label>
+      </ion-col>
+    </ion-row>
+  </div>
+
+  <div *ngIf="segmentName === 'Faq'">
+    <ion-row>
+      <ion-col>
+        <ion-label>FAQ</ion-label>
+        <ion-card class="card-container">
+          <quill-editor (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Faq">
+            <div id="toolbar" quill-editor-toolbar>
+              <span class="ql-formats" (click)="addImageToText(segmentName)">
+                <button ion-button icon-start round outline small class="toolbar-button">
+                  <ion-icon name="image"></ion-icon>
+                  <span>Add Image</span>
+                </button>
+              </span>
+            </div>
+          </quill-editor>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </div>
+
+
   <ion-row justify-content-center class="margin-top-20">
     <button ion-button btn-kombit small type="button" (click)="publishClick()">{{btnText}}</button>
   </ion-row>

@@ -27,20 +27,27 @@ export class HomePage {
   public randomProduct: Array<Product>;
   public promotedProduct: Array<Product>;
 
-  public filterText: string = '';
-  public isSearching: boolean = true;
-  public isSearchingSolution: boolean = true;
-  public lockBtn: boolean = false;
   public selectedLikePost: any;
+
+  public filterText: string = '';
   public postType: string;
+  public locationIndicatorText: string;
+
   public userId: number;
   public distance: number;
   public selectedProvince: number;
   public selectedCity: number;
+  public numberRandomImages: number;
+
+  public isSearching: boolean = true;
+  public isSearchingSolution: boolean = true;
+  public lockBtn: boolean = false;
   public locationEnabled: boolean = false;
   public newPostEnabled: boolean;
-  public locationIndicatorText: string;
-  public numberRandomImages: number;
+  public promotedEnabled: boolean = true;
+  public solutionEnabled: boolean = true;
+  public sliderEnabled: boolean = true;
+
   constructor(
     private navCtrl: NavController,
     private navParams: NavParams,
@@ -51,15 +58,14 @@ export class HomePage {
     private auth: AuthServiceProvider,
     private zone: NgZone
   ) {
+    this.postType = 'public';
     this.listPost = new Array<Product>();
     this.listSolution = new Array<Category>();
     this.promotedProduct = new Array<Product>();
     this.randomProduct = new Array<Product>();
-    this.postType = 'public';
     this.filterItems(this.locationEnabled);
     this.userId = this.auth.getPrincipal().id;
     this.newPostEnabled = this.auth.getPrincipal().role === 'Supplier' ? true : false;
-    this.isSearchingSolution = true;
     this.numberRandomImages = 5;
   }
 
@@ -67,13 +73,19 @@ export class HomePage {
     if (!this.listPost.length) this.isSearching = true;
     this.postType = 'public';
     this.loadPostData();
-    this.loadSolution();
-    const slidesCheck = setInterval(() => {
-      if (this.slides) {
-        this.slides.autoplayDisableOnInteraction = false;
-        clearInterval(slidesCheck);
-      }
-    }, 1000);
+    if (this.navParams.data.solution || this.navParams.data.promoted || this.navParams.data.company) {
+      this.sliderEnabled = false;
+      this.promotedEnabled = false;
+      this.solutionEnabled = false;
+    } else {
+      this.loadSolution();
+      const slidesCheck = setInterval(() => {
+        if (this.slides) {
+          this.slides.autoplayDisableOnInteraction = false;
+          clearInterval(slidesCheck);
+        }
+      }, 1000);
+    }
   }
 
   ionViewDidLoad() {
@@ -132,25 +144,30 @@ export class HomePage {
   }
 
   loadPostData(isReload = false) {
-    this.dataProduct
-      .getListAllProducts()
-      .then(res => {
-        this.getRandomProduct(res, this.numberRandomImages);
-        this.getPromotedProduct(res);
-        console.log(this.randomProduct);
-
-        this.isSearching = false;
-        if (this.navParams.data.solution)
-          this.listPost = res.filter(x => x.categoryName === this.navParams.data.solution.category);
-        else if (this.navParams.data.company)
-          this.listPost = res.filter(x => x.companyName === this.navParams.data.company.companyName);
-        else this.listPost = res;
-        this.filterItems(this.locationEnabled);
-      })
-      .catch(err => {
-        this.isSearching = false;
-        if (!isReload) this.utility.showToast(err);
-      });
+    if (this.navParams.data.promoted) {
+      this.listPost = this.navParams.data.promoted;
+      this.filterItems(this.locationEnabled);
+    } else {
+      this.dataProduct
+        .getListAllProducts()
+        .then(res => {
+          this.isSearching = false;
+          if (this.navParams.data.solution)
+            this.listPost = res.filter(x => x.categoryName === this.navParams.data.solution.category);
+          else if (this.navParams.data.company)
+            this.listPost = res.filter(x => x.companyName === this.navParams.data.company.companyName);
+          else {
+            this.listPost = res;
+            this.getRandomProduct(res, this.numberRandomImages);
+            this.getPromotedProduct(res);
+          }
+          this.filterItems(this.locationEnabled);
+        })
+        .catch(err => {
+          this.isSearching = false;
+          if (!isReload) this.utility.showToast(err);
+        });
+    }
   }
 
   loadSolution() {
@@ -241,9 +258,17 @@ export class HomePage {
     this.navCtrl.push('newPost', { id: post.id });
   }
 
-  showPromotedProduct() {}
+  showAllPromotedProduct() {
+    this.navCtrl.push('home', { promoted: this.promotedProduct });
+  }
 
-  showSolutions() {}
+  showAllSolutions() {
+    this.navCtrl.push('solution');
+  }
+
+  filterSolutions(solution) {
+    this.navCtrl.push('home', { solution: solution });
+  }
 
   private nearMePost(dist): Promise<any> {
     return new Promise(resolve => {

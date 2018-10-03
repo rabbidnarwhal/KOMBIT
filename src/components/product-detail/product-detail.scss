@@ -6,4 +6,21 @@ product-detail {
   .swiper-container {
     padding-bottom: 30px;
   }
+  .segment.segment-product {
+    height: 2.8rem;
+    margin-bottom: 10px;
+    .segment-button.segment-product-button {
+      height: 2.8rem !important;
+      line-height: 2.8rem !important;
+      font-size: 9px;
+      font-stretch: ultra-condensed;
+      font-weight: 300;
+      @include color-border();
+      @include color-item();
+      &.segment-activated {
+        color: map-get($kombit-colors, 'text') !important;
+        @include color-background(180deg);
+      }
+    }
+  }
 }

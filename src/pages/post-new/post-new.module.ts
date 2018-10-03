@@ -6,10 +6,11 @@ import { File } from '@ionic-native/file';
 import { FilePath } from '@ionic-native/file-path';
 import { FileTransfer } from '@ionic-native/file-transfer';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   declarations: [PostNewPage],
-  imports: [IonicPageModule.forChild(PostNewPage)],
+  imports: [IonicPageModule.forChild(PostNewPage), QuillModule],
   providers: [Camera, File, FilePath, FileTransfer, DataProductServiceProvider]
 })
 export class PostNewPageModule {}

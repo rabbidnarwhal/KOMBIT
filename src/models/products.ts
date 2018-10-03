@@ -22,17 +22,26 @@ export class Product {
 }
 
 export class NewProduct {
+  Benefit: string;
   CategoryId: number;
   CompanyId: number;
+  ContactMail: string;
+  ContactName: string;
+  ContactPhone: string;
   Credentials: string;
-  Description: string;
-  HoldingId: number;
-  IsIncludePrice: boolean;
   Currency: string;
+  Description: string;
+  Faq: string;
+  Feature: string;
+  HoldingId: number;
+  Implementation: string;
+  IsIncludePrice: boolean;
   Price: number;
   ProductName: string;
+  Target: string;
   UserId: number;
   VideoPath: string;
+  AttachmentFile: Array<AttachmentFile>;
   Foto: Array<Foto>;
 
   constructor(data) {
@@ -125,5 +134,10 @@ export class Comment {
 export class Foto {
   FotoName: string;
   FotoPath: string;
+  Id: number;
+}
+export class AttachmentFile {
+  FileName: string;
+  FilePath: string;
   Id: number;
 }

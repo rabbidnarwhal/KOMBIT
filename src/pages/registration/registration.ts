@@ -19,6 +19,7 @@ export class RegistrationPage {
   public registration: RegistrationRequest;
   public listIDType: Array<any> = [];
   public listCompany: Array<any> = [];
+  public listRoles: Array<any> = [];
   public listHoldingCompany: Array<any> = [];
   public isLoading: boolean = false;
   public holdingId: number;
@@ -32,7 +33,11 @@ export class RegistrationPage {
     private events: Events
   ) {
     this.registration = new RegistrationRequest();
-    this.registration.IdRole = 1;
+    this.listRoles = [
+      { id: 1, roleName: 'Customer' },
+      { id: 2, roleName: 'Supplier' }
+      // { id: 3, roleName: 'Admin' }
+    ];
   }
 
   ionViewDidLoad() {
