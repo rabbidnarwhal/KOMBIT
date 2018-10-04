@@ -72,7 +72,7 @@
           <span class="required">*</span>
         </ion-label>
         <ion-card class="card-container">
-          <quill-editor (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Description" required="true">
+          <quill-editor placeholder="" (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Description" required="true">
             <div id="toolbar" quill-editor-toolbar>
               <span class="ql-formats" (click)="addImageToText(segmentName)">
                 <button ion-button icon-start round outline small class="toolbar-button">
@@ -124,7 +124,7 @@
       <ion-col>
         <ion-label>Feature</ion-label>
         <ion-card class="card-container">
-          <quill-editor (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Feature">
+          <quill-editor placeholder="" (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Feature">
             <div id="toolbar" quill-editor-toolbar>
               <span class="ql-formats" (click)="addImageToText(segmentName)">
                 <button ion-button icon-start round outline small class="toolbar-button">
@@ -168,7 +168,7 @@
       <ion-col>
         <ion-label>Benefit</ion-label>
         <ion-card class="card-container">
-          <quill-editor (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Benefit">
+          <quill-editor placeholder="" (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Benefit">
             <div id="toolbar" quill-editor-toolbar>
               <span class="ql-formats" (click)="addImageToText(segmentName)">
                 <button ion-button icon-start round outline small class="toolbar-button">
@@ -188,7 +188,7 @@
       <ion-col>
         <ion-label>Implementation</ion-label>
         <ion-card class="card-container">
-          <quill-editor (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Implementation">
+          <quill-editor placeholder="" (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Implementation">
             <div id="toolbar" quill-editor-toolbar>
               <span class="ql-formats" (click)="addImageToText(segmentName)">
                 <button ion-button icon-start round outline small class="toolbar-button">
@@ -206,7 +206,7 @@
       <ion-col>
         <ion-label>Success story or client review:</ion-label>
         <ion-card class="card-container">
-          <quill-editor (onEditorCreated)="editorCreated($event, segmentName, 'Credentials')" [(ngModel)]="data.Credentials">
+          <quill-editor placeholder="" (onEditorCreated)="editorCreated($event, segmentName, 'Credentials')" [(ngModel)]="data.Credentials">
             <div id="toolbar" quill-editor-toolbar>
               <span class="ql-formats" (click)="addImageToText(segmentName, 'Credentials')">
                 <button ion-button icon-start round outline small class="toolbar-button">
@@ -241,7 +241,7 @@
       <ion-col>
         <ion-label>FAQ</ion-label>
         <ion-card class="card-container">
-          <quill-editor (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Faq">
+          <quill-editor placeholder="" (onEditorCreated)="editorCreated($event, segmentName)" [(ngModel)]="data.Faq">
             <div id="toolbar" quill-editor-toolbar>
               <span class="ql-formats" (click)="addImageToText(segmentName)">
                 <button ion-button icon-start round outline small class="toolbar-button">

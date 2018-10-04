@@ -54,6 +54,8 @@ export class PostNewPage {
 
   public data: NewProduct;
 
+  public testImage: string;
+
   constructor(
     private actionSheetCtrl: ActionSheetController,
     private api: ApiServiceProvider,
@@ -389,6 +391,9 @@ export class PostNewPage {
           saveToPhotoAlbum: false,
           correctOrientation: true
         };
+        // if (editor) {
+        //   options.destinationType = this.camera.DestinationType.DATA_URL;
+        // }
         this.camera
           .getPicture(options)
           .then(filePath => {
@@ -402,16 +407,31 @@ export class PostNewPage {
           })
           .then((res: FileEntry) => {
             if (!res) reject('Unable to load file');
-            res.file(
-              meta => {
-                if (type === this.camera.MediaType.PICTURE) resolve(path);
-                else {
-                  if (meta.type === 'video/mp4') resolve(path);
-                  else reject('Video not supported. Only supporting .mp4 video file');
-                }
-              },
-              error => reject(error)
-            );
+            if (editor) {
+              this.file
+                .readAsDataURL(this.file.externalCacheDirectory, res.name)
+                .then(dataUrl => {
+                  // let fileWithoutExtension = ('' + dataUrl + '').replace(/^data:image\/(png|jpg);base64,/, '');
+                  // console.log(fileWithoutExtension);
+                  // console.log(dataUrl);
+                  resolve(dataUrl);
+                })
+                .catch(err => {
+                  console.log('file', err);
+                  reject(err);
+                });
+            } else {
+              res.file(
+                meta => {
+                  if (type === this.camera.MediaType.PICTURE) resolve(path);
+                  else {
+                    if (meta.type === 'video/mp4') resolve(path);
+                    else reject('Video not supported. Only supporting .mp4 video file');
+                  }
+                },
+                error => reject(error)
+              );
+            }
           })
           .catch(error => reject(error));
       }

@@ -11,6 +11,7 @@
     "ionic:build": "ionic-app-scripts build",
     "ionic:serve": "ionic-app-scripts serve",
     "build:prod": "ionic cordova build android --prod --release",
+    "copy:prod": "cp platforms\\android\\app\\build\\outputs\\apk\\release\\app-release.apk i:\\dump",
     "install:apk": "adb install -r platforms\\android\\app\\build\\outputs\\apk\\debug\\app-debug.apk",
     "build:install": "npm run build && npm run install:apk"
   },
@@ -105,6 +106,6 @@
     ]
   },
   "config": {
-    "ionic_copy": "./config/copy.config.js"
+    "ionic_sass": "./config/sass.config.js"
   }
 }

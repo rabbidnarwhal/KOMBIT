@@ -52,9 +52,9 @@ $colors: (
 // default are overridden.
 @import 'ionic.theme.default';
 @import 'kombit.scss';
-@import './quill.core.css';
-@import './quill.snow.css';
-@import './quill.bubble.css';
+@import 'quill.core';
+@import 'quill.snow';
+@import 'quill.bubble';
 // Ionicons
 // --------------------------------------------------
 // The premium icon font for Ionic. For more info, please see:
