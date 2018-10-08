@@ -2,7 +2,7 @@ import { ApiServiceProvider } from '../../providers/api-service';
 import { AuthServiceProvider } from '../../providers/auth-service';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { Category } from '../../models/category';
-import { NewProduct, AttachmentFile } from '../../models/products';
+import { NewProduct } from '../../models/products';
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
@@ -93,6 +93,7 @@ export class PostNewPage {
 
   ionViewDidLoad() {
     if (this.navParams.data.id) {
+      this.postId = this.navParams.data.id;
       this.pageTitle = 'Edit Post';
       this.btnText = 'Save';
       this.loadContent();
@@ -108,7 +109,7 @@ export class PostNewPage {
         .resolveNativePath(uri)
         .then(file => {
           const fileName = file.split('/');
-          this.attachmentFile.push({ path: file, name: fileName[fileName.length - 1] });
+          this.attachmentFile.push({ path: file, name: fileName[fileName.length - 1], isUploaded: false });
         })
         .catch(err => this.utility.showToast(err));
     };
@@ -125,7 +126,7 @@ export class PostNewPage {
       input.click();
       input.onchange = () => {
         const blob = window.URL.createObjectURL(input.files[0]);
-        this.attachmentFile.push({ path: blob, name: input.files[0].name });
+        this.attachmentFile.push({ path: blob, name: input.files[0].name, isUploaded: false });
       };
     }
   }
@@ -134,7 +135,13 @@ export class PostNewPage {
   removeAttachmentFile(item: any) {
     this.utility
       .confirmAlert('Remove file?', '', 'Yes', 'No')
-      .then(() => this.removeFromArray(this.attachmentFile, item))
+      .then(() => {
+        this.removeFromArray(this.attachmentFile, item);
+        if (this.postId) {
+          const idx = this.data.Attachment.findIndex(x => x.FilePath === item['path']);
+          if (idx !== -1) this.data.Attachment[idx].FilePath = null;
+        }
+      })
       .catch(err => console.error(err));
   }
 
@@ -178,7 +185,7 @@ export class PostNewPage {
 
         /** Add to upload que if there is a foto and had not been uploaded. */
         if (this.imagePathSecure.length) {
-          this.imagePathSecure = this.imagePathSecure.map((element, index) => {
+          this.imagePathSecure = this.imagePathSecure.map(element => {
             let obj = element;
             if (!element.isFotoUpload) {
               obj.isFotoUpload = true;
@@ -189,9 +196,16 @@ export class PostNewPage {
         }
 
         /** Add to upload que if there is an attachment file and not had been uploaded. */
+        let attachmentNames = new Array<string>();
         if (this.attachmentFile.length) {
-          this.attachmentFile.forEach(element => {
-            this.fileUpload.push(this.uploadMediaFile('kit', element.path, 'attachment'));
+          this.attachmentFile = this.attachmentFile.map(element => {
+            const obj = element;
+            if (!element.isUploaded) {
+              obj.isUploaded = true;
+              this.fileUpload.push(this.uploadMediaFile('kit', element.path, 'attachment'));
+              attachmentNames.push(element.name);
+            }
+            return obj;
           });
         }
 
@@ -218,7 +232,7 @@ export class PostNewPage {
                     });
                   } else if (segment === 'attachment') {
                     this.data.Attachment.push({
-                      FileName: this.attachmentFile[kitCount].name,
+                      FileName: attachmentNames[kitCount],
                       FilePath: element.path as string,
                       Id: 0
                     });
@@ -310,7 +324,7 @@ export class PostNewPage {
       .confirmAlert('Remove photo?', '', 'Yes', 'No')
       .then(() => {
         this.removeFromArray(this.imagePathSecure, image);
-        if (this.navParams.data.id) {
+        if (this.postId) {
           const idx = this.data.Foto.findIndex(x => x.FotoPath === image['path']);
           if (idx !== -1) this.data.Foto[idx].FotoPath = null;
         }
@@ -335,7 +349,6 @@ export class PostNewPage {
   private loadContent() {
     const loading = this.utility.showLoading();
     loading.present();
-    this.postId = this.navParams.data.id;
     this.dataProduct
       .getProductContentEdit(this.postId)
       .then(res => {
@@ -360,6 +373,17 @@ export class PostNewPage {
           this.videoPathPublic = this.data.VideoPath;
           this.isVideoUpload = true;
         } else this.isVideoUpload = false;
+
+        if (this.data.Attachment.length) {
+          this.attachmentFile = this.data.Attachment.map(element => {
+            const attachment = {
+              path: element.FilePath,
+              name: element.FileName,
+              isUploaded: true
+            };
+            return attachment;
+          });
+        }
       })
       .catch(err => {
         loading.dismiss();
@@ -429,7 +453,9 @@ export class PostNewPage {
         if (this.quillContent[segment].ops.length) {
           this.quillContent[segment].ops.forEach((item, index) => {
             if (item.hasOwnProperty('insert') && item.insert.hasOwnProperty('imageurl')) {
-              this.fileUpload.push(this.uploadMediaFile('foto', item.insert.imageurl, segment, index));
+              if (item.insert.imageurl.indexOf('http://') === -1 && item.insert.imageurl.indexOf('https://') === -1)
+                this.fileUpload.push(this.uploadMediaFile('foto', item.insert.imageurl, segment, index));
+              else item.insert = { image: item.insert.imageurl };
             }
           });
         }
@@ -474,8 +500,8 @@ export class PostNewPage {
             xhrApi.open('POST', this.api.getUrl() + '/upload/product/', true);
             xhrApi.send(formData);
           }
+          xhrBlob.send();
         };
-        xhrBlob.send();
       } else {
         const fileTransfer: FileTransferObject = this.transfer.create();
         const options: FileUploadOptions = {

@@ -22,7 +22,7 @@ export class Product {
 }
 
 export class NewProduct {
-  Attachment: Array<AttachmentFile>;
+  Attachment: Array<AttachmentFileRequest>;
   Benefit: string;
   BusinessTarget: string;
   CategoryId: number;
@@ -80,7 +80,7 @@ export class NewProduct {
     });
 
     this.Attachment = data.attachment.map(attachment => {
-      const obj: AttachmentFile = new AttachmentFile();
+      const obj: AttachmentFileRequest = new AttachmentFileRequest();
       obj.FileName = attachment.fileName;
       obj.FilePath = attachment.filePath;
       obj.Id = attachment.id;
@@ -108,7 +108,7 @@ export class ProductDetail {
   credentials: string;
   videoPath: string;
   foto: Array<Foto>;
-  attachment: Array<AttachmentFile>;
+  attachment: Array<AttachmentFileResponse>;
   contact: Contact;
   interaction: Interaction;
 
@@ -161,7 +161,14 @@ export class Foto {
   Id: number;
 }
 
-export class AttachmentFile {
+export class AttachmentFileResponse {
+  fileName: string;
+  filePath: string;
+  id: number;
+  productId: number;
+  isLoading: boolean;
+}
+export class AttachmentFileRequest {
   FileName: string;
   FilePath: string;
   Id: number;
