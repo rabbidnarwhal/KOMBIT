@@ -78,11 +78,13 @@ export class PostMyPage {
     this.selectedProductId = this.selectedProductId === data ? 0 : data;
   }
 
-  showDetail(data) {
+  showDetail(event, data) {
+    event.stopPropagation();
     this.utility.showPopover('detailPost', { id: data.id, page: 'post' }).present();
   }
 
-  likeBtnClick(post) {
+  likeBtnClick(event, post) {
+    event.stopPropagation();
     post.isLike = !post.isLike;
     this.lockBtn = true;
     this.dataProduct.modifyLikeProduct(post.id, post.isLike).then(
@@ -98,7 +100,8 @@ export class PostMyPage {
     );
   }
 
-  editPost(post) {
+  editPost(event, post) {
+    event.stopPropagation();
     this.navCtrl.push('newPost', { id: post.id });
   }
 }

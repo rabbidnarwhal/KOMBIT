@@ -7,9 +7,9 @@
       <ion-input type="text" placeholder="search" [(ngModel)]="filterText" (input)="filterItems()"></ion-input>
       <ion-icon name="search" item-end></ion-icon>
     </ion-item>
-    <button *ngIf="notificationEnabled" ion-button class="notification-button">
-      <img class="notification-icon" src="assets/imgs/notification-topbar.png" />
-      <!-- <ion-icon name="notifications"></ion-icon> -->
+    <button *ngIf="notificationEnabled" ion-button class="notification-button" (click)="toNotificationPage()">
+      <ion-icon name="notifications"></ion-icon>
+      <ion-badge class="notification-badge" *ngIf="unreadNotification"></ion-badge>
     </button>
   </ion-navbar>
 
@@ -30,7 +30,7 @@
       <ion-slide *ngFor="let item of sliderProduct">
         <img src="{{item.fotoPath}}" />
         <div class="slider-text">
-          <ion-label no-margin no-padding>{{item.productName}}</ion-label>
+          <ion-label no-margin no-padding class="text-product">{{item.productName}}</ion-label>
           <ion-label no-margin no-padding>{{item.companyName}}</ion-label>
         </div>
         <ion-badge *ngIf="isPromoted" class="slider-badge">Promoted</ion-badge>
@@ -85,13 +85,13 @@
     <ion-col col-6 *ngFor="let post of filteredItems">
       <ion-row>
         <div class="post-list-box">
-          <img *ngIf="post.fotoPath" class="post-image" [src]="post.fotoPath" />
-          <div class="box-label-container">
+          <img *ngIf="post.fotoPath" class="post-image" [src]="post.fotoPath" (click)="showDetail(post)" />
+          <div class="box-label-container" (click)="showDetail(post)">
             <div no-margin class="box-label">
               <ion-label no-padding no-margin class="inline-flex box-text">Product</ion-label>
               <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
               <ion-label no-margin no-padding class="inline-flex box-content">{{post.productName}}</ion-label>
-              <ion-icon *ngIf="post.userId === userId" name="create" (click)="editPost(post)"></ion-icon>
+              <ion-icon *ngIf="post.posterId === userId" name="create" (click)="editPost($event, post)"></ion-icon>
             </div>
             <div no-margin class="box-label">
               <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>

@@ -18,13 +18,13 @@
     <ion-col>
       <ion-list>
         <div *ngFor="let data of listProducts">
-          <div class="post-list-box" [@postAnimation] *ngIf="data.id === selectedProductId">
+          <div class="post-list-box" [@postAnimation] *ngIf="data.id === selectedProductId" (click)="showDetail($event, data)">
             <img *ngIf="data.fotoPath" [src]="data.fotoPath" />
             <ion-label no-margin class="box-label">
               <ion-label no-padding no-margin class="inline-flex box-text">Product</ion-label>
               <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
               <ion-label no-margin no-padding class="inline-flex box-content">{{data.productName}}</ion-label>
-              <ion-icon *ngIf="data.userId === userId" name="create" (click)="editPost(data)"></ion-icon>
+              <ion-icon *ngIf="data.posterId === userId" name="create" (click)="editPost($event, data)"></ion-icon>
             </ion-label>
             <ion-label no-margin class="box-label">
               <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>
@@ -62,14 +62,14 @@
             </ion-row>
             <ion-row>
               <ion-col no-padding>
-                <button ion-button full small class="box-button" (click)="likeBtnClick(data)">
+                <button ion-button full small class="box-button" (click)="likeBtnClick($event, data)">
                   <ion-icon *ngIf="!lockBtn || data.id !== selectedProductId" [name]="data.isLike ? 'heart' : 'heart-outline'"></ion-icon>
                   <span *ngIf="!lockBtn || data.id !== selectedProductId">{{data.totalLike}}</span>
                   <ion-spinner name="dots" *ngIf="lockBtn && data.id === selectedProductId"></ion-spinner>
                 </button>
               </ion-col>
               <ion-col no-padding>
-                <button ion-button full small class="box-button" (click)="showDetail(data)">Discovery More</button>
+                <button ion-button full small class="box-button" (click)="showDetail($event, data)">Discovery More</button>
               </ion-col>
             </ion-row>
           </div>

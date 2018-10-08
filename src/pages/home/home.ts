@@ -7,6 +7,7 @@ import { AuthServiceProvider } from '../../providers/auth-service';
 import { LocationService, MyLocationOptions } from '@ionic-native/google-maps';
 import { Category } from '../../models/category';
 import { DataCategoryServiceProvider } from '../../providers/dataCategory-service';
+import { DataNotificationServiceProvider } from '../../providers/dataNotification-service';
 
 @IonicPage({
   name: 'home'
@@ -36,7 +37,8 @@ export class HomePage {
   public distance: number;
   public selectedProvince: number;
   public selectedCity: number;
-  public numberRandomImages: number;
+  public numberRandomImages: number = 5;
+  public unreadNotification: number = 0;
 
   public isPromoted: boolean = true;
   public isSearching: boolean = true;
@@ -57,6 +59,7 @@ export class HomePage {
     private dataCategory: DataCategoryServiceProvider,
     private events: Events,
     private auth: AuthServiceProvider,
+    private dataNotification: DataNotificationServiceProvider,
     private zone: NgZone
   ) {
     this.postType = 'public';
@@ -67,19 +70,21 @@ export class HomePage {
     this.userId = this.auth.getPrincipal().id;
     this.newPostEnabled = this.auth.getPrincipal().role === 'Supplier' ? true : false;
     this.notificationEnabled = this.navParams.data ? true : false;
-    this.numberRandomImages = 5;
   }
 
   ionViewWillEnter() {
     if (!this.listPost.length) this.isSearching = true;
-    this.postType = 'public';
     this.loadPostData();
     if (this.navParams.data.solution || this.navParams.data.company) {
       this.notificationEnabled = false;
       this.sliderEnabled = false;
       this.isPromoted = false;
       this.solutionEnabled = false;
-    } else this.loadSolution();
+    } else {
+      this.postType = 'public';
+      this.loadSolution();
+      this.loadNotificationCount();
+    }
   }
 
   ionViewDidLoad() {
@@ -130,6 +135,19 @@ export class HomePage {
     this.events.subscribe('backFromLocation', () => {
       this.postType = 'public';
     });
+
+    // this.events.subscribe('notification-arrived', () => {
+    // this.unreadNotification
+    // });
+  }
+  loadNotificationCount() {
+    this.dataNotification
+      .fetchUnReadNotificationCount(this.userId)
+      .then(res => {
+        this.unreadNotification = res.unRead;
+        console.log('notification unread', this.unreadNotification);
+      })
+      .catch(err => this.utility.showToast(err));
   }
 
   locationIndicatorClicked() {
@@ -242,7 +260,8 @@ export class HomePage {
     );
   }
 
-  editPost(post) {
+  editPost(event, post) {
+    event.stopPropagation();
     this.navCtrl.push('newPost', { id: post.id });
   }
 
@@ -270,6 +289,9 @@ export class HomePage {
     setTimeout(() => {
       this.slides.startAutoplay();
     }, 5000);
+  }
+  toNotificationPage() {
+    this.navCtrl.push('notification');
   }
 
   private nearMePost(dist): Promise<Array<any>> {
