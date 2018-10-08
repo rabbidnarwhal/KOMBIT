@@ -87,6 +87,8 @@
       <ion-label>Marketing Kit</ion-label>
       <ion-item class="attachment-item" *ngFor="let file of data.attachment">
         <ion-label>{{file.fileName}}</ion-label>
+        <ion-icon item-end *ngIf="!file.isLoading" name="download" (click)="download(file)"></ion-icon>
+        <ion-spinner item-end *ngIf="file.isLoading"></ion-spinner>
       </ion-item>
     </div>
   </div>

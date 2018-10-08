@@ -1,15 +1,9 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError } from 'rxjs/operators';
 import { Config } from '../config/config';
 
-/*
-  Generated class for the ApiServiceProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class ApiServiceProvider {
   private url: string;
@@ -25,6 +19,11 @@ export class ApiServiceProvider {
   get(endpoint: string, httpOptions?: any) {
     const options = this.createRequestHeader(httpOptions ? httpOptions : {});
     return this.http.get(this.getUrl() + endpoint, options).pipe(catchError(this.handleError));
+  }
+
+  download(endpoint: string, httpOptions?: any) {
+    const options = this.createRequestHeader(httpOptions ? httpOptions : {});
+    return this.http.get(endpoint, options).pipe(catchError(this.handleError));
   }
 
   post(endpoint: string, body: any, httpOptions?: any) {

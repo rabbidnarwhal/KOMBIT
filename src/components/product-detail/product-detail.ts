@@ -2,8 +2,9 @@ import { Component, Input, EventEmitter, Output, ViewChild } from '@angular/core
 import { ProductDetail } from '../../models/products';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { UtilityServiceProvider } from '../../providers/utility-service';
-import { Events, Slides } from 'ionic-angular';
-import { Config } from '../../config/config';
+import { Events, Slides, Platform } from 'ionic-angular';
+import { ApiServiceProvider } from '../../providers/api-service';
+import { File } from '@ionic-native/file';
 
 @Component({
   selector: 'product-detail',
@@ -19,12 +20,16 @@ export class ProductDetailComponent {
   @ViewChild('slider')
   slider: Slides;
 
+  // public attachmentData: any;
   public segmentName: string = 'Description';
   public lockBtn: boolean = false;
   constructor(
     private dataProduct: DataProductServiceProvider,
     private utility: UtilityServiceProvider,
-    private event: Events
+    private event: Events,
+    private api: ApiServiceProvider,
+    private file: File,
+    private platform: Platform
   ) {}
 
   likeBtnClick() {
@@ -59,5 +64,37 @@ export class ProductDetailComponent {
 
   changePage(page) {
     this.selectedPage.emit(page);
+  }
+
+  download(file) {
+    file.isLoading = true;
+    this.api.download(file.filePath, { responseType: 'blob' }).subscribe(
+      (blob: Blob) => {
+        if (!window['cordova']) {
+          file.isLoading = false;
+          this.utility.showToast('File downloaded');
+        } else {
+          const directory = this.platform.is('ios')
+            ? this.file.documentsDirectory
+            : this.file.externalRootDirectory + 'Download/';
+          this.file
+            .writeFile(directory, file.fileName, blob, {
+              replace: true
+            })
+            .then(res => {
+              file.isLoading = false;
+              this.utility.showToast(`${file.fileName} downloaded.`);
+            })
+            .catch(err => {
+              file.isLoading = false;
+              this.utility.showToast(JSON.stringify(err));
+            });
+        }
+      },
+      err => {
+        file.isLoading = false;
+        this.utility.showToast(JSON.stringify(err));
+      }
+    );
   }
 }
