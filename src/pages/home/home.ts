@@ -24,8 +24,7 @@ export class HomePage {
   public listPostLeft: Array<Product>;
   public listPostRight: Array<Product>;
   public listSolution: Array<Category>;
-  public randomProduct: Array<Product>;
-  public promotedProduct: Array<Product>;
+  public sliderProduct: Array<Product>;
 
   public selectedLikePost: any;
 
@@ -39,12 +38,14 @@ export class HomePage {
   public selectedCity: number;
   public numberRandomImages: number;
 
+  public isPromoted: boolean = true;
   public isSearching: boolean = true;
+  public isSearchingSlider: boolean = true;
   public isSearchingSolution: boolean = true;
   public lockBtn: boolean = false;
   public locationEnabled: boolean = false;
   public newPostEnabled: boolean;
-  public promotedEnabled: boolean = true;
+  public notificationEnabled: boolean = true;
   public solutionEnabled: boolean = true;
   public sliderEnabled: boolean = true;
 
@@ -61,11 +62,11 @@ export class HomePage {
     this.postType = 'public';
     this.listPost = new Array<Product>();
     this.listSolution = new Array<Category>();
-    this.promotedProduct = new Array<Product>();
-    this.randomProduct = new Array<Product>();
+    this.sliderProduct = new Array<Product>();
     this.filterItems(this.locationEnabled);
     this.userId = this.auth.getPrincipal().id;
     this.newPostEnabled = this.auth.getPrincipal().role === 'Supplier' ? true : false;
+    this.notificationEnabled = this.navParams.data ? true : false;
     this.numberRandomImages = 5;
   }
 
@@ -73,19 +74,12 @@ export class HomePage {
     if (!this.listPost.length) this.isSearching = true;
     this.postType = 'public';
     this.loadPostData();
-    if (this.navParams.data.solution || this.navParams.data.promoted || this.navParams.data.company) {
+    if (this.navParams.data.solution || this.navParams.data.company) {
+      this.notificationEnabled = false;
       this.sliderEnabled = false;
-      this.promotedEnabled = false;
+      this.isPromoted = false;
       this.solutionEnabled = false;
-    } else {
-      this.loadSolution();
-      const slidesCheck = setInterval(() => {
-        if (this.slides) {
-          this.slides.autoplayDisableOnInteraction = false;
-          clearInterval(slidesCheck);
-        }
-      }, 1000);
-    }
+    } else this.loadSolution();
   }
 
   ionViewDidLoad() {
@@ -144,30 +138,24 @@ export class HomePage {
   }
 
   loadPostData(isReload = false) {
-    if (this.navParams.data.promoted) {
-      this.listPost = this.navParams.data.promoted;
-      this.filterItems(this.locationEnabled);
-    } else {
-      this.dataProduct
-        .getListAllProducts()
-        .then(res => {
-          this.isSearching = false;
-          if (this.navParams.data.solution)
-            this.listPost = res.filter(x => x.categoryName === this.navParams.data.solution.category);
-          else if (this.navParams.data.company)
-            this.listPost = res.filter(x => x.companyName === this.navParams.data.company.companyName);
-          else {
-            this.listPost = res;
-            this.getRandomProduct(res, this.numberRandomImages);
-            this.getPromotedProduct(res);
-          }
-          this.filterItems(this.locationEnabled);
-        })
-        .catch(err => {
-          this.isSearching = false;
-          if (!isReload) this.utility.showToast(err);
-        });
-    }
+    this.dataProduct
+      .getListAllProducts()
+      .then(res => {
+        this.isSearching = false;
+        if (this.navParams.data.solution)
+          this.listPost = res.filter(x => x.categoryName === this.navParams.data.solution.category);
+        else if (this.navParams.data.company)
+          this.listPost = res.filter(x => x.companyName === this.navParams.data.company.companyName);
+        else {
+          this.listPost = res;
+          this.getPromotedProduct(res);
+        }
+        this.filterItems(this.locationEnabled);
+      })
+      .catch(err => {
+        this.isSearching = false;
+        if (!isReload) this.utility.showToast(err);
+      });
   }
 
   loadSolution() {
@@ -175,7 +163,7 @@ export class HomePage {
     this.dataCategory
       .getListCategory()
       .then(sub => {
-        this.listSolution = sub;
+        this.listSolution = sub.splice(0, 7);
         this.isSearchingSolution = false;
       })
       .catch(err => this.utility.showToast(err));
@@ -258,10 +246,6 @@ export class HomePage {
     this.navCtrl.push('newPost', { id: post.id });
   }
 
-  showAllPromotedProduct() {
-    this.navCtrl.push('home', { promoted: this.promotedProduct });
-  }
-
   showAllSolutions() {
     this.navCtrl.push('solution');
   }
@@ -270,7 +254,25 @@ export class HomePage {
     this.navCtrl.push('home', { solution: solution });
   }
 
-  private nearMePost(dist): Promise<any> {
+  slidesClicked() {
+    const idx = this.slides.getActiveIndex();
+    if (idx === 0) {
+      this.showDetail(this.sliderProduct[this.sliderProduct.length - 1]);
+    } else if (idx === 1) {
+      this.showDetail(this.sliderProduct[idx - 1]);
+    } else if (idx > this.sliderProduct.length) {
+      this.showDetail(this.sliderProduct[idx - 1 - this.sliderProduct.length]);
+    } else {
+      this.showDetail(this.sliderProduct[idx - 1]);
+    }
+  }
+  slideAutoPlayStopped() {
+    setTimeout(() => {
+      this.slides.startAutoplay();
+    }, 5000);
+  }
+
+  private nearMePost(dist): Promise<Array<any>> {
     return new Promise(resolve => {
       this.getPosition()
         .then(pos => {
@@ -299,11 +301,18 @@ export class HomePage {
       if (temp.findIndex(x => x.id === product.id) < 0) temp.push(product);
       else n++;
     }
-    this.randomProduct = temp;
+    this.sliderProduct = temp;
+    this.isSearchingSlider = false;
   }
 
   private getPromotedProduct(products: Array<Product>) {
-    this.promotedProduct = products.slice(0, 5);
+    this.sliderProduct = products.filter(x => x.isPromoted);
+    if (!this.sliderProduct.length) {
+      this.isPromoted = false;
+      this.getRandomProduct(products, this.numberRandomImages);
+    } else {
+      this.isSearchingSlider = false;
+    }
   }
 
   private getPosition() {

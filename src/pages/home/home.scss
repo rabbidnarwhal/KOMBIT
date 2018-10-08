@@ -138,27 +138,6 @@ page-home {
     }
   }
 
-  .category-product {
-    .side-scroll-item {
-      height: 80px;
-    }
-  }
-
-  .side-scroll-item {
-    height: 120px;
-    white-space: nowrap;
-    width: 100%;
-    .scroll-content {
-      padding-left: 0 !important;
-      padding-top: 0 !important;
-    }
-  }
-
-  .show-label {
-    margin: 4px;
-    @include color-item();
-  }
-
   .fab-button {
     bottom: 36px;
     button {
@@ -171,20 +150,79 @@ page-home {
     }
   }
   .random-images-slides {
-    height: 100px;
+    height: 150px;
     margin-bottom: 12px;
+    .swiper-pagination {
+      text-align: left;
+      padding: 0 24px;
+      bottom: 6px;
+    }
+    .swiper-slide img {
+      width: 100%;
+    }
   }
 
   .notification-button {
-    color: map-get($kombit-colors, 'bg-high');
-    background-color: map-get($kombit-colors, 'text');
+    color: map-get($kombit-colors, 'text');
+    background-color: transparent;
     width: 36px;
     height: 36px;
     margin: 0px 0px 0px 18px;
     font-size: 16px;
-    border-radius: 20px;
+    border: none;
+    box-shadow: none;
     ion-icon {
-      height: 20px;
+      font-size: 28px;
     }
+    .notification-icon {
+      position: absolute;
+    }
+  }
+
+  .slider-badge {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    // z-index: 1000;
+    font-size: 12px;
+    background-color: map-get($kombit-colors, 'bg-high');
+  }
+
+  .slider-text {
+    color: map-get($kombit-colors, 'text');
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    text-align: left;
+    font-size: 14px;
+  }
+
+  .solution-text {
+    margin: 6px 0;
+    font-size: 10px;
+    text-align: center;
+  }
+
+  .solution-container {
+    height: 50px;
+    width: 50px;
+    border-radius: 14px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -ms-box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3);
+    box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3);
+    img {
+      width: 80%;
+    }
+    ion-icon {
+      font-size: 36px;
+      position: absolute;
+      color: #aeaeae;
+    }
+  }
+  [col-3] {
+    text-align: -webkit-center;
   }
 }

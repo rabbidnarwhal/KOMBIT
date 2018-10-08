@@ -7,8 +7,9 @@
       <ion-input type="text" placeholder="search" [(ngModel)]="filterText" (input)="filterItems()"></ion-input>
       <ion-icon name="search" item-end></ion-icon>
     </ion-item>
-    <button ion-button class="notification-button">
-      <ion-icon name="megaphone"></ion-icon>
+    <button *ngIf="notificationEnabled" ion-button class="notification-button">
+      <img class="notification-icon" src="assets/imgs/notification-topbar.png" />
+      <!-- <ion-icon name="notifications"></ion-icon> -->
     </button>
   </ion-navbar>
 
@@ -20,33 +21,21 @@
 <ion-content padding>
 
   <ion-row *ngIf="sliderEnabled" class="random-images-slides">
-    <ion-slides *ngIf="randomProduct.length" pager="true" autoplay="4000" loop="true">
-      <ion-slide *ngFor="let slide of randomProduct">
-        <img src="{{slide.fotoPath}}" />
-      </ion-slide>
-    </ion-slides>
-  </ion-row>
-
-  <ion-row *ngIf="promotedEnabled" class="promoted-product">
-    <div class="spinner-container" *ngIf="isSearching">
+    <div class="spinner-container" *ngIf="isSearchingSlider">
       <div class="spinner-background">
         <ion-spinner></ion-spinner>
       </div>
     </div>
-    <ion-label text-left class="show-label">Promoted</ion-label>
-    <ion-label text-right class="show-label" (click)="showAllPromotedProduct()">View All</ion-label>
-    <div text-center class="not-found-text" *ngIf="!promotedProduct.length && !isSearching">Promoted Product not found!</div>
-    <ion-scroll class="side-scroll-item" scrollX="true">
-      <div class="post-list-box promoted" *ngFor="let post of promotedProduct" (click)="showDetail(post)">
-        <div class="promoted-image-container">
-          <img *ngIf="post.fotoPath" class="post-image" [src]="post.fotoPath" />
+    <ion-slides *ngIf="sliderProduct.length" pager="true" autoplay="4000" loop="true" (ionSlideTap)="slidesClicked()" (ionSlideAutoplayStop)="slideAutoPlayStopped()">
+      <ion-slide *ngFor="let item of sliderProduct">
+        <img src="{{item.fotoPath}}" />
+        <div class="slider-text">
+          <ion-label no-margin no-padding>{{item.productName}}</ion-label>
+          <ion-label no-margin no-padding>{{item.companyName}}</ion-label>
         </div>
-        <div class="box-label-container">
-          <ion-label no-margin no-padding class="inline-flex box-content">{{post.productName}}</ion-label>
-          <ion-icon text-right *ngIf="!lockBtn || post !== selectedLikePost" [name]="post.isLike ? 'heart' : 'heart-outline'"></ion-icon>
-        </div>
-      </div>
-    </ion-scroll>
+        <ion-badge *ngIf="isPromoted" class="slider-badge">Promoted</ion-badge>
+      </ion-slide>
+    </ion-slides>
   </ion-row>
 
   <ion-row *ngIf="solutionEnabled" class="category-product">
@@ -55,17 +44,21 @@
         <ion-spinner></ion-spinner>
       </div>
     </div>
-    <ion-label text-left class="show-label">Solution</ion-label>
-    <ion-label text-right class="show-label" (click)="showAllSolutions()">View All</ion-label>
     <div text-center class="not-found-text" *ngIf="!listSolution.length && !isSearchingSolution">Solution not found!</div>
-    <ion-scroll class="side-scroll-item" scrollX="true">
-      <div class="post-list-box solution" *ngFor="let solution of listSolution" (click)="filterSolutions(solution)">
-        <!-- <img *ngIf="post.fotoPath" class="post-image" [src]="post.fotoPath" /> -->
-        <div class="box-label-container">
-          <ion-label no-margin no-padding class="inline-flex box-content">{{solution.category}}</ion-label>
-        </div>
+    <ion-col col-3 *ngFor="let solution of listSolution" (click)="filterSolutions(solution)">
+      <div class="solution-container">
+        <img *ngIf="!solution.image" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+        <img *ngIf="solution.image" [src]="solution.image" alt="" />
       </div>
-    </ion-scroll>
+      <ion-label no-margin no-padding class="solution-text">{{solution.category}}</ion-label>
+    </ion-col>
+    <ion-col col-3 (click)="showAllSolutions(solution)">
+      <div class="solution-container">
+        <ion-icon name="apps"></ion-icon>
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+      </div>
+      <ion-label no-margin no-padding class="solution-text">More</ion-label>
+    </ion-col>
   </ion-row>
 
   <ion-segment [(ngModel)]="postType" (ionChange)="segmentChanged()">

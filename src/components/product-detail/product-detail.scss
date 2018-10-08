@@ -24,4 +24,10 @@ product-detail {
       }
     }
   }
+  .attachment-item {
+    height: 32px;
+    ion-label {
+      padding-bottom: 8px;
+    }
+  }
 }

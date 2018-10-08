@@ -61,7 +61,6 @@
     </ion-segment-button>
   </ion-segment>
 
-
   <div padding id="wrapper margin-top-10">
     <ion-slides #slider pager="true" spaceBetween="10">
       <ion-slide *ngFor="let foto of data.foto">
@@ -73,22 +72,37 @@
   <div padding *ngIf="segmentName === 'Description'">
     <div>
       <h6>Description:</h6>
-      <p>{{data.description}}</p>
+      <div [innerHtml]="data.description"></div>
+    </div>
+
+    <div class="margin-top-10" *ngIf="data.businessTarget">
+      <h6>Business Target:</h6>
+      <p>{{data.businessTarget}}</p>
     </div>
   </div>
 
   <div padding *ngIf="segmentName === 'Feature'">
-
+    <div *ngIf="data.feature" [innerHtml]="data.feature"></div>
+    <div class="margin-top-10" *ngIf="data.attachment.length">
+      <ion-label>Marketing Kit</ion-label>
+      <ion-item class="attachment-item" *ngFor="let file of data.attachment">
+        <ion-label>{{file.fileName}}</ion-label>
+      </ion-item>
+    </div>
   </div>
 
   <div padding *ngIf="segmentName === 'Benefit'">
-
+    <div *ngIf="data.benefit" [innerHtml]="data.benefit"></div>
   </div>
 
   <div padding *ngIf="segmentName === 'Implementation'">
-    <div *ngIf="data.credentials">
+    <div *ngIf="data.implementation">
+      <div [innerHtml]="data.implementation"></div>
+    </div>
+
+    <div class="margin-top-10" *ngIf="data.credentials">
       <h6>Success story or client review:</h6>
-      <p>{{data.credentials}}</p>
+      <div [innerHtml]="data.credentials"></div>
     </div>
     <div text-center class="video-container" *ngIf="data.videoPath">
       <video controls width="100%">
@@ -98,6 +112,6 @@
   </div>
 
   <div padding *ngIf="segmentName === 'Faq'">
-
+    <div *ngIf="data.faq" [innerHtml]="data.faq"></div>
   </div>
 </ion-row>
