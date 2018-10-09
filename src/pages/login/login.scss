@@ -24,10 +24,13 @@ page-login {
     }
   }
   .logo-container {
-    height: 264px;
     position: relative;
-    top: calc(100vh - 690px);
-    left: -8px;
+    height: 100%;
+    left: 8px;
+    display: flex;
+    img {
+      object-fit: contain;
+    }
   }
   form {
     height: 100%;
@@ -37,7 +40,7 @@ page-login {
     height: 100%;
     ion-row {
       padding: 0 24px;
-      margin-top: calc(100vh - 564px);
+      margin-top: calc(100vh - 328px);
     }
   }
   ion-input {
@@ -54,17 +57,18 @@ page-login {
       font-size: 16px;
     }
   }
+  .login-button {
+    margin-top: 16px;
+    height: 2.4em;
+    width: 8em;
+    span {
+      font-weight: 400;
+      font-size: 16px;
+    }
+  }
   ion-footer {
     a {
       color: map-get($kombit-colors, 'btn');
-    }
-    button {
-      height: 2.4em !important;
-      width: 8em;
-      span {
-        font-weight: 400;
-        font-size: 16px;
-      }
     }
     &::before {
       background-image: none !important;
