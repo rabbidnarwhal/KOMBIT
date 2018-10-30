@@ -3,12 +3,14 @@ page-company {
     height: 90px;
     width: 90px;
     border-radius: 20px;
-    // background-position: center;
-    // background-size: cover;
     border: 1px solid #ddd;
     display: flex;
     align-items: center;
     justify-content: center;
+    img {
+      object-fit: contain;
+      height: 100%;
+    }
   }
   [col-4] {
     text-align: -webkit-center;

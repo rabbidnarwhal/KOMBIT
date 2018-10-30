@@ -70,7 +70,7 @@ export class NewProduct {
     this.UserId = data.userId;
     this.VideoPath = data.videoPath;
 
-    this.Foto = data.foto.map(foto => {
+    this.Foto = data.foto.map((foto) => {
       const obj: Foto = new Foto();
       obj.UseCase = foto.useCase;
       obj.FotoName = foto.fotoName;
@@ -79,7 +79,7 @@ export class NewProduct {
       return obj;
     });
 
-    this.Attachment = data.attachment.map(attachment => {
+    this.Attachment = data.attachment.map((attachment) => {
       const obj: AttachmentFileRequest = new AttachmentFileRequest();
       obj.FileName = attachment.fileName;
       obj.FilePath = attachment.filePath;
@@ -111,7 +111,9 @@ export class ProductDetail {
   attachment: Array<AttachmentFileResponse>;
   contact: Contact;
   interaction: Interaction;
-
+  contactName: string;
+  contactHandphone: string;
+  contactEmail: string;
   constructor() {
     this.interaction = new Interaction();
     this.contact = new Contact();

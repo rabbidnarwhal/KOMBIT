@@ -7,6 +7,15 @@ page-post-my {
     box-shadow: 0 4px 10px RGBA(0, 0, 0, 0.3);
     width: 100%;
     font-size: 12px;
+    .image-container {
+      height: 216px;
+      display: flex;
+      justify-content: center;
+      > img {
+        height: 100%;
+        object-fit: contain;
+      }
+    }
   }
   .box-label {
     margin: 0 6px;
@@ -18,7 +27,7 @@ page-post-my {
     @include color-background(180deg);
     border: none;
     color: map-get($kombit-colors, 'text');
-    ion-icon+span {
+    ion-icon + span {
       margin-left: 6px;
     }
   }

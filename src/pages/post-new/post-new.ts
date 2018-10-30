@@ -22,7 +22,7 @@ import { FilePath } from '@ionic-native/file-path';
 import Quill from 'quill';
 import { QuillEditorComponent } from 'ngx-quill';
 
-const ATTRIBUTES = ['alt', 'height', 'width'];
+const ATTRIBUTES = [ 'alt', 'height', 'width' ];
 
 @IonicPage({
   name: 'newPost'
@@ -32,10 +32,8 @@ const ATTRIBUTES = ['alt', 'height', 'width'];
   templateUrl: 'post-new.html'
 })
 export class PostNewPage {
-  @ViewChild('videoShow')
-  video: ElementRef;
-  @ViewChild('form')
-  form: NgForm;
+  @ViewChild('videoShow') video: ElementRef;
+  @ViewChild('form') form: NgForm;
 
   private currency: string;
   private imagePath: string;
@@ -104,20 +102,20 @@ export class PostNewPage {
 
   /** Add attachment file */
   addAttachmentFile() {
-    const resolveFileUrl = uri => {
+    const resolveFileUrl = (uri) => {
       this.filePath
         .resolveNativePath(uri)
-        .then(file => {
+        .then((file) => {
           const fileName = file.split('/');
           this.attachmentFile.push({ path: file, name: fileName[fileName.length - 1], isUploaded: false });
         })
-        .catch(err => this.utility.showToast(err));
+        .catch((err) => this.utility.showToast(err));
     };
 
     if (window['cordova'] && this.platform.is('ios')) {
-      this.filePicker.pickFile().then(uri => resolveFileUrl(uri));
+      this.filePicker.pickFile().then((uri) => resolveFileUrl(uri));
     } else if (window['cordova'] && this.platform.is('android')) {
-      this.fileChooser.open().then(uri => resolveFileUrl(uri));
+      this.fileChooser.open().then((uri) => resolveFileUrl(uri));
     } else if (!window['cordova']) {
       const input = document.createElement('input');
       input.type = 'file';
@@ -138,11 +136,11 @@ export class PostNewPage {
       .then(() => {
         this.removeFromArray(this.attachmentFile, item);
         if (this.postId) {
-          const idx = this.data.Attachment.findIndex(x => x.FilePath === item['path']);
+          const idx = this.data.Attachment.findIndex((x) => x.FilePath === item['path']);
           if (idx !== -1) this.data.Attachment[idx].FilePath = null;
         }
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   }
 
   /** Event handler when quill is created. */
@@ -155,7 +153,7 @@ export class PostNewPage {
   addImageToText(segment: string, subSegment: string = null) {
     segment = subSegment || segment;
     this.loadMediaFile(this.camera.MediaType.PICTURE, this.camera.PictureSourceType.PHOTOLIBRARY)
-      .then(res => {
+      .then((res) => {
         const range = this.quill[segment].getSelection();
         let cursor = 0;
         if (range) cursor = range.index;
@@ -167,7 +165,7 @@ export class PostNewPage {
         this.quill[segment].insertEmbed(cursor, 'imageurl', res);
         this.quill[segment].setSelection(cursor + 1);
       })
-      .catch(err => this.utility.showToast(err));
+      .catch((err) => this.utility.showToast(err));
   }
 
   /** Event handler when publish button clicked */
@@ -185,7 +183,7 @@ export class PostNewPage {
 
         /** Add to upload que if there is a foto and had not been uploaded. */
         if (this.imagePathSecure.length) {
-          this.imagePathSecure = this.imagePathSecure.map(element => {
+          this.imagePathSecure = this.imagePathSecure.map((element) => {
             let obj = element;
             if (!element.isFotoUpload) {
               obj.isFotoUpload = true;
@@ -198,7 +196,7 @@ export class PostNewPage {
         /** Add to upload que if there is an attachment file and not had been uploaded. */
         let attachmentNames = new Array<string>();
         if (this.attachmentFile.length) {
-          this.attachmentFile = this.attachmentFile.map(element => {
+          this.attachmentFile = this.attachmentFile.map((element) => {
             const obj = element;
             if (!element.isUploaded) {
               obj.isUploaded = true;
@@ -216,8 +214,9 @@ export class PostNewPage {
         new Promise((resolve, reject) => {
           if (this.fileUpload.length) {
             Promise.all(this.fileUpload)
-              .then(res => {
+              .then((res) => {
                 let kitCount = 0;
+                console.log('afile');
                 res.map((element, index) => {
                   const segment = element.useCase;
                   if (segment === 'video') {
@@ -244,16 +243,16 @@ export class PostNewPage {
                 });
                 resolve();
               })
-              .catch(err => reject(err));
+              .catch((err) => reject(err));
           } else resolve();
         })
           .then(() => this.publishProduct())
-          .then(data => {
+          .then((data) => {
             console.log('end data', this.data);
             loading.dismiss();
             this.navCtrl.pop();
           })
-          .catch(err => {
+          .catch((err) => {
             loading.dismiss();
             this.utility.showToast(err);
           });
@@ -309,7 +308,7 @@ export class PostNewPage {
         }
         this.utility.showToast(`${type.charAt(0).toUpperCase()}${type.slice(1)} loaded`);
       })
-      .catch(err => {
+      .catch((err) => {
         loading.dismiss();
         if (err !== 'none') {
           if (oldPath) this.videoPath = oldPath;
@@ -325,7 +324,7 @@ export class PostNewPage {
       .then(() => {
         this.removeFromArray(this.imagePathSecure, image);
         if (this.postId) {
-          const idx = this.data.Foto.findIndex(x => x.FotoPath === image['path']);
+          const idx = this.data.Foto.findIndex((x) => x.FotoPath === image['path']);
           if (idx !== -1) this.data.Foto[idx].FotoPath = null;
         }
       })
@@ -335,14 +334,14 @@ export class PostNewPage {
 
   /** Fetch list category/solution from server. */
   private loadCategory() {
-    this.api.get('/category').subscribe(sub => (this.listCategory = sub), err => this.utility.showToast(err));
+    this.api.get('/category').subscribe((sub) => (this.listCategory = sub), (err) => this.utility.showToast(err));
   }
 
   /** Fetch list user from server. */
   private loadUser() {
     this.api
       .get('/users/list/' + this.auth.getPrincipal().id)
-      .subscribe(sub => (this.listUser = sub), err => this.utility.showToast(err));
+      .subscribe((sub) => (this.listUser = sub), (err) => this.utility.showToast(err));
   }
 
   /** Load product detail for update purpose. */
@@ -351,7 +350,7 @@ export class PostNewPage {
     loading.present();
     this.dataProduct
       .getProductContentEdit(this.postId)
-      .then(res => {
+      .then((res) => {
         loading.dismiss();
         this.data.init(res);
         this.currency = this.data.Currency ? this.data.Currency : this.currency;
@@ -359,7 +358,7 @@ export class PostNewPage {
         this.commaSeparated();
 
         if (this.data.Foto.length) {
-          this.data.Foto.map(element => {
+          this.data.Foto.map((element) => {
             this.imagePathSecure.push({
               sanitize: this.sanitization.bypassSecurityTrustStyle(`url('${element.FotoPath}')`),
               path: element.FotoPath,
@@ -375,7 +374,7 @@ export class PostNewPage {
         } else this.isVideoUpload = false;
 
         if (this.data.Attachment.length) {
-          this.attachmentFile = this.data.Attachment.map(element => {
+          this.attachmentFile = this.data.Attachment.map((element) => {
             const attachment = {
               path: element.FilePath,
               name: element.FileName,
@@ -385,7 +384,7 @@ export class PostNewPage {
           });
         }
       })
-      .catch(err => {
+      .catch((err) => {
         loading.dismiss();
         this.utility.showToast(err);
       });
@@ -419,7 +418,7 @@ export class PostNewPage {
         };
         this.camera
           .getPicture(options)
-          .then(filePath => {
+          .then((filePath) => {
             if (type === this.camera.MediaType.PICTURE) {
               path = this.platform.is('ios') ? filePath.replace('file://', '') : filePath;
             } else {
@@ -431,15 +430,15 @@ export class PostNewPage {
           .then((res: FileEntry) => {
             if (!res) reject('Unable to load file');
             res.file(
-              meta => {
+              (meta) => {
                 if (type === this.camera.MediaType.PICTURE) resolve(res.nativeURL);
                 else if (meta.type === 'video/mp4') resolve(res.nativeURL);
                 else reject('Video not supported. Only supporting .mp4 video file');
               },
-              error => reject(error.message)
+              (error) => reject(error.message)
             );
           })
-          .catch(error => reject(error));
+          .catch((error) => reject(error));
       }
     });
   }
@@ -475,7 +474,10 @@ export class PostNewPage {
         const xhrBlob = new XMLHttpRequest();
         xhrBlob.open('GET', path, true);
         xhrBlob.responseType = 'blob';
-        xhrBlob.onload = e => {
+        xhrBlob.onreadystatechange = (e) => {
+          console.log(e);
+        };
+        xhrBlob.onload = (e) => {
           if (xhrBlob.status !== 200) {
             this.utility.showToast(`Your browser doesn't support blob API`);
             reject(xhrBlob);
@@ -502,6 +504,13 @@ export class PostNewPage {
           }
           xhrBlob.send();
         };
+        xhrBlob.onerror = (e) => {
+          console.log(e);
+          reject(e);
+        };
+        xhrBlob.onprogress = (e) => {
+          console.log(e);
+        };
       } else {
         const fileTransfer: FileTransferObject = this.transfer.create();
         const options: FileUploadOptions = {
@@ -514,13 +523,13 @@ export class PostNewPage {
         };
         fileTransfer
           .upload(path, this.api.getUrl() + '/upload/product/', options)
-          .then(data => {
+          .then((data) => {
             let response = JSON.parse(data.response);
             response['useCase'] = useCase;
             response['quillIndex'] = quillIndex;
             resolve(response);
           })
-          .catch(error => reject('An error occured, unable to upload!'));
+          .catch((error) => reject('An error occured, unable to upload!'));
       }
     });
   }

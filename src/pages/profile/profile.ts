@@ -9,13 +9,6 @@ import { Camera, CameraOptions } from '@ionic-native/camera';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 import { DataProvinceServiceProvider } from '../../providers/dataProvince-service';
 
-/**
- * Generated class for the ProfilePage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
 @IonicPage({
   name: 'profile'
 })
@@ -33,8 +26,10 @@ export class ProfilePage {
   public mapImage: string;
   public picture: any;
   public city: string;
-  @ViewChild('formProfile') form: NgForm;
-  @ViewChild(Navbar) navBar: Navbar;
+  @ViewChild('formProfile')
+  form: NgForm;
+  @ViewChild(Navbar)
+  navBar: Navbar;
   constructor(
     public navCtrl: NavController,
     private navParams: NavParams,
@@ -53,7 +48,7 @@ export class ProfilePage {
 
   ionViewDidLoad() {
     const loading = this.utility.showLoading();
-    loading.present()
+    loading.present();
     this.isSearching = true;
     this.loadUserData()
       .then(() => {
@@ -88,7 +83,7 @@ export class ProfilePage {
         position[0] +
         ',' +
         position[1] +
-        '&zoom=12&size=400x200&key=' +
+        '&zoom=12&size=360x216&key=' +
         Config.GOOGLE_MAP_API_KEY;
   }
 
@@ -142,14 +137,11 @@ export class ProfilePage {
         sub => {
           this.data = sub;
           if (this.data.kabKotaId && this.data.provinsiId) {
-            Promise.all([
-              this.dataProvince.getCity(),         
-              this.dataProvince.getProvince()
-            ]).then (res => {
+            Promise.all([this.dataProvince.getCity(), this.dataProvince.getProvince()]).then(res => {
               const city = res[0].filter(x => x.id === this.data.kabKotaId);
               const province = res[1].filter(x => x.id === this.data.provinsiId);
               this.city = `${city[0].name}, ${province[0].name}`;
-            })
+            });
           }
           this.createMap();
           this.picture = this.data.image ? this.data.image : 'assets/imgs/profile.png';
@@ -161,7 +153,9 @@ export class ProfilePage {
   }
 
   private loadListCompany() {
-    this.api.get('/holding/' + this.data.holdingId + '/company').subscribe(sub => (this.listCompany = sub), err => this.utility.showToast(err));
+    this.api
+      .get('/holding/' + this.data.holdingId + '/company')
+      .subscribe(sub => (this.listCompany = sub), err => this.utility.showToast(err));
   }
 
   private loadListHoldingCompany() {

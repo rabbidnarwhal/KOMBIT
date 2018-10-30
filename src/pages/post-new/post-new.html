@@ -14,13 +14,13 @@
         <div class="image-wrapper" *ngFor="let image of imagePathSecure">
           <ion-icon class="remove-image" name="close" (click)="removeImage(image)"></ion-icon>
           <div class="image" [style.background-image]="image.sanitize">
-            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="alt="" />
           </div>
         </div>
         <div class="image-wrapper add-image-btn" (click)="getFilePath('foto')">
           <div class="image">
             <ion-icon name="camera"></ion-icon>
-            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+            <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="alt="" />
           </div>
         </div>
       </div>
@@ -118,11 +118,11 @@
             <ion-label>Handphone
               <span class="required">*</span>
             </ion-label>
-            <ion-input type="tel" [(ngModel)]="data.ContactPhone" name="Handphone" required></ion-input>
+            <ion-input type="tel" [(ngModel)]="data.ContactHandphone" name="Handphone" required></ion-input>
             <ion-label>Email
               <span class="required">*</span>
             </ion-label>
-            <ion-input type="email" [(ngModel)]="data.ContactMail" name="Email" required></ion-input> -->
+            <ion-input type="email" [(ngModel)]="data.ContactEmail" name="Email" required></ion-input> -->
           </form>
         </div>
       </ion-col>
@@ -247,7 +247,7 @@
             <video *ngIf="videoPathPublic" controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer" #videoShow>
               <source [src]="videoPathPublic" type="video/mp4" /> Not Supported
             </video>
-            <img *ngIf="!videoPathPublic" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+            <img *ngIf="!videoPathPublic" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="alt="" />
           </div>
         </div>
         <ion-label>Upload Video</ion-label>
