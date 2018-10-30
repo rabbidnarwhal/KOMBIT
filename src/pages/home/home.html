@@ -117,19 +117,19 @@
           <ion-row text-center class="box-icon">
             <ion-col no-padding>
               <ion-icon name="eye"></ion-icon>
-              <span>{{post.totalView}}</span>
+              <span>{{post.totalView || 0}}</span>
               <br />
               <span>View</span>
             </ion-col>
             <ion-col no-padding>
               <ion-icon name="call"></ion-icon>
-              <span>{{post.totalChat}}</span>
+              <span>{{post.totalChat || 0}}</span>
               <br />
               <span>Call</span>
             </ion-col>
             <ion-col no-padding>
               <img class="icon-img-comment" src="assets/imgs/comment.png" />
-              <span>{{post.totalComment}}</span>
+              <span>{{post.totalComment || 0}}</span>
               <br />
               <span>Comment</span>
             </ion-col>

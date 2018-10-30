@@ -17,8 +17,7 @@ import { DataNotificationServiceProvider } from '../../providers/dataNotificatio
   templateUrl: 'home.html'
 })
 export class HomePage {
-  @ViewChild(Slides)
-  slides: Slides;
+  @ViewChild(Slides) slides: Slides;
 
   private listPost: Array<Product>;
   public filteredItems: Array<Product>;
@@ -88,23 +87,27 @@ export class HomePage {
   }
 
   ionViewDidLoad() {
-    this.events.subscribe('homeInteraction', sub => {
-      const idx = this.listPost.findIndex(x => x.id === sub.id);
-      if (sub.type === 'view') this.listPost[idx].totalView++;
-      if (sub.type === 'call') this.listPost[idx].totalChat++;
-      if (sub.type === 'comment') this.listPost[idx].totalComment++;
-      if (sub.type === 'like')
-        if (sub.isLike) {
-          this.listPost[idx].totalLike++;
-          this.listPost[idx].isLike = true;
-        } else {
-          this.listPost[idx].totalLike--;
-          this.listPost[idx].isLike = false;
-        }
-      this.filterItems(this.locationEnabled);
+    this.events.subscribe('homeInteraction', (sub) => {
+      const idx = this.listPost.findIndex((x) => x.id === sub.id);
+      if (idx < 0) {
+        this.loadPostData(true);
+      } else {
+        if (sub.type === 'view') this.listPost[idx].totalView++;
+        if (sub.type === 'call') this.listPost[idx].totalChat++;
+        if (sub.type === 'comment') this.listPost[idx].totalComment++;
+        if (sub.type === 'like')
+          if (sub.isLike) {
+            this.listPost[idx].totalLike++;
+            this.listPost[idx].isLike = true;
+          } else {
+            this.listPost[idx].totalLike--;
+            this.listPost[idx].isLike = false;
+          }
+        this.filterItems(this.locationEnabled);
+      }
     });
 
-    this.events.subscribe('homeLocation', sub => {
+    this.events.subscribe('homeLocation', (sub) => {
       this.isSearching = true;
       this.postType = 'location';
       this.locationEnabled = true;
@@ -143,11 +146,8 @@ export class HomePage {
   loadNotificationCount() {
     this.dataNotification
       .fetchUnReadNotificationCount(this.userId)
-      .then(res => {
-        this.unreadNotification = res.unRead;
-        console.log('notification unread', this.unreadNotification);
-      })
-      .catch(err => this.utility.showToast(err));
+      .then((res) => (this.unreadNotification = res.unRead))
+      .catch((err) => this.utility.showToast(err));
   }
 
   locationIndicatorClicked() {
@@ -158,19 +158,19 @@ export class HomePage {
   loadPostData(isReload = false) {
     this.dataProduct
       .getListAllProducts()
-      .then(res => {
+      .then((res) => {
         this.isSearching = false;
         if (this.navParams.data.solution)
-          this.listPost = res.filter(x => x.categoryName === this.navParams.data.solution.category);
+          this.listPost = res.filter((x) => x.categoryName === this.navParams.data.solution.category);
         else if (this.navParams.data.company)
-          this.listPost = res.filter(x => x.companyName === this.navParams.data.company.companyName);
+          this.listPost = res.filter((x) => x.companyName === this.navParams.data.company.companyName);
         else {
           this.listPost = res;
           this.getPromotedProduct(res);
         }
         this.filterItems(this.locationEnabled);
       })
-      .catch(err => {
+      .catch((err) => {
         this.isSearching = false;
         if (!isReload) this.utility.showToast(err);
       });
@@ -180,11 +180,11 @@ export class HomePage {
     if (this.listSolution.length) this.isSearchingSolution = false;
     this.dataCategory
       .getListCategory()
-      .then(sub => {
+      .then((sub) => {
         this.listSolution = sub.splice(0, 7);
         this.isSearchingSolution = false;
       })
-      .catch(err => this.utility.showToast(err));
+      .catch((err) => this.utility.showToast(err));
   }
 
   segmentChanged() {
@@ -211,11 +211,11 @@ export class HomePage {
     let data = [];
     if (this.postType === 'public') data = this.listPost;
     if (this.postType === 'holding')
-      data = this.listPost.filter(res => res.holdingId === this.dataProduct.getHoldingId());
-    if (this.postType === 'favorite') data = this.listPost.filter(res => res.isLike);
+      data = this.listPost.filter((res) => res.holdingId === this.dataProduct.getHoldingId());
+    if (this.postType === 'favorite') data = this.listPost.filter((res) => res.isLike);
 
     const filtering = () => {
-      this.filteredItems = data.filter(res => {
+      this.filteredItems = data.filter((res) => {
         for (const key in res) {
           if (res.hasOwnProperty(key)) {
             const element = res[key];
@@ -226,12 +226,12 @@ export class HomePage {
     };
 
     if (isLocation && this.distance) {
-      this.nearMePost(this.distance).then(res => {
+      this.nearMePost(this.distance).then((res) => {
         data = res;
         filtering();
       });
     } else if (isLocation) {
-      data = this.listPost.filter(x => {
+      data = this.listPost.filter((x) => {
         if (this.selectedCity) return x.provinsi === this.selectedProvince && x.kabKota === this.selectedCity;
         else return x.provinsi === this.selectedProvince;
       });
@@ -252,7 +252,7 @@ export class HomePage {
         post.totalLike = post.isLike ? post.totalLike + 1 : post.totalLike - 1;
         this.utility.showToast(post.isLike ? 'Product Liked' : 'Product Unliked', 1000);
       },
-      err => {
+      (err) => {
         this.lockBtn = false;
         this.selectedLikePost = null;
         this.utility.showToast(err);
@@ -295,11 +295,11 @@ export class HomePage {
   }
 
   private nearMePost(dist): Promise<Array<any>> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.getPosition()
-        .then(pos => {
+        .then((pos) => {
           resolve(
-            this.listPost.filter(x => {
+            this.listPost.filter((x) => {
               if (x.position) {
                 const target = x.position.split(', ');
                 const distance = this.calculateDistance(pos.latLng.lat, pos.latLng.lng, target[0], target[1]);
@@ -308,7 +308,7 @@ export class HomePage {
             })
           );
         })
-        .catch(err => {
+        .catch((err) => {
           this.utility.showToast('Unable to get location');
           resolve([]);
         });
@@ -320,7 +320,7 @@ export class HomePage {
     let temp = [];
     while (n--) {
       var product = products[Math.floor(Math.random() * products.length)];
-      if (temp.findIndex(x => x.id === product.id) < 0) temp.push(product);
+      if (temp.findIndex((x) => x.id === product.id) < 0) temp.push(product);
       else n++;
     }
     this.sliderProduct = temp;
@@ -328,7 +328,7 @@ export class HomePage {
   }
 
   private getPromotedProduct(products: Array<Product>) {
-    this.sliderProduct = products.filter(x => x.isPromoted);
+    this.sliderProduct = products.filter((x) => x.isPromoted);
     if (!this.sliderProduct.length) {
       this.isPromoted = false;
       this.getRandomProduct(products, this.numberRandomImages);
@@ -346,10 +346,10 @@ export class HomePage {
 
   private calculateDistance(lat1, long1, lat2, long2) {
     //radians
-    lat1 = (lat1 * 2.0 * Math.PI) / 60.0 / 360.0;
-    long1 = (long1 * 2.0 * Math.PI) / 60.0 / 360.0;
-    lat2 = (lat2 * 2.0 * Math.PI) / 60.0 / 360.0;
-    long2 = (long2 * 2.0 * Math.PI) / 60.0 / 360.0;
+    lat1 = lat1 * 2.0 * Math.PI / 60.0 / 360.0;
+    long1 = long1 * 2.0 * Math.PI / 60.0 / 360.0;
+    lat2 = lat2 * 2.0 * Math.PI / 60.0 / 360.0;
+    long2 = long2 * 2.0 * Math.PI / 60.0 / 360.0;
 
     // use to different earth axis length
     var a = 6378137.0; // Earth Major Axis (WGS84)
