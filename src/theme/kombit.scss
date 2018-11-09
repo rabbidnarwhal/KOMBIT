@@ -1,25 +1,61 @@
-$kombit-colors: ( bg-high: #f2703f, bg-low: #fbcb4d, btn: #f18b1d, text: #fdfdfd);
+$kombit-colors: (bg-high: #f2703f, bg-low: #fbcb4d, btn: #f18b1d, text: #fdfdfd);
 $spinner-md-crescent-color: map-get($kombit-colors, 'btn');
 $spinner-md-dots-color: map-get($kombit-colors, 'text');
 @mixin color-background($direction) {
   background: map-get($kombit-colors, 'bg-high') !important;
-  background: -moz-linear-gradient($direction, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
-  background: -webkit-linear-gradient($direction, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
-  background: linear-gradient($direction, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
+  background: -moz-linear-gradient(
+    $direction,
+    map-get($kombit-colors, 'bg-low') 11%,
+    map-get($kombit-colors, 'bg-high') 77%
+  ) !important;
+  background: -webkit-linear-gradient(
+    $direction,
+    map-get($kombit-colors, 'bg-low') 11%,
+    map-get($kombit-colors, 'bg-high') 77%
+  ) !important;
+  background: linear-gradient(
+    $direction,
+    map-get($kombit-colors, 'bg-low') 11%,
+    map-get($kombit-colors, 'bg-high') 77%
+  ) !important;
 }
 
 @mixin color-item() {
   color: map-get($kombit-colors, 'bg-high') !important;
-  color: -moz-linear-gradient(90deg, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
-  color: -webkit-linear-gradient(90deg, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
-  color: linear-gradient(90deg, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
+  color: -moz-linear-gradient(
+    90deg,
+    map-get($kombit-colors, 'bg-low') 11%,
+    map-get($kombit-colors, 'bg-high') 77%
+  ) !important;
+  color: -webkit-linear-gradient(
+    90deg,
+    map-get($kombit-colors, 'bg-low') 11%,
+    map-get($kombit-colors, 'bg-high') 77%
+  ) !important;
+  color: linear-gradient(
+    90deg,
+    map-get($kombit-colors, 'bg-low') 11%,
+    map-get($kombit-colors, 'bg-high') 77%
+  ) !important;
 }
 
 @mixin color-border() {
   border-color: map-get($kombit-colors, 'bg-high') !important;
-  border-color: -moz-linear-gradient(90deg, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
-  border-color: -webkit-linear-gradient(90deg, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
-  border-color: linear-gradient(90deg, map-get($kombit-colors, 'bg-low') 11%, map-get($kombit-colors, 'bg-high') 77%) !important;
+  border-color: -moz-linear-gradient(
+    90deg,
+    map-get($kombit-colors, 'bg-low') 11%,
+    map-get($kombit-colors, 'bg-high') 77%
+  ) !important;
+  border-color: -webkit-linear-gradient(
+    90deg,
+    map-get($kombit-colors, 'bg-low') 11%,
+    map-get($kombit-colors, 'bg-high') 77%
+  ) !important;
+  border-color: linear-gradient(
+    90deg,
+    map-get($kombit-colors, 'bg-low') 11%,
+    map-get($kombit-colors, 'bg-high') 77%
+  ) !important;
 }
 
 @mixin box() {
@@ -63,10 +99,10 @@ ion-navbar.toolbar.toolbar-md {
 }
 
 ion-content.content.content-md:not(.menu-content):not(.popover):not(.login) {
-  >.fixed-content {
+  > .fixed-content {
     margin-top: 42px !important;
   }
-  >.scroll-content {
+  > .scroll-content {
     margin-top: 42px !important;
   }
 }
@@ -76,10 +112,12 @@ ion-content.content.content-md:not(.menu-content):not(.popover):not(.login) {
 }
 
 ion-popover.popover-width .popover-content {
-  width: 90% !important;
-  max-height: calc(100% - 64px) !important;
+  width: 95% !important;
+  max-height: calc(100% - 16px) !important;
   height: 100% !important;
-  left: calc(100vw - 95%) !important;
+  left: calc(100vw - 97.5%) !important;
+  top: 8px !important;
+  border-radius: 12px;
 }
 
 ion-popover.popover-width-full .popover-content {
@@ -89,6 +127,26 @@ ion-popover.popover-width-full .popover-content {
   left: 0px !important;
   border-radius: 0px;
   top: 0px !important;
+}
+
+ion-popover.popover-width-marketing-kit .popover-content {
+  width: 100% !important;
+  max-height: 240px !important;
+  height: 100% !important;
+  left: 0px !important;
+  top: auto !important;
+  border-radius: 0px;
+  bottom: 0px !important;
+}
+
+ion-popover.popover-width-contact .popover-content {
+  width: 100% !important;
+  max-height: 296px !important;
+  height: 100% !important;
+  left: 0px !important;
+  top: auto !important;
+  border-radius: 0px;
+  bottom: 0px !important;
 }
 
 .top-searchbar {
@@ -121,6 +179,19 @@ ion-popover.popover-width-full .popover-content {
       width: calc(100% - 4.5px);
     }
   }
+}
+
+.font-size-10 {
+  font-size: 10px !important;
+}
+
+.no-border {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.no-margin {
+  margin: 0 !important;
 }
 
 .margin-top-0 {

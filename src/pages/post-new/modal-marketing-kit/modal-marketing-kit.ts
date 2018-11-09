@@ -35,6 +35,7 @@ export class ModalMarketingKitPage {
   }
 
   ionViewDidLoad() {
+    this.files = [];
     if (this.navParams.data) {
       this.optionSubject = this.navParams.data.params.optionSubject;
     }

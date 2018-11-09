@@ -9,10 +9,11 @@ import { DataProductServiceProvider } from '../../providers/dataProduct-service'
 import { QuillModule } from 'ngx-quill';
 import { IOSFilePicker } from '@ionic-native/file-picker';
 import { FileChooser } from '@ionic-native/file-chooser';
+import { Contacts } from '@ionic-native/contacts';
 
 @NgModule({
-  declarations: [PostNewPage],
-  imports: [IonicPageModule.forChild(PostNewPage), QuillModule],
-  providers: [Camera, File, FilePath, FileTransfer, DataProductServiceProvider, IOSFilePicker, FileChooser]
+  declarations: [ PostNewPage ],
+  imports: [ IonicPageModule.forChild(PostNewPage), QuillModule ],
+  providers: [ Camera, File, FilePath, FileTransfer, DataProductServiceProvider, IOSFilePicker, FileChooser, Contacts ]
 })
 export class PostNewPageModule {}

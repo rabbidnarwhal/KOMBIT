@@ -1,17 +1,6 @@
 page-post-new {
-  @mixin icon-inside-wrapper {
-    font-size: 70px;
-    position: absolute;
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: 50%;
-    @include color-item();
-  }
   ion-col {
     text-align: center;
-  }
-  .required {
-    color: red;
   }
   .wrapper {
     font-size: 0;
@@ -39,15 +28,15 @@ page-post-new {
         img {
           width: 100%;
         }
-        ion-icon {
-          @include icon-inside-wrapper();
-        }
+      }
+      &.smaller-wrapper {
+        width: 23%;
       }
     }
   }
   .video-wrapper {
     width: 100%;
-    height: 216px;
+    max-height: calc(100vw - 182px);
     display: flex;
     justify-content: center;
     margin: 0;
@@ -55,99 +44,103 @@ page-post-new {
     padding: 1px;
     position: relative;
     .placeholder {
+      text-align: center;
       position: relative;
       background-size: cover;
       background-position: center center;
       img {
         object-fit: contain;
-        width: 20%;
-      }
-      ion-icon {
-        @include icon-inside-wrapper();
+        width: 33.3333%;
       }
     }
-  }
-  .input-fields {
-    padding: 0 16px;
-    img {
-      height: 216px;
-      object-fit: contain;
-    }
-  }
-  .divider {
-    width: 100%;
-    border-bottom: 2px solid;
-    padding: 16px 0 8px 0;
-    @include color-border();
-  }
-  ion-label {
-    margin: 8px 16px 0px 16px !important;
-    text-align: center;
-    font-weight: 100;
-  }
-  input {
-    @include box();
-    margin-top: 2px !important;
-  }
-  textarea {
-    @include box();
-    margin-top: 0px !important;
-    height: 70px;
   }
   .videoPlayer {
-    height: 216px;
+    max-height: calc(100vw - 182px);
   }
-  ion-item {
-    @include box();
-    margin-left: 8px !important;
-    margin-bottom: 16px !important;
-    width: calc(100% - 8px - 8px) !important;
-    .item-inner {
-      border-bottom: none !important;
-      ion-select {
-        font-size: 14px !important;
-        max-width: 100% !important;
-        width: 100% !important;
-        padding: 0 2px 0 0 !important;
-      }
+
+  .card-item-container {
+    border: 1px solid #ededed;
+    border-radius: 8px;
+    box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3);
+    .item-input-icon {
+      margin: 0px;
+      padding-top: 6px;
+      font-size: 20px;
     }
-  }
-  .card-container {
-    border-radius: 20px;
-    height: 300px;
-    @include box();
-    #toolbar {
-      padding: 0 0 4px 0;
-      border-top: none;
-      border-left: none;
-      border-right: none;
-      position: relative;
-      z-index: 1000;
-      .toolbar-button {
-        width: 100%;
-        font-size: 12px;
-        color: map-get($kombit-colors, 'bg-high');
-      }
+    .no-toolbar {
+      padding: 0;
+      border: none;
     }
     .ql-container {
-      border-left: none;
-      border-right: none;
+      border: none;
       .ql-editor {
-        height: calc(100% - 40px);
+        font-size: 14px;
+        margin: 0px;
+        padding: 6px 8px;
+        height: 100%;
+        width: 100%;
+        display: inline-block;
+        &.ql-blank::before {
+          font-style: normal;
+          left: auto;
+          right: auto;
+          top: 8px;
+        }
       }
     }
   }
-  .contact-toggle {
-    display: inline-block;
-    &.toggle-checked {
-      .toggle-icon {
-        background-color: map-get($kombit-colors, 'bg-low');
-      }
-      .toggle-inner {
-        background-color: map-get($kombit-colors, 'bg-high');
+  .quill-icon {
+    width: 32px;
+    &.left {
+      margin: 12px 0px 6px 12px;
+      padding-left: 4px;
+    }
+    &.right {
+      margin: 12px 12px 6px 0px;
+      img {
+        height: 28px;
+        width: 28px;
       }
     }
   }
+  .quill-editor {
+    width: calc(100% - 64px);
+    margin: 6px 0;
+  }
+
+  .card-item-input {
+    min-height: 1px;
+    .item-inner {
+      border-bottom: none !important;
+      box-shadow: none !important;
+      input {
+        font-size: 14px;
+        margin-top: 6px;
+        margin-bottom: 6px;
+      }
+      .input-select {
+        font-size: 14px;
+        max-width: 100%;
+        width: 100%;
+        padding: 6px 8px;
+      }
+      .item-label {
+        font-size: 14px;
+        padding: 6px 8px;
+        margin: 0;
+      }
+    }
+  }
+  .item-input-image-icon {
+    margin: 0px;
+    height: 20px;
+    width: 20px;
+  }
+  .card-quill-container {
+    display: flex;
+    height: 216px;
+  }
+
   .attachment-item {
     height: 32px;
     ion-label {
@@ -162,11 +155,14 @@ page-post-new {
     height: 2.8rem;
     margin-bottom: 10px;
     .segment-button.segment-product-button {
+      background-color: #dedede;
       height: 2.8rem !important;
       line-height: 2.8rem !important;
       font-size: 10px;
       font-stretch: ultra-condensed;
       font-weight: 400;
+      border-top: 2px solid;
+      border-bottom: none;
       @include color-border();
       @include color-item();
       &.segment-activated {
@@ -184,5 +180,27 @@ page-post-new {
       font-size: 32px;
       color: map-get($kombit-colors, 'bg-high');
     }
+  }
+
+  .implementation-item {
+    padding-left: 0;
+    .implementation-item-avatar {
+      margin: 0;
+      .image {
+        width: 60px;
+        background-size: cover;
+        background-position: center;
+      }
+      .video {
+        .videoPlayer {
+          width: 60px;
+        }
+      }
+    }
+  }
+
+  .image-icon-container {
+    height: 36px;
+    width: 36px;
   }
 }

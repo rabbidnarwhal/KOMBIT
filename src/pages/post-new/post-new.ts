@@ -18,9 +18,11 @@ import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
 import { IOSFilePicker } from '@ionic-native/file-picker';
 import { FileChooser } from '@ionic-native/file-chooser';
 import { FilePath } from '@ionic-native/file-path';
+import { Contacts } from '@ionic-native/contacts';
 
 import Quill from 'quill';
 import { QuillEditorComponent } from 'ngx-quill';
+import { BehaviorSubject } from 'rxjs/rx';
 
 const ATTRIBUTES = [ 'alt', 'height', 'width' ];
 
@@ -35,10 +37,14 @@ export class PostNewPage {
   @ViewChild('videoShow') video: ElementRef;
   @ViewChild('form') form: NgForm;
 
+  public marketingModalData: BehaviorSubject<Array<any>> = new BehaviorSubject([]);
+  public contactModalToggle: BehaviorSubject<number> = new BehaviorSubject(0);
+
   private currency: string;
   private imagePath: string;
   private videoPath: string;
   public btnText: string;
+  public contactLabel: string = 'Add Contact Person';
   public pageTitle: string;
   public price: string = '';
   public segmentName: string = 'Description';
@@ -47,6 +53,10 @@ export class PostNewPage {
   public supplierAsContact: boolean = true;
 
   public imagePathSecure: Array<any> = [];
+  public implementationPathSecure: Array<any> = [];
+  public clientPathSecure: Array<any> = [];
+  public certificatePathSecure: Array<any> = [];
+
   public attachmentFile: Array<any> = [];
   public fileUpload: Array<any> = [];
   public listUser: Array<{ id: number; name: string }> = [];
@@ -57,6 +67,7 @@ export class PostNewPage {
   public quillContent: any = {};
 
   private postId: number;
+  public contactToggle: number = 0;
 
   public listCategory: Array<Category>;
 
@@ -71,7 +82,6 @@ export class PostNewPage {
     private camera: Camera,
     private dataProduct: DataProductServiceProvider,
     private file: File,
-    private filePath: FilePath,
     private formValidator: FormValidatorProvider,
     private navCtrl: NavController,
     private navParams: NavParams,
@@ -79,8 +89,7 @@ export class PostNewPage {
     private sanitization: DomSanitizer,
     private transfer: FileTransfer,
     private utility: UtilityServiceProvider,
-    private filePicker: IOSFilePicker,
-    private fileChooser: FileChooser
+    private contacts: Contacts
   ) {
     this.listCategory = new Array<Category>();
     this.data = new NewProduct(this.auth.getPrincipal());
@@ -98,49 +107,160 @@ export class PostNewPage {
     }
     this.loadCategory();
     this.loadUser();
-  }
 
-  /** Add attachment file */
-  addAttachmentFile() {
-    const resolveFileUrl = (uri) => {
-      this.filePath
-        .resolveNativePath(uri)
-        .then((file) => {
-          const fileName = file.split('/');
-          this.attachmentFile.push({ path: file, name: fileName[fileName.length - 1], isUploaded: false });
-        })
-        .catch((err) => this.utility.showToast(err));
-    };
+    this.marketingModalData.subscribe((data) => {
+      this.attachmentFile = [ ...this.attachmentFile, ...data ];
+    });
 
-    if (window['cordova'] && this.platform.is('ios')) {
-      this.filePicker.pickFile().then((uri) => resolveFileUrl(uri));
-    } else if (window['cordova'] && this.platform.is('android')) {
-      this.fileChooser.open().then((uri) => resolveFileUrl(uri));
-    } else if (!window['cordova']) {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept =
-        'image/x-png,image/jpeg,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf';
-      input.click();
-      input.onchange = () => {
-        const blob = window.URL.createObjectURL(input.files[0]);
-        this.attachmentFile.push({ path: blob, name: input.files[0].name, isUploaded: false });
-      };
-    }
-  }
-
-  /** Event handler when attachment file removed. */
-  removeAttachmentFile(item: any) {
-    this.utility
-      .confirmAlert('Remove file?', '', 'Yes', 'No')
-      .then(() => {
-        this.removeFromArray(this.attachmentFile, item);
-        if (this.postId) {
-          const idx = this.data.Attachment.findIndex((x) => x.FilePath === item['path']);
-          if (idx !== -1) this.data.Attachment[idx].FilePath = null;
+    this.contactModalToggle.subscribe((data) => {
+      this.contactToggle = data;
+      if (data) {
+        this.contactLabel = 'Change Contact Person';
+        if (data === 1) {
+          this.data.ContactHandphone = this.auth.getPrincipal().phoneNumber;
+          this.data.ContactName = this.auth.getPrincipal().name;
+        } else if (data === 2) {
+          this.contacts.pickContact().then((contact) => {
+            this.data.ContactName = contact.name.formatted;
+            const phone = contact.phoneNumbers.filter((x) => {
+              x.type === 'mobile';
+            });
+            this.data.ContactHandphone = phone.length ? phone[0].value : contact.phoneNumbers[0].value;
+          });
+        } else {
+          this.data.ContactHandphone = '';
+          this.data.ContactName = '';
         }
+      }
+    });
+  }
+
+  /** Fetch list category/solution from server. */
+  private loadCategory() {
+    this.api.get('/category').subscribe((sub) => (this.listCategory = sub), (err) => this.utility.showToast(err));
+  }
+
+  /** Fetch list user from server. */
+  private loadUser() {
+    this.api
+      .get('/users/list/' + this.auth.getPrincipal().id)
+      .subscribe((sub) => (this.listUser = sub), (err) => this.utility.showToast(err));
+  }
+
+  /** Load product detail for update purpose. */
+  private loadContent() {
+    const loading = this.utility.showLoading();
+    loading.present();
+    this.dataProduct
+      .getProductContentEdit(this.postId)
+      .then((res) => {
+        console.log('server data', res);
+        loading.dismiss();
+        this.data.init(res);
+        this.contactToggle = 1;
+        this.currency = this.data.Currency ? this.data.Currency : this.currency;
+        this.price = this.data.Price ? '' + this.data.Price : '';
+        this.commaSeparated();
+
+        if (this.data.Foto.length) {
+          this.data.Foto.map((element) => {
+            this.imagePathSecure.push({
+              sanitize: this.sanitization.bypassSecurityTrustStyle(`url('${element.FotoPath}')`),
+              path: element.FotoPath,
+              isFotoUpload: true,
+              id: element.Id
+            });
+          });
+        }
+
+        if (this.data.ProductCertificate.length) {
+          this.data.ProductCertificate.map((element) => {
+            this.certificatePathSecure.push({
+              sanitize: this.sanitization.bypassSecurityTrustStyle(`url('${element.FotoPath}')`),
+              path: element.FotoPath,
+              isUpload: true,
+              id: element.Id
+            });
+          });
+        }
+
+        if (this.data.ProductClient.length) {
+          this.data.ProductClient.map((element) => {
+            this.clientPathSecure.push({
+              sanitize: this.sanitization.bypassSecurityTrustStyle(`url('${element.FotoPath}')`),
+              path: element.FotoPath,
+              isUpload: true,
+              id: element.Id
+            });
+          });
+        }
+
+        if (this.data.ProductImplementation.length) {
+          this.data.ProductImplementation.map((element) => {
+            this.implementationPathSecure.push({
+              title: element.Title,
+              sanitize:
+                element.UseCase === 'implementationVideo'
+                  ? element.FotoPath
+                  : this.sanitization.bypassSecurityTrustStyle(`url('${element.FotoPath}')`),
+              path: element.FotoPath,
+              isUpload: true,
+              id: element.Id,
+              type: element.UseCase
+            });
+          });
+        }
+
+        if (this.data.VideoPath) {
+          this.videoPathPublic = this.data.VideoPath;
+          this.isVideoUpload = true;
+        } else this.isVideoUpload = false;
+
+        if (this.data.Attachment.length) {
+          this.attachmentFile = this.data.Attachment.map((element) => {
+            const attachment = {
+              path: element.FilePath,
+              name: element.FileName,
+              isUploaded: true,
+              type: element.FileType
+            };
+            return attachment;
+          });
+        }
+        console.log('mapping data', this.data);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        loading.dismiss();
+        this.utility.showToast(err);
+      });
+  }
+
+  openModalMarketingKit() {
+    const popover = this.utility.showPopover(
+      'ModalMarketingKitPage',
+      { optionSubject: this.marketingModalData },
+      'popover-width-marketing-kit',
+      true,
+      false
+    );
+    popover.present();
+  }
+
+  openModalContact() {
+    const popover = this.utility.showPopover(
+      'ModalContactPage',
+      {
+        optionSubject: this.contactModalToggle,
+        contact: {
+          name: this.auth.getPrincipal().name,
+          phone: this.auth.getPrincipal().phoneNumber
+        }
+      },
+      'popover-width-contact',
+      true,
+      false
+    );
+    popover.present();
   }
 
   /** Event handler when quill is created. */
@@ -168,105 +288,13 @@ export class PostNewPage {
       .catch((err) => this.utility.showToast(err));
   }
 
-  /** Event handler when publish button clicked */
-  publishClick() {
-    if (this.form.valid) {
-      if (this.imagePathSecure.length > 0) {
-        const loading = this.utility.showLoading();
-        this.data.Price = +this.price.replace(this.currency + ' ', '').replace(/,/g, '');
-        this.data.IsIncludePrice = this.data.Price ? true : false;
-        this.data.Currency = this.currency;
-
-        /** Add to upload que if there is a video and had not been uploaded. */
-        if (this.videoPath && !this.isVideoUpload)
-          this.fileUpload.push(this.uploadMediaFile('video', this.videoPath, 'video'));
-
-        /** Add to upload que if there is a foto and had not been uploaded. */
-        if (this.imagePathSecure.length) {
-          this.imagePathSecure = this.imagePathSecure.map((element) => {
-            let obj = element;
-            if (!element.isFotoUpload) {
-              obj.isFotoUpload = true;
-              this.fileUpload.push(this.uploadMediaFile('foto', element.path, 'foto'));
-            }
-            return obj;
-          });
-        }
-
-        /** Add to upload que if there is an attachment file and not had been uploaded. */
-        let attachmentNames = new Array<string>();
-        if (this.attachmentFile.length) {
-          this.attachmentFile = this.attachmentFile.map((element) => {
-            const obj = element;
-            if (!element.isUploaded) {
-              obj.isUploaded = true;
-              this.fileUpload.push(this.uploadMediaFile('kit', element.path, 'attachment'));
-              attachmentNames.push(element.name);
-            }
-            return obj;
-          });
-        }
-
-        /** Add to upload que if there is an image file in quill editor. */
-        this.generateQuillImageUploadPromise();
-        loading.present();
-        console.log('file', this.fileUpload);
-        new Promise((resolve, reject) => {
-          if (this.fileUpload.length) {
-            Promise.all(this.fileUpload)
-              .then((res) => {
-                let kitCount = 0;
-                console.log('afile');
-                res.map((element, index) => {
-                  const segment = element.useCase;
-                  if (segment === 'video') {
-                    this.isVideoUpload = true;
-                    this.data.VideoPath = element.path;
-                  } else if (segment === 'foto') {
-                    this.data.Foto.push({
-                      FotoName: element.name as string,
-                      FotoPath: element.path as string,
-                      Id: 0,
-                      UseCase: element.useCase as string
-                    });
-                  } else if (segment === 'attachment') {
-                    this.data.Attachment.push({
-                      FileName: attachmentNames[kitCount],
-                      FilePath: element.path as string,
-                      Id: 0
-                    });
-                    kitCount++;
-                  } else {
-                    const contentIndex = element.quillIndex;
-                    this.quillContent[segment].ops[contentIndex].insert = { image: element.path };
-                  }
-                });
-                resolve();
-              })
-              .catch((err) => reject(err));
-          } else resolve();
-        })
-          .then(() => this.publishProduct())
-          .then((data) => {
-            console.log('end data', this.data);
-            loading.dismiss();
-            this.navCtrl.pop();
-          })
-          .catch((err) => {
-            loading.dismiss();
-            this.utility.showToast(err);
-          });
-      } else this.utility.showToast('At least 1 photo is required');
-    } else this.utility.showToast(this.formValidator.getErrorMessage(this.form));
-  }
-
   /** Open action sheet to choose where foto source. */
   getFilePath(type: string) {
     this.imagePath = '';
     if (this.videoPathPublic && type === 'video') this.video.nativeElement.pause();
-    const loading = this.utility.showLoading();
+    // const loading = this.utility.showLoading();
     const oldPath = type === 'foto' ? '' : this.videoPath;
-    loading.present();
+    // loading.present();
     new Promise((resolve, reject) => {
       if (type === 'foto') {
         const actionSheet = this.actionSheetCtrl.create({
@@ -288,13 +316,44 @@ export class PostNewPage {
           ]
         });
         actionSheet.present();
-      } else resolve(this.camera.PictureSourceType.PHOTOLIBRARY);
+      } else if (type === 'implementation') {
+        const actionSheet = this.actionSheetCtrl.create({
+          title: 'Select Media',
+          buttons: [
+            {
+              text: 'Image',
+              handler: () => {
+                type = 'implementationImage';
+                resolve(this.camera.PictureSourceType.PHOTOLIBRARY);
+              }
+            },
+            {
+              text: 'Video',
+              handler: () => {
+                type = 'implementationVideo';
+                resolve(this.camera.PictureSourceType.PHOTOLIBRARY);
+              }
+            },
+            {
+              text: 'Cancel',
+              role: 'cancel',
+              handler: () => reject('none')
+            }
+          ]
+        });
+        actionSheet.present();
+      } else {
+        resolve(this.camera.PictureSourceType.PHOTOLIBRARY);
+      }
     })
       .then((res: number) =>
-        this.loadMediaFile(type === 'foto' ? this.camera.MediaType.PICTURE : this.camera.MediaType.VIDEO, res)
+        this.loadMediaFile(
+          type.toLowerCase().includes('video') ? this.camera.MediaType.VIDEO : this.camera.MediaType.PICTURE,
+          res
+        )
       )
       .then((res: string) => {
-        loading.dismiss();
+        // loading.dismiss();
         if (type === 'foto') {
           this.imagePath = res;
           this.imagePathSecure.push({
@@ -302,98 +361,47 @@ export class PostNewPage {
             path: this.imagePath,
             sanitize: this.sanitization.bypassSecurityTrustStyle(`url('${this.imagePath}')`)
           });
-        } else {
+        } else if (type === 'video') {
           this.videoPath = res;
-          this.videoPathPublic = this.videoPath;
+          this.videoPathPublic = this.sanitization.bypassSecurityTrustUrl(this.videoPath);
+        } else if (type === 'client') {
+          this.clientPathSecure.push({
+            isUpload: false,
+            path: res,
+            sanitize: this.sanitization.bypassSecurityTrustStyle(`url('${res}')`)
+          });
+        } else if (type === 'certificate') {
+          this.certificatePathSecure.push({
+            isUpload: false,
+            path: res,
+            sanitize: this.sanitization.bypassSecurityTrustStyle(`url('${res}')`)
+          });
+        } else if (type === 'implementationVideo') {
+          this.implementationPathSecure.push({
+            isUpload: false,
+            path: res,
+            sanitize: this.sanitization.bypassSecurityTrustUrl(res),
+            type: type,
+            title: ''
+          });
+        } else if (type === 'implementationImage') {
+          this.implementationPathSecure.push({
+            isUpload: false,
+            path: res,
+            sanitize: this.sanitization.bypassSecurityTrustStyle(`url('${res}')`),
+            type: type,
+            title: ''
+          });
         }
         this.utility.showToast(`${type.charAt(0).toUpperCase()}${type.slice(1)} loaded`);
       })
       .catch((err) => {
-        loading.dismiss();
+        // loading.dismiss();
         if (err !== 'none') {
           if (oldPath) this.videoPath = oldPath;
           this.utility.showToast(err);
         }
       });
-  }
-
-  /** Remove foto image from list. */
-  removeImage(image: any) {
-    this.utility
-      .confirmAlert('Remove photo?', '', 'Yes', 'No')
-      .then(() => {
-        this.removeFromArray(this.imagePathSecure, image);
-        if (this.postId) {
-          const idx = this.data.Foto.findIndex((x) => x.FotoPath === image['path']);
-          if (idx !== -1) this.data.Foto[idx].FotoPath = null;
-        }
-      })
-      // tslint:disable-next-line:no-empty
-      .catch(() => {});
-  }
-
-  /** Fetch list category/solution from server. */
-  private loadCategory() {
-    this.api.get('/category').subscribe((sub) => (this.listCategory = sub), (err) => this.utility.showToast(err));
-  }
-
-  /** Fetch list user from server. */
-  private loadUser() {
-    this.api
-      .get('/users/list/' + this.auth.getPrincipal().id)
-      .subscribe((sub) => (this.listUser = sub), (err) => this.utility.showToast(err));
-  }
-
-  /** Load product detail for update purpose. */
-  private loadContent() {
-    const loading = this.utility.showLoading();
-    loading.present();
-    this.dataProduct
-      .getProductContentEdit(this.postId)
-      .then((res) => {
-        loading.dismiss();
-        this.data.init(res);
-        this.currency = this.data.Currency ? this.data.Currency : this.currency;
-        this.price = this.data.Price ? '' + this.data.Price : '';
-        this.commaSeparated();
-
-        if (this.data.Foto.length) {
-          this.data.Foto.map((element) => {
-            this.imagePathSecure.push({
-              sanitize: this.sanitization.bypassSecurityTrustStyle(`url('${element.FotoPath}')`),
-              path: element.FotoPath,
-              isFotoUpload: true,
-              id: element.Id
-            });
-          });
-        }
-
-        if (this.data.VideoPath) {
-          this.videoPathPublic = this.data.VideoPath;
-          this.isVideoUpload = true;
-        } else this.isVideoUpload = false;
-
-        if (this.data.Attachment.length) {
-          this.attachmentFile = this.data.Attachment.map((element) => {
-            const attachment = {
-              path: element.FilePath,
-              name: element.FileName,
-              isUploaded: true
-            };
-            return attachment;
-          });
-        }
-      })
-      .catch((err) => {
-        loading.dismiss();
-        this.utility.showToast(err);
-      });
-  }
-
-  /** Remove object from array. */
-  private removeFromArray<T>(array: Array<T>, item: T) {
-    const index: number = array.indexOf(item);
-    if (index !== -1) array.splice(index, 1);
   }
 
   /** Open media file chooser. */
@@ -403,9 +411,13 @@ export class PostNewPage {
       if (!window['cordova']) {
         const input = document.createElement('input');
         input.type = 'file';
-        input.accept = 'image/x-png,image/gif,image/jpeg';
+        if (type === this.camera.MediaType.PICTURE) {
+          input.accept = 'image/x-png,image/gif,image/jpeg';
+        } else {
+          input.accept = 'video/mp4';
+        }
         input.click();
-        input.onchange = () => {
+        input.onchange = (event) => {
           const blob = window.URL.createObjectURL(input.files[0]);
           resolve(blob);
         };
@@ -443,6 +455,171 @@ export class PostNewPage {
     });
   }
 
+  /** Event handler when publish button clicked */
+  publishClick() {
+    if (
+      this.form.valid &&
+      this.imagePathSecure.length > 0 &&
+      this.data.ContactName &&
+      this.data.ContactHandphone &&
+      this.data.Description
+    ) {
+      const loading = this.utility.showLoading();
+      this.data.Price = +this.price.replace(this.currency + ' ', '').replace(/,/g, '');
+      this.data.IsIncludePrice = this.data.Price ? true : false;
+      this.data.Currency = this.currency;
+
+      /** Add to upload que if there is a video and had not been uploaded. */
+      if (this.videoPath && !this.isVideoUpload)
+        this.fileUpload.push(this.uploadMediaFile('video', this.videoPath, 'video'));
+
+      /** Add to upload que if there is a foto and had not been uploaded. */
+      if (this.imagePathSecure.length) {
+        console.log('image', this.imagePathSecure);
+        this.imagePathSecure = this.imagePathSecure.map((element) => {
+          let obj = element;
+          if (!element.isFotoUpload) {
+            obj.isFotoUpload = true;
+            this.fileUpload.push(this.uploadMediaFile('foto', element.path, 'foto'));
+          }
+          return obj;
+        });
+      }
+      let implementationExtend = new Array<any>();
+      if (this.implementationPathSecure.length) {
+        console.log('implementation', this.implementationPathSecure);
+        this.implementationPathSecure = this.implementationPathSecure.map((element) => {
+          let obj = element;
+          if (!element.isUpload) {
+            obj.isUpload = true;
+            this.fileUpload.push(this.uploadMediaFile('foto', element.path, element.type));
+            implementationExtend.push({ title: element.title });
+          }
+          return obj;
+        });
+      }
+
+      if (this.clientPathSecure.length) {
+        console.log('client', this.clientPathSecure);
+        this.clientPathSecure = this.clientPathSecure.map((element) => {
+          let obj = element;
+          if (!element.isUpload) {
+            obj.isUpload = true;
+            this.fileUpload.push(this.uploadMediaFile('foto', element.path, 'client'));
+          }
+          return obj;
+        });
+      }
+
+      if (this.certificatePathSecure.length) {
+        console.log('certificate', this.certificatePathSecure);
+        this.certificatePathSecure = this.certificatePathSecure.map((element) => {
+          let obj = element;
+          if (!element.isUpload) {
+            obj.isUpload = true;
+            this.fileUpload.push(this.uploadMediaFile('foto', element.path, 'certificate'));
+          }
+          return obj;
+        });
+      }
+
+      /** Add to upload que if there is an attachment file and not had been uploaded. */
+      let attachmentExtend = new Array<any>();
+      if (this.attachmentFile.length) {
+        console.log('attachment', this.attachmentFile);
+        this.attachmentFile = this.attachmentFile.map((element) => {
+          const obj = element;
+          if (!element.isUploaded) {
+            obj.isUploaded = true;
+            this.fileUpload.push(this.uploadMediaFile('kit', element.path, 'attachment'));
+            attachmentExtend.push({ name: element.name, type: element.type });
+          }
+          return obj;
+        });
+      }
+
+      /** Add to upload que if there is an image file in quill editor. */
+      this.generateQuillImageUploadPromise();
+      loading.present();
+      console.log('starting', this.fileUpload);
+
+      new Promise((resolve, reject) => {
+        if (this.fileUpload.length) {
+          Promise.all(this.fileUpload)
+            .then((res) => {
+              let kitCount = 0;
+              let implementationCount = 0;
+              res.map((element, index) => {
+                console.log('upload done', element.useCase);
+                const segment = element.useCase;
+                if (segment === 'video') {
+                  this.isVideoUpload = true;
+                  this.data.VideoPath = element.path;
+                } else if (segment === 'foto') {
+                  this.data.Foto.push({
+                    FotoName: element.name as string,
+                    FotoPath: element.path as string,
+                    Id: 0,
+                    UseCase: element.useCase as string
+                  });
+                } else if (segment === 'attachment') {
+                  this.data.Attachment.push({
+                    FileType: attachmentExtend[kitCount].type,
+                    FileName: attachmentExtend[kitCount].name,
+                    FilePath: element.path as string,
+                    Id: 0
+                  });
+                  kitCount++;
+                } else if (segment === 'client') {
+                  this.data.ProductClient.push({
+                    FotoName: element.name as string,
+                    FotoPath: element.path as string,
+                    Id: 0,
+                    UseCase: element.useCase as string
+                  });
+                } else if (segment === 'certificate') {
+                  this.data.ProductCertificate.push({
+                    FotoName: element.name as string,
+                    FotoPath: element.path as string,
+                    Id: 0,
+                    UseCase: element.useCase as string
+                  });
+                } else if (segment === 'implementationVideo' || segment === 'implementationImage') {
+                  this.data.ProductImplementation.push({
+                    Title: implementationExtend[implementationCount].title,
+                    FotoName: element.name as string,
+                    FotoPath: element.path as string,
+                    Id: 0,
+                    UseCase: element.useCase as string
+                  });
+                  implementationCount++;
+                } else {
+                  const contentIndex = element.quillIndex;
+                  this.quillContent[segment].ops[contentIndex].insert = { image: element.path };
+                }
+              });
+              resolve();
+            })
+            .catch((err) => reject(err));
+        } else resolve();
+      })
+        .then(() => this.publishProduct())
+        .then((data) => {
+          loading.dismiss();
+          this.navCtrl.pop();
+        })
+        .catch((err) => {
+          loading.dismiss();
+          this.utility.showToast(err);
+        });
+    } else {
+      if (!this.form.valid) this.utility.showToast(this.formValidator.getErrorMessage(this.form));
+      else if (this.imagePathSecure.length === 0) this.utility.showToast('At least 1 photo is required');
+      else if (!this.data.ContactName || !this.data.ContactHandphone) this.utility.showToast('Contact is required');
+      else if (!this.data.Description) this.utility.showToast('Description is required');
+    }
+  }
+
   /** Generate promise for image upload in every quill editor */
   private generateQuillImageUploadPromise() {
     for (const segment in this.quill) {
@@ -452,7 +629,7 @@ export class PostNewPage {
         if (this.quillContent[segment].ops.length) {
           this.quillContent[segment].ops.forEach((item, index) => {
             if (item.hasOwnProperty('insert') && item.insert.hasOwnProperty('imageurl')) {
-              if (item.insert.imageurl.indexOf('http://') === -1 && item.insert.imageurl.indexOf('https://') === -1)
+              if (item.insert.imageurl.indexOf('http://') !== 0 || item.insert.imageurl.indexOf('https://') !== 0)
                 this.fileUpload.push(this.uploadMediaFile('foto', item.insert.imageurl, segment, index));
               else item.insert = { image: item.insert.imageurl };
             }
@@ -471,46 +648,27 @@ export class PostNewPage {
   ): Promise<{ path: string; name: string; useCase: string; quillIndex: number }> {
     return new Promise((resolve, reject) => {
       if (!window['cordova']) {
-        const xhrBlob = new XMLHttpRequest();
-        xhrBlob.open('GET', path, true);
-        xhrBlob.responseType = 'blob';
-        xhrBlob.onreadystatechange = (e) => {
-          console.log(e);
-        };
-        xhrBlob.onload = (e) => {
-          if (xhrBlob.status !== 200) {
-            this.utility.showToast(`Your browser doesn't support blob API`);
-            reject(xhrBlob);
-          } else {
-            const blob = xhrBlob['response'];
+        console.log('me not cordova');
+        this.api
+          .getBlob(path)
+          .toPromise()
+          .then((blob) => {
             const formData: FormData = new FormData();
-            const xhrApi: XMLHttpRequest = new XMLHttpRequest();
             formData.append('File', blob);
             formData.append('UserId', this.data.UserId + '');
             formData.append('UseCase', useCase);
             formData.append('Type', type);
-            xhrApi.onreadystatechange = () => {
-              if (xhrApi.readyState === 4) {
-                if (xhrApi.status === 200) {
-                  let response = JSON.parse(xhrApi.response);
-                  response['useCase'] = useCase;
-                  response['quillIndex'] = quillIndex;
-                  resolve(response);
-                } else reject(xhrApi);
-              }
-            };
-            xhrApi.open('POST', this.api.getUrl() + '/upload/product/', true);
-            xhrApi.send(formData);
-          }
-          xhrBlob.send();
-        };
-        xhrBlob.onerror = (e) => {
-          console.log(e);
-          reject(e);
-        };
-        xhrBlob.onprogress = (e) => {
-          console.log(e);
-        };
+            formData.append('ProductName', this.data.ProductName.toLowerCase().replace(' ', '-'));
+            return this.api.postFormData('/upload/product/', formData).toPromise();
+          })
+          .then((response) => {
+            response['useCase'] = useCase;
+            response['quillIndex'] = quillIndex;
+            resolve(response);
+          })
+          .catch((err) => {
+            reject(err);
+          });
       } else {
         const fileTransfer: FileTransferObject = this.transfer.create();
         const options: FileUploadOptions = {
@@ -536,6 +694,7 @@ export class PostNewPage {
 
   /** Send product data to server. */
   private publishProduct() {
+    console.log('publishing');
     if (this.supplierAsContact) this.data.UserId = this.data.PosterId;
     for (const segment in this.quill) {
       if (this.quillContent.hasOwnProperty(segment)) {
@@ -543,11 +702,89 @@ export class PostNewPage {
         this.data[segment] = converter.convert();
       }
     }
+    console.log('end', this.data);
     if (this.postId) {
       return this.api.post('/product/' + this.postId, this.data).toPromise();
     } else {
       return this.api.post('/product', this.data).toPromise();
     }
+  }
+
+  /** Remove foto image from list. */
+  removeImage(image: any) {
+    this.utility
+      .confirmAlert('Remove photo?', '', 'Yes', 'No')
+      .then(() => {
+        this.removeFromArray(this.imagePathSecure, image);
+        if (this.postId) {
+          const idx = this.data.Foto.findIndex((x) => x.FotoPath === image['path']);
+          if (idx !== -1) this.data.Foto[idx].FotoPath = null;
+        }
+      })
+      // tslint:disable-next-line:no-empty
+      .catch(() => {});
+  }
+
+  removeCertificate(image: any) {
+    this.utility
+      .confirmAlert('Remove certificate?', '', 'Yes', 'No')
+      .then(() => {
+        this.removeFromArray(this.certificatePathSecure, image);
+        if (this.postId) {
+          const idx = this.data.ProductCertificate.findIndex((x) => x.FotoPath === image['path']);
+          if (idx !== -1) this.data.ProductCertificate[idx].FotoPath = null;
+        }
+      })
+      // tslint:disable-next-line:no-empty
+      .catch(() => {});
+  }
+
+  removeImplementation(file: any) {
+    this.utility
+      .confirmAlert('Remove implementation?', '', 'Yes', 'No')
+      .then(() => {
+        this.removeFromArray(this.implementationPathSecure, file);
+        if (this.postId) {
+          const idx = this.data.ProductImplementation.findIndex((x) => x.FotoPath === file['path']);
+          if (idx !== -1) this.data.ProductImplementation[idx].FotoPath = null;
+        }
+      })
+      // tslint:disable-next-line:no-empty
+      .catch(() => {});
+  }
+
+  removeClient(image: any) {
+    this.utility
+      .confirmAlert('Remove client?', '', 'Yes', 'No')
+      .then(() => {
+        this.removeFromArray(this.clientPathSecure, image);
+        if (this.postId) {
+          const idx = this.data.ProductClient.findIndex((x) => x.FotoPath === image['path']);
+          if (idx !== -1) this.data.ProductClient[idx].FotoPath = null;
+        }
+      })
+      // tslint:disable-next-line:no-empty
+      .catch(() => {});
+  }
+
+  /** Event handler when attachment file removed. */
+  removeAttachmentFile(item: any) {
+    this.utility
+      .confirmAlert('Remove file?', '', 'Yes', 'No')
+      .then(() => {
+        this.removeFromArray(this.attachmentFile, item);
+        if (this.postId) {
+          const idx = this.data.Attachment.findIndex((x) => x.FilePath === item['path']);
+          if (idx !== -1) this.data.Attachment[idx].FilePath = null;
+        }
+      })
+      .catch((err) => console.error(err));
+  }
+
+  /** Remove object from array. */
+  private removeFromArray<T>(array: Array<T>, item: T) {
+    const index: number = array.indexOf(item);
+    if (index !== -1) array.splice(index, 1);
   }
 
   /** Add or remove comma in price. */
@@ -559,6 +796,7 @@ export class PostNewPage {
     this.price = this.price ? this.currency + ' ' + this.price : '';
   }
 }
+/** END CLASS */
 
 /** Register quill format */
 const BlockEmbed = Quill.import('blots/block/embed');
