@@ -15,9 +15,10 @@ import { FormValidatorProvider } from '../providers/form-validator';
 import { PushNotificationProvider } from '../providers/push-notification';
 import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
 import { TimeAgoPipe } from 'time-ago-pipe';
+import { IonicImageViewerModule } from 'ionic-img-viewer';
 
 @NgModule({
-  declarations: [MyApp],
+  declarations: [ MyApp ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -25,10 +26,11 @@ import { TimeAgoPipe } from 'time-ago-pipe';
       scrollAssist: false,
       autoFocusAssist: false
     }),
-    HttpClientModule
+    HttpClientModule,
+    IonicImageViewerModule
   ],
-  bootstrap: [IonicApp],
-  entryComponents: [MyApp],
+  bootstrap: [ IonicApp ],
+  entryComponents: [ MyApp ],
   providers: [
     ApiServiceProvider,
     AuthServiceProvider,

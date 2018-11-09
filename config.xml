@@ -102,6 +102,7 @@
     <plugin name="cordova-plugin-statusbar" spec="^2.4.2" />
     <plugin name="cordova-plugin-filepicker" spec="^1.1.5" />
     <plugin name="cordova-plugin-filechooser" spec="^1.0.1" />
+    <plugin name="cordova-plugin-contacts" spec="^3.0.1" />
     <engine name="ios" spec="~4.5.4" />
     <engine name="android" spec="7.0.0" />
 </widget>
