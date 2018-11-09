@@ -21,14 +21,22 @@ export class ApiServiceProvider {
     return this.http.get(this.getUrl() + endpoint, options).pipe(catchError(this.handleError));
   }
 
-  download(endpoint: string, httpOptions?: any) {
+  getBlob(url: string, httpOptions?: any) {
+    return this.http.get(url, { responseType: 'blob' }).pipe(catchError(this.handleError));
+  }
+
+  download(url: string, httpOptions?: any) {
     const options = this.createRequestHeader(httpOptions ? httpOptions : {});
-    return this.http.get(endpoint, options).pipe(catchError(this.handleError));
+    return this.http.get(url, options).pipe(catchError(this.handleError));
   }
 
   post(endpoint: string, body: any, httpOptions?: any) {
     const options = this.createRequestHeader(httpOptions ? httpOptions : {});
     return this.http.post(this.getUrl() + endpoint, body, options).pipe(catchError(this.handleError));
+  }
+
+  postFormData(endpoint: string, body: any, httpOptions?: any) {
+    return this.http.post(this.getUrl() + endpoint, body).pipe(catchError(this.handleError));
   }
 
   private createRequestHeader(options?: any): any {
@@ -40,11 +48,12 @@ export class ApiServiceProvider {
   }
 
   private handleError(error: HttpErrorResponse) {
+    console.log('api', error);
     if (error.hasOwnProperty('error')) {
       if (error.error instanceof ErrorEvent) console.error('An error occurred:', error.error.message);
       else if (error.error && error.error.hasOwnProperty('Message')) return new ErrorObservable(error.error.Message);
-      // return new ErrorObservable(error.error.ExceptionMessage);
       else if (error.error && error.error.hasOwnProperty('errorMessage')) {
+        // return new ErrorObservable(error.error.ExceptionMessage);
         if (error.error.errorMessage instanceof Array) return new ErrorObservable(error.error.errorMessage.join('\n'));
         else return new ErrorObservable(error.error.errorMessage);
       } else console.error(`error message`, error.message);
