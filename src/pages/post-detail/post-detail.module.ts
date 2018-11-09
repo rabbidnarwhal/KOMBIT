@@ -6,8 +6,8 @@ import { ComponentsModule } from '../../components/components.module';
 import { File } from '@ionic-native/file';
 
 @NgModule({
-  declarations: [PostDetailPage],
-  imports: [IonicPageModule.forChild(PostDetailPage), ComponentsModule],
-  providers: [DataProductServiceProvider, File]
+  declarations: [ PostDetailPage ],
+  imports: [ IonicPageModule.forChild(PostDetailPage), ComponentsModule ],
+  providers: [ DataProductServiceProvider, File ]
 })
 export class PostDetailPageModule {}

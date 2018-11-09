@@ -32,13 +32,21 @@ product-detail {
   }
 
   .image-container {
-    height: 216px;
+    height: 124px;
     .slide-zoom {
       display: flex;
       height: 100%;
       img {
         object-fit: contain;
       }
+    }
+  }
+
+  .certificate-image-container {
+    max-height: 124px;
+    img {
+      width: 100%;
+      object-fit: contain;
     }
   }
 
@@ -50,5 +58,72 @@ product-detail {
       height: 216px;
       object-fit: contain;
     }
+  }
+
+  .padding-side-8 {
+    padding: 0 8px;
+  }
+
+  .box-divider {
+    padding-left: 16px;
+  }
+
+  .description-title {
+    text-transform: uppercase;
+    font-size: 15px;
+  }
+
+  .implementation-container {
+    ion-label {
+      margin: 2px 8px;
+      text-align: center;
+    }
+    .wrapper {
+      height: 80px;
+      border-radius: 12px;
+      .video-player {
+        max-width: 23%;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+    }
+  }
+
+  .marketing-kit-btn {
+    width: 50%;
+    border: none;
+    border-radius: 6px;
+    color: map-get($kombit-colors, 'text');
+    @include color-background(180deg);
+    ion-icon + span {
+      margin-left: 6px;
+    }
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .title-underline {
+    border-bottom: 2px solid;
+    @include color-border();
+  }
+
+  .client-image-container {
+    width: 100%;
+    border-radius: 12px;
+    img {
+      width: 100%;
+      object-fit: cover;
+    }
+  }
+  .zoom-icon {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    color: orange;
   }
 }

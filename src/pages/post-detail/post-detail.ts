@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events, ViewController } from 'ionic-angular';
 import { ProductDetail } from '../../models/products';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
@@ -18,8 +18,9 @@ export class PostDetailPage {
   public isSearching: boolean = true;
   public selectedPage: string = 'detail';
   public parentPage: string = '';
+  public segmentName: string = 'Description';
   constructor(
-    private navCtrl: NavController,
+    private viewCtrl: ViewController,
     private navParams: NavParams,
     private utility: UtilityServiceProvider,
     private dataProduct: DataProductServiceProvider,
@@ -33,23 +34,27 @@ export class PostDetailPage {
     this.dataProduct
       .getProductDetail(this.navParams.get('params').id)
       .then((res: ProductDetail) => {
+        console.log(res);
         this.data = res;
-        this.data.interaction.comment = this.data.interaction.comment.map(item => {
+        this.data.interaction.comment = this.data.interaction.comment.map((item) => {
           const obj = item;
           const time = new Date(item.commentDate);
           time.setUTCHours(time.getUTCHours() + -time.getTimezoneOffset() / 60);
           obj.commentDate = time.toLocaleString();
           return obj;
         });
-        this.createMap();
+        // this.createMap();
         this.isSearching = false;
         return this.dataProduct.addViewProduct(this.data.id);
       })
       .then(() => {
-        if (this.parentPage === 'home') this.event.publish('homeInteraction', { id: this.data.id, type: 'view' });
-        else this.event.publish('postInteraction', { id: this.data.id, type: 'view' });
+        if (this.parentPage === 'home') {
+          this.event.publish('homeInteraction', { id: this.data.id, type: 'view' });
+        } else {
+          this.event.publish('postInteraction', { id: this.data.id, type: 'view' });
+        }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error('e', err);
         this.utility.showToast(err);
       });
@@ -72,7 +77,7 @@ export class PostDetailPage {
   }
 
   close() {
-    this.navCtrl.pop();
+    this.viewCtrl.dismiss();
   }
 
   back() {
@@ -81,5 +86,51 @@ export class PostDetailPage {
 
   changePage(page) {
     this.selectedPage = page;
+  }
+
+  openWhatsapp() {
+    const phone = this.data.contact.handphone.replace(/ |-|\+/g, '');
+    this.dataProduct
+      .addChatProduct(this.data.id)
+      .then(() => {
+        this.data.interaction.totalChat++;
+        if (this.parentPage === 'home') {
+          this.event.publish('homeInteraction', { id: this.data.id, type: 'call' });
+        } else {
+          this.event.publish('postInteraction', { id: this.data.id, type: 'call' });
+        }
+      })
+      .catch((err) => {});
+    window.open('https://api.whatsapp.com/send?phone=' + phone);
+  }
+
+  likeBtnClick() {
+    this.data.interaction.isLike = !this.data.interaction.isLike;
+    this.lockBtn = true;
+    this.dataProduct.modifyLikeProduct(this.data.id, this.data.interaction.isLike).then(
+      () => {
+        this.lockBtn = false;
+        this.data.interaction.totalLike = this.data.interaction.isLike
+          ? this.data.interaction.totalLike + 1
+          : this.data.interaction.totalLike - 1;
+        this.utility.showToast(this.data.interaction.isLike ? 'Product Liked' : 'Product Unliked', 1000);
+        if (this.parentPage === 'home')
+          this.event.publish('homeInteraction', {
+            id: this.data.id,
+            type: 'like',
+            isLike: this.data.interaction.isLike
+          });
+        else
+          this.event.publish('postInteraction', {
+            id: this.data.id,
+            type: 'like',
+            isLike: this.data.interaction.isLike
+          });
+      },
+      (err) => {
+        this.lockBtn = false;
+        this.utility.showToast(err);
+      }
+    );
   }
 }

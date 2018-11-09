@@ -37,10 +37,19 @@ page-post-detail {
     margin-top: 10px;
     font-size: 30px;
     position: absolute;
+    z-index: 10000;
     &[name~='close-circle'] {
       right: 20px;
       top: 0;
       color: map-get($colors, 'danger');
+      width: 24px;
+      height: 24px;
+      background-color: #dedede;
+      border-radius: 20px;
+    }
+    &::before {
+      position: relative;
+      bottom: 3px;
     }
     &[name~='arrow-back'] {
       left: 20px;
@@ -48,9 +57,20 @@ page-post-detail {
     }
   }
 
-  ion-scroll {
-    height: calc(100vh - 136px);
+  ion-scroll.detail {
+    height: calc(100vh - 318px);
     .scroll-content {
+      height: 100%;
+      padding-top: 0px !important;
+      padding-bottom: 0px !important;
+    }
+  }
+
+  ion-scroll.comment {
+    height: calc(100vh - 40px);
+    margin-top: 24px;
+    .scroll-content {
+      height: 100%;
       padding-top: 0px !important;
       padding-bottom: 0px !important;
     }
@@ -75,13 +95,69 @@ page-post-detail {
     margin: 8px 0 !important;
   }
 
+  .interaction-container {
+    margin: 0 8px;
+  }
+  .interaction-wrapper {
+    margin: 0 2px;
+  }
   .interactionBtn {
     width: 100%;
     border: none;
+    border-radius: 6px;
     color: map-get($kombit-colors, 'text');
     @include color-background(180deg);
     ion-icon + span {
       margin-left: 6px;
     }
+  }
+
+  .slider-container .swiper-pagination {
+    text-align: left;
+    padding: 0 24px;
+    bottom: 12px;
+    button {
+      background-color: #dedede;
+      width: 12px;
+      height: 12px;
+    }
+  }
+  .slide-image-container {
+    height: 216px;
+    .slide-zoom {
+      display: flex;
+      height: 100%;
+      img {
+        object-fit: fill;
+        width: 100%;
+      }
+    }
+  }
+
+  .segment.segment-product {
+    height: 2.8rem;
+    margin-bottom: 10px;
+    padding: 16px 0;
+    .segment-button.segment-product-button {
+      background-color: #fff;
+      height: 2.8rem !important;
+      line-height: 2.8rem !important;
+      font-size: 10px;
+      font-stretch: ultra-condensed;
+      font-weight: 400;
+      border-top: 2px solid;
+      border-bottom: none;
+      @include color-border();
+      @include color-item();
+      &.segment-activated {
+        color: map-get($kombit-colors, 'text') !important;
+        @include color-background(180deg);
+      }
+    }
+  }
+
+  .btn-icon-img-comment {
+    width: 18px;
+    margin-right: 6px;
   }
 }
