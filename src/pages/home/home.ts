@@ -152,7 +152,7 @@ export class HomePage {
 
   locationIndicatorClicked() {
     this.locationEnabled = false;
-    this.utility.showPopover('home-location', '', true).present();
+    this.utility.showPopover('home-location', '', 'popover-width-full').present();
   }
 
   loadPostData(isReload = false) {
@@ -192,7 +192,7 @@ export class HomePage {
       this.selectedCity = 0;
       this.selectedProvince = 0;
       this.distance = 0;
-      this.utility.showPopover('home-location', '', true).present();
+      this.utility.showPopover('home-location', '', 'popover-width-full').present();
     } else {
       this.locationEnabled = false;
       this.filterItems(this.locationEnabled);

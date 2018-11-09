@@ -6,12 +6,6 @@ import { PopoverController } from 'ionic-angular/components/popover/popover-cont
 import { Events } from 'ionic-angular/util/events';
 import { ModalController } from 'ionic-angular/components/modal/modal-controller';
 
-/*
-  Generated class for the UtilServiceProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class UtilityServiceProvider {
   constructor(
@@ -23,7 +17,14 @@ export class UtilityServiceProvider {
     private events: Events
   ) {}
 
-  showToast(content: string, duration = 5000, onDidDismis = false, position = 'top', closeButton = true, closeButtonText = 'Ok'): void {
+  showToast(
+    content: string,
+    duration = 5000,
+    onDidDismis = false,
+    position = 'top',
+    closeButton = true,
+    closeButtonText = 'Ok'
+  ): void {
     const toast = this.toastCtrl.create({
       message: content,
       position: position,
@@ -93,11 +94,11 @@ export class UtilityServiceProvider {
     return this.modalCtrl.create(component, { params });
   }
 
-  showPopover(page, params: any = '', isFullScreen = false) {
+  showPopover(page, params: any = '', cssClass: string = 'popover-width', backdrop = true, backdropDismiss = true) {
     const style = {
-      cssClass: isFullScreen ? 'popover-width-full' : 'popover-width',
-      showBackdrop: true,
-      enableBackdropDismiss: true
+      cssClass: cssClass,
+      showBackdrop: backdrop,
+      enableBackdropDismiss: backdropDismiss
     };
     return this.popoverCtrl.create(page, { params }, style);
   }
