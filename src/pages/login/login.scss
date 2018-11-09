@@ -1,15 +1,8 @@
 page-login {
-  // ion-content {
-  // background-image: url('../assets/imgs/BackgroundLogin.png');
-  // background-size: cover;
-  // background-repeat: no-repeat;
-  // background-position-x: center;
-  // background-position-y: -24px;
-  // }
   .login-background {
     position: absolute;
     width: 100%;
-    height: calc(100vh - 250px);
+    height: calc(100vh - 216px);
     z-index: 1;
     @include color-background(0deg);
     &::after {
@@ -40,7 +33,7 @@ page-login {
     height: 100%;
     ion-row {
       padding: 0 24px;
-      margin-top: calc(100vh - 328px);
+      margin-top: calc(100vh - 304px);
     }
   }
   ion-input {
