@@ -10,6 +10,7 @@ export class LoginResponse {
   username: string;
   name: string;
   email: string;
+  phoneNumber: string;
   companyId: number;
   holdingId: number;
   image: string;
