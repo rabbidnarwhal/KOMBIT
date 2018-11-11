@@ -13,8 +13,7 @@ import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
   templateUrl: 'app.html'
 })
 export class MyApp {
-  @ViewChild(Nav)
-  nav: Nav;
+  @ViewChild(Nav) nav: Nav;
   public rootPage: string = 'login';
   public pages: Array<{ title: string; component: string; icon: string; image: string }>;
   public userName: string = '';
@@ -38,7 +37,7 @@ export class MyApp {
       // { title: 'Create new post', component: 'newPost', icon: 'paper-plane', image: '' },
       { title: 'My post', component: 'myPost', icon: 'share', image: '' },
       { title: 'Company', component: 'company', icon: '', image: 'assets/imgs/company.png' },
-      { title: 'Solution', component: 'solution', icon: '', image: 'assets/imgs/solution-menu.png' },
+      { title: 'Solution', component: 'SolutionPage', icon: '', image: 'assets/imgs/solution-menu.png' },
       { title: 'Setting', component: '', icon: 'settings', image: '' },
       { title: 'Point', component: '', icon: '', image: 'assets/imgs/points.png' },
       { title: 'Logout', component: 'logout', icon: 'log-out', image: '' }
@@ -63,8 +62,8 @@ export class MyApp {
     if (page.component === 'logout') {
       this.utility
         .confirmAlert('Are you sure to logout?', 'Logout')
-        .then(res => this.auth.logout())
-        .catch(err => console.error(err));
+        .then((res) => this.auth.logout())
+        .catch((err) => console.error(err));
     } else if (page.component) this.nav.push(page.component);
     else alert('Not implemented yet');
   }
@@ -85,7 +84,7 @@ export class MyApp {
       if (routeUrl.length > 1) window.location.href = routeUrl[0];
     }
     let isFirstTime = localStorage.getItem('firstTime') || '';
-    this.auth.authNotifier.filter(res => res !== null).subscribe(res => {
+    this.auth.authNotifier.filter((res) => res !== null).subscribe((res) => {
       if (!isFirstTime || isFirstTime !== 'false') {
         localStorage.setItem('firstTime', 'false');
         isFirstTime = 'false';
@@ -114,18 +113,18 @@ export class MyApp {
     this.nav.push('profile', { id: this.auth.getPrincipal().id });
     this.menu.close('sideMenu');
 
-    this.events.subscribe('picture-changed', sub => {
+    this.events.subscribe('picture-changed', (sub) => {
       this.picture = sub;
       this.events.unsubscribe('picture-changed');
     });
   }
 
   private loadProvinceData() {
-    Promise.all([this.dataProvince.getListProvince(), this.dataProvince.getListCity()])
-      .then(res => {
+    Promise.all([ this.dataProvince.getListProvince(), this.dataProvince.getListCity() ])
+      .then((res) => {
         this.dataProvince.setProvince(res[0]);
         this.dataProvince.setCity(res[1]);
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   }
 }

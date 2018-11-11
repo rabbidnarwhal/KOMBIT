@@ -17,4 +17,40 @@ page-solution {
       color: map-get($kombit-colors, 'text');
     }
   }
+
+  .solution-text {
+    margin: 6px 0;
+    font-size: 10px;
+    text-align: center;
+    white-space: pre-wrap;
+  }
+
+  .solution-container {
+    height: 50px;
+    width: 50px;
+    border-radius: 14px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -ms-box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3);
+    box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3);
+    img {
+      width: 80%;
+      object-fit: contain;
+    }
+    ion-icon {
+      font-size: 36px;
+      position: absolute;
+      color: #aeaeae;
+    }
+  }
+  [col-3] {
+    text-align: -webkit-center;
+  }
+
+  .image-icon-container {
+    height: 36px;
+    width: 36px;
+  }
 }

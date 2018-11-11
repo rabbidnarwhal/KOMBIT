@@ -87,7 +87,7 @@
         <video *ngIf="videoPathPublic" controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer" #videoShow>
           <source [src]="videoPathPublic" type="video/mp4" /> Not Supported
         </video>
-        <img *ngIf="!videoPathPublic" class="picture-image-icon" src="assets/imgs/product-add-image.png" />
+        <img *ngIf="!videoPathPublic" class="picture-image-icon" src="assets/imgs/product-add-video.png" />
         <ion-label *ngIf="!videoPathPublic">Upload Video</ion-label>
       </div>
     </div>

@@ -266,7 +266,15 @@ export class HomePage {
   }
 
   showAllSolutions() {
-    this.navCtrl.push('solution');
+    // const popover = this.utility.showPopover(
+    //   'solution',
+    //   { optionSubject: 'isModal' },
+    //   'popover-width-solution',
+    //   true,
+    //   true
+    // );
+    // popover.present();
+    this.navCtrl.push('SolutionPage');
   }
 
   filterSolutions(solution) {

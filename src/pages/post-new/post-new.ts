@@ -227,7 +227,6 @@ export class PostNewPage {
             return attachment;
           });
         }
-        console.log('mapping data', this.data);
       })
       .catch((err) => {
         loading.dismiss();

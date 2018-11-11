@@ -1,11 +1,4 @@
-<!--
-  Generated template for the SolutionPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-<ion-header class="custom-background">
-
+<ion-header class="custom-background" *ngIf="!isModal">
   <ion-navbar>
     <ion-item class="top-searchbar">
       <ion-input type="text" placeholder="Solution" [(ngModel)]="filterText" (input)="filterItems()"></ion-input>
@@ -15,8 +8,12 @@
 
 </ion-header>
 
-<ion-content padding>
-  <ion-row>
+
+<ion-content padding [class.popover]="isModal">
+  <!-- <div class="image-icon-container" *ngIf="isModal">
+    <img src="assets/imgs/product-cancel-modal.png" (click)="dismissModal()" />
+  </div> -->
+  <!-- <ion-row>
     <ion-col>
       <div class="spinner-container" *ngIf="isSearching">
         <div class="spinner-background">
@@ -27,6 +24,21 @@
         <button ion-item no-lines *ngFor="let solution of filteredItems" (click)="solutionClicked(solution)">{{solution.category}}</button>
       </ion-list>
       <div text-center class="not-found-text" *ngIf="!filteredItems.length && !isSearching">Solution not found</div>
+    </ion-col>
+  </ion-row> -->
+  <ion-row class="category-product">
+    <div class="spinner-container" *ngIf="isSearching">
+      <div class="spinner-background">
+        <ion-spinner></ion-spinner>
+      </div>
+    </div>
+    <div text-center class="not-found-text" *ngIf="!filteredItems.length && !isSearching">Solution not found!</div>
+    <ion-col col-3 *ngFor="let solution of filteredItems" (click)="solutionClicked(solution)">
+      <div class="solution-container">
+        <img *ngIf="!solution.image" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+        <img *ngIf="solution.image" [src]="solution.image" alt="" />
+      </div>
+      <ion-label no-margin no-padding class="solution-text">{{solution.category}}</ion-label>
     </ion-col>
   </ion-row>
 </ion-content>

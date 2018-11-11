@@ -135,15 +135,15 @@
             </ion-col>
           </ion-row>
           <ion-row>
-            <ion-col no-padding>
+            <ion-col col-4 no-padding>
               <button ion-button full small class="box-button interactionBtn" (click)="likeBtnClick(post)">
                 <ion-icon *ngIf="!lockBtn || post !== selectedLikePost" [name]="post.isLike ? 'heart' : 'heart-outline'"></ion-icon>
                 <span *ngIf="!lockBtn || post !== selectedLikePost">{{post.totalLike}}</span>
                 <ion-spinner name="dots" *ngIf="lockBtn && post === selectedLikePost"></ion-spinner>
               </button>
             </ion-col>
-            <ion-col no-padding>
-              <button ion-button full small class="box-button" (click)="showDetail(post)">Discovery More</button>
+            <ion-col col-8 no-padding>
+              <button ion-button full small class="box-button" (click)="showDetail(post)">More</button>
             </ion-col>
           </ion-row>
         </div>

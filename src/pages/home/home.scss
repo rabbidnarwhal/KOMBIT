@@ -184,16 +184,16 @@ page-home {
       font-size: 28px;
       color: map-get($kombit-colors, 'text');
       // @include color-item();
-      &::before {
-        background: linear-gradient(
-            90deg,
-            map-get($kombit-colors, 'bg-low') 30%,
-            map-get($kombit-colors, 'bg-high') 70%
-          ),
-          linear-gradient(0deg, #000 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
+      // &::before {
+      // background: linear-gradient(
+      //     90deg,
+      //     map-get($kombit-colors, 'bg-low') 30%,
+      //     map-get($kombit-colors, 'bg-high') 70%
+      //   ),
+      //   linear-gradient(0deg, #000 100%);
+      // -webkit-background-clip: text;
+      // -webkit-text-fill-color: transparent;
+      // }
     }
     .notification-badge {
       position: relative;
