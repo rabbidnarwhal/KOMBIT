@@ -15,9 +15,6 @@ import { DataProductServiceProvider } from '../../providers/dataProduct-service'
 import { Config } from '../../config/config';
 import { Platform } from 'ionic-angular/platform/platform';
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html';
-import { IOSFilePicker } from '@ionic-native/file-picker';
-import { FileChooser } from '@ionic-native/file-chooser';
-import { FilePath } from '@ionic-native/file-path';
 import { Contacts } from '@ionic-native/contacts';
 
 import Quill from 'quill';

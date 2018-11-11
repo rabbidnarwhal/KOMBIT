@@ -14,7 +14,6 @@ import { UtilityServiceProvider } from '../providers/utility-service';
 import { FormValidatorProvider } from '../providers/form-validator';
 import { PushNotificationProvider } from '../providers/push-notification';
 import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
-import { TimeAgoPipe } from 'time-ago-pipe';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 
 @NgModule({

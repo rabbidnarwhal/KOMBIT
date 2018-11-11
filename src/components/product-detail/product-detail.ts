@@ -1,8 +1,7 @@
-import { Component, Input, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ProductDetail } from '../../models/products';
-import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { UtilityServiceProvider } from '../../providers/utility-service';
-import { Events, Slides, Platform } from 'ionic-angular';
+import { Platform } from 'ionic-angular';
 import { ApiServiceProvider } from '../../providers/api-service';
 import { File } from '@ionic-native/file';
 import { ImageViewerController } from 'ionic-img-viewer';

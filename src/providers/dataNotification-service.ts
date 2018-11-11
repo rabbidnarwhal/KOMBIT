@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 import { ApiServiceProvider } from './api-service';
-import { Province } from '../models/province';
-import { City } from '../models/city';
 import { Notification } from '../models/notification';
 
 @Injectable()

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Platform, ViewController } from 'ionic-angular';
+import { IonicPage, NavParams, Platform, ViewController } from 'ionic-angular';
 import { FilePath } from '@ionic-native/file-path';
 import { UtilityServiceProvider } from '../../../providers/utility-service';
 import { IOSFilePicker } from '@ionic-native/file-picker';

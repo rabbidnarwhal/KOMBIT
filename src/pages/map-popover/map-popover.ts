@@ -6,12 +6,6 @@ import { LatLng, LocationService, MyLocationOptions, LatLngBounds } from '@ionic
 import { UtilityServiceProvider } from '../../providers/utility-service';
 
 declare var google;
-/**
- * Generated class for the MapPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage({
   name: 'map-popover'
@@ -47,7 +41,7 @@ export class MapPopoverPage {
   }
 
   private loadGoogleMaps(): Promise<any> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       if (typeof google == 'undefined' || typeof google.maps == 'undefined') {
         window['mapInit'] = () => {
           this.initMap().then(() => {
@@ -74,12 +68,15 @@ export class MapPopoverPage {
   }
 
   private initMap(): Promise<any> {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.getPosition()
-        .then(pos => {
-          this.position = new LatLng(+this.navParams.data.coordinate.split(', ')[0], +this.navParams.data.coordinate.split(', ')[1]);
+        .then((pos) => {
+          this.position = new LatLng(
+            +this.navParams.data.coordinate.split(', ')[0],
+            +this.navParams.data.coordinate.split(', ')[1]
+          );
           this.currentPosition = pos.latLng;
-          const latLng = new LatLngBounds([this.currentPosition, this.position]).getCenter();
+          const latLng = new LatLngBounds([ this.currentPosition, this.position ]).getCenter();
           let mapOptions = {
             center: latLng,
             mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -87,7 +84,7 @@ export class MapPopoverPage {
           this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
           resolve();
         })
-        .catch(err => {
+        .catch((err) => {
           this.utility.showToast('Unable to get location');
           resolve();
         });
@@ -99,14 +96,6 @@ export class MapPopoverPage {
       enableHighAccuracy: true
     };
     return LocationService.getMyLocation(options);
-  }
-
-  private addMarker(myLatLng, title) {
-    const marker = new google.maps.Marker({
-      position: myLatLng,
-      map: this.map,
-      title: title
-    });
   }
 
   private createDirection() {

@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
+import { IonicPage, NavController, Events } from 'ionic-angular';
 import { RegistrationRequest } from '../../models/registration';
 import { NgForm } from '@angular/forms';
 import { ApiServiceProvider } from '../../providers/api-service';
@@ -14,8 +14,7 @@ import { UtilityServiceProvider } from '../../providers/utility-service';
   templateUrl: 'registration.html'
 })
 export class RegistrationPage {
-  @ViewChild('formRegistration')
-  form: NgForm;
+  @ViewChild('formRegistration') form: NgForm;
   public registration: RegistrationRequest;
   public listIDType: Array<any> = [];
   public listCompany: Array<any> = [];
@@ -44,11 +43,11 @@ export class RegistrationPage {
     this.loadListHoldingCompany();
     // this.loadListIDType();
 
-    this.events.subscribe('location', res => {
+    this.events.subscribe('location', (res) => {
       this.registration.AddressKoordinat = res.coordinate;
     });
 
-    this.events.subscribe('province-location', sub => {
+    this.events.subscribe('province-location', (sub) => {
       this.city = `${sub.city.name}, ${sub.province.name}`;
       this.registration.ProvinsiId = sub.province.id;
       this.registration.KabKotaId = sub.city.id;
@@ -67,14 +66,14 @@ export class RegistrationPage {
         this.registration.Handphone = '62' + this.registration.Handphone.slice(1);
       }
       this.api.post('/users/register', this.registration).subscribe(
-        sub => {
+        (sub) => {
           loading.dismiss();
           this.utility
             .confirmAlert('Register Success', '', 'Ok', '')
             .then(() => this.navCtrl.pop())
             .catch(() => this.navCtrl.pop());
         },
-        err => {
+        (err) => {
           loading.dismiss();
           this.utility.showToast(err);
         }
@@ -97,11 +96,11 @@ export class RegistrationPage {
   private loadListCompany() {
     this.isLoading = true;
     this.api.get('/holding/' + this.holdingId + '/company').subscribe(
-      sub => {
+      (sub) => {
         this.listCompany = sub;
         this.isLoading = false;
       },
-      err => {
+      (err) => {
         this.utility.showToast(err);
         this.isLoading = false;
       }
@@ -109,10 +108,6 @@ export class RegistrationPage {
   }
 
   private loadListHoldingCompany() {
-    this.api.get('/holding').subscribe(sub => (this.listHoldingCompany = sub), err => this.utility.showToast(err));
-  }
-
-  private loadListIDType() {
-    this.api.get('/idtype').subscribe(sub => (this.listIDType = sub), err => this.utility.showToast(err));
+    this.api.get('/holding').subscribe((sub) => (this.listHoldingCompany = sub), (err) => this.utility.showToast(err));
   }
 }

@@ -1,7 +1,6 @@
 import { Component, ElementRef, ViewChild, NgZone } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
 import { UtilityServiceProvider } from '../../providers/utility-service';
-import { google } from 'google-maps';
 import {
   Geocoder,
   GoogleMap,
@@ -14,12 +13,6 @@ import {
   LatLngBounds
 } from '@ionic-native/google-maps';
 import { Config } from '../../config/config';
-/**
- * Generated class for the MapChooserPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage({
   name: 'map-location'
@@ -78,22 +71,28 @@ export class MapChooserPage {
   }
 
   private initMap() {
-    new Promise(resolve => {
+    new Promise((resolve) => {
       if (this.navParams.data.coordinate && this.mode === 'show') {
-        this.position = new LatLng(+this.navParams.data.coordinate.split(', ')[0], +this.navParams.data.coordinate.split(', ')[1]);
+        this.position = new LatLng(
+          +this.navParams.data.coordinate.split(', ')[0],
+          +this.navParams.data.coordinate.split(', ')[1]
+        );
         this.zoom = 16;
         resolve();
       } else {
         this.getPosition()
-          .then(pos => {
+          .then((pos) => {
             this.zoom = 16;
             if (this.navParams.data.coordinate && this.mode === 'direction') {
-              this.position = new LatLng(+this.navParams.data.coordinate.split(', ')[0], +this.navParams.data.coordinate.split(', ')[1]);
+              this.position = new LatLng(
+                +this.navParams.data.coordinate.split(', ')[0],
+                +this.navParams.data.coordinate.split(', ')[1]
+              );
               this.currentPosition = pos.latLng;
             } else this.position = pos.latLng;
             resolve();
           })
-          .catch(err => {
+          .catch((err) => {
             this.utility.showToast('Unable to get location');
             resolve();
           });
@@ -143,8 +142,8 @@ export class MapChooserPage {
             directionsService.route(directionRequest, (response, status) => {
               if (status === google.maps.DirectionsStatus.OK && response.routes.length) {
                 const directionPath = [];
-                const latLngBounds: LatLng = new LatLngBounds([this.currentPosition, this.position]).getCenter();
-                response.routes[0].overview_path.forEach(element => {
+                const latLngBounds: LatLng = new LatLngBounds([ this.currentPosition, this.position ]).getCenter();
+                response.routes[0].overview_path.forEach((element) => {
                   const pos: LatLng = new LatLng(element.lat(), element.lng());
                   directionPath.push(pos);
                 });
@@ -156,7 +155,7 @@ export class MapChooserPage {
           this.addMarker(this.position, this.mode === 'choose' ? 'Choose this location' : '');
           return;
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
         });
     }
@@ -172,7 +171,7 @@ export class MapChooserPage {
         animation: 'DROP',
         position: latLng
       })
-      .then(marker => {
+      .then((marker) => {
         Promise.resolve()
           .then(() => {
             if (centerCamera) {
@@ -183,13 +182,13 @@ export class MapChooserPage {
             } else return Promise.resolve();
           })
           .then(() => this.getLocationName(latLng))
-          .then(res => {
+          .then((res) => {
             if (this.mode === 'choose') {
               this.locationName = res;
               marker.showInfoWindow();
             } else marker.setTitle(res);
           })
-          .catch(err => this.utility.showToast(err));
+          .catch((err) => this.utility.showToast(err));
 
         if (this.mode === 'choose') {
           this.autocompleteService = new google.maps.places.AutocompleteService();
@@ -199,17 +198,17 @@ export class MapChooserPage {
             this.zone.run(() => (this.locationName = 'Please wait...'));
           });
 
-          this.maps.on(GoogleMapsEvent.CAMERA_MOVE).subscribe(res => {
+          this.maps.on(GoogleMapsEvent.CAMERA_MOVE).subscribe((res) => {
             marker.setPosition(res[0].target);
           });
 
-          this.maps.on(GoogleMapsEvent.CAMERA_MOVE_END).subscribe(res => {
+          this.maps.on(GoogleMapsEvent.CAMERA_MOVE_END).subscribe((res) => {
             marker.setPosition(res[0].target);
             marker.showInfoWindow();
             this.coordinate = res[0].target.lat + ', ' + res[0].target.lng;
             this.getLocationName(res[0].target)
-              .then(res => this.zone.run(() => (this.locationName = res)))
-              .catch(err => this.utility.showToast(err));
+              .then((res) => this.zone.run(() => (this.locationName = res)))
+              .catch((err) => this.utility.showToast(err));
           });
 
           const locationEvent = () => {
@@ -252,14 +251,14 @@ export class MapChooserPage {
           // });
         } else marker.on(GoogleMapsEvent.MARKER_CLICK).subscribe(() => marker.showInfoWindow());
       })
-      .catch(err => this.utility.showToast(err));
+      .catch((err) => this.utility.showToast(err));
   }
 
   private getLocationName(latLng: LatLng): Promise<string> {
     return new Promise((resolve, reject) => {
       Geocoder.geocode({ position: latLng })
-        .then(res => resolve(res[0].extra.lines.join(', ')))
-        .catch(err => reject(err));
+        .then((res) => resolve(res[0].extra.lines.join(', ')))
+        .catch((err) => reject(err));
     });
   }
 
@@ -267,21 +266,21 @@ export class MapChooserPage {
     console.log('im run');
     if (this.locationName.length > 0) {
       let config = {
-        types: ['establishment'],
+        types: [ 'establishment' ],
         input: this.locationName,
         componentRestrictions: { country: 'id' }
       };
       this.autocompleteService.getPlacePredictions(config, (predictionsPlace, statusPlace) => {
-        config.types = ['address'];
+        config.types = [ 'address' ];
         if (statusPlace === google.maps.places.PlacesServiceStatus.OK && predictionsPlace) {
           this.places = [];
-          predictionsPlace.forEach(prediction => {
+          predictionsPlace.forEach((prediction) => {
             this.places.push(prediction);
           });
         }
         this.autocompleteService.getPlacePredictions(config, (predictionsAddress, statusAddress) => {
           if (statusAddress === google.maps.places.PlacesServiceStatus.OK && predictionsAddress) {
-            predictionsAddress.forEach(prediction => {
+            predictionsAddress.forEach((prediction) => {
               this.places.push(prediction);
             });
           }
@@ -292,7 +291,7 @@ export class MapChooserPage {
 
   selectPlace(place) {
     this.places = [];
-    this.placesService.getDetails({ placeId: place.place_id }, details => {
+    this.placesService.getDetails({ placeId: place.place_id }, (details) => {
       this.zone.run(() => {
         this.coordinate = details.geometry.location.lat() + ', ' + details.geometry.location.lng();
         this.maps.moveCamera({
