@@ -48,6 +48,7 @@ export class PostNewPage {
 
   private isVideoUpload: boolean = false;
   public supplierAsContact: boolean = true;
+  public contactIsSelectable: boolean = false;
 
   public imagePathSecure: Array<any> = [];
   public implementationPathSecure: Array<any> = [];
@@ -56,7 +57,7 @@ export class PostNewPage {
 
   public attachmentFile: Array<any> = [];
   public fileUpload: Array<any> = [];
-  public listUser: Array<{ id: number; name: string }> = [];
+  public listUser: Array<{ id: number; name: string; handphone: string }> = [];
 
   public videoPathPublic: any;
   public intervalPublish: any;
@@ -105,17 +106,27 @@ export class PostNewPage {
     this.loadCategory();
     this.loadUser();
 
+    this.marketingModalSubs();
+    this.contactModalSubs();
+  }
+
+  private marketingModalSubs() {
     this.marketingModalData.subscribe((data) => {
       this.attachmentFile = [ ...this.attachmentFile, ...data ];
     });
+  }
 
+  private contactModalSubs() {
     this.contactModalToggle.subscribe((data) => {
       this.contactToggle = data;
+      this.contactIsSelectable = false;
       if (data) {
         this.contactLabel = 'Change Contact Person';
         if (data === 1) {
+          this.contactIsSelectable = true;
           this.data.ContactHandphone = this.auth.getPrincipal().phoneNumber;
           this.data.ContactName = this.auth.getPrincipal().name;
+          this.data.UserId = this.auth.getPrincipal().id;
         } else if (data === 2) {
           this.contacts.pickContact().then((contact) => {
             this.data.ContactName = contact.name.formatted;
@@ -139,9 +150,14 @@ export class PostNewPage {
 
   /** Fetch list user from server. */
   private loadUser() {
-    this.api
-      .get('/users/list/' + this.auth.getPrincipal().id)
-      .subscribe((sub) => (this.listUser = sub), (err) => this.utility.showToast(err));
+    this.api.get('/users/list/').subscribe((sub) => (this.listUser = sub), (err) => this.utility.showToast(err));
+  }
+
+  private contactChanged(e) {
+    const selectedContact = this.listUser.filter((x) => x.id === e);
+    console.log('contact', selectedContact);
+    this.data.ContactHandphone = selectedContact[0].handphone;
+    this.data.ContactName = selectedContact[0].name;
   }
 
   /** Load product detail for update purpose. */
@@ -151,7 +167,6 @@ export class PostNewPage {
     this.dataProduct
       .getProductContentEdit(this.postId)
       .then((res) => {
-        console.log('server data', res);
         loading.dismiss();
         this.data.init(res);
         this.contactToggle = 1;
@@ -464,6 +479,11 @@ export class PostNewPage {
       this.data.Price = +this.price.replace(this.currency + ' ', '').replace(/,/g, '');
       this.data.IsIncludePrice = this.data.Price ? true : false;
       this.data.Currency = this.currency;
+      if (this.data.ContactHandphone[0] === '0') {
+        this.data.ContactHandphone = '62' + this.data.ContactHandphone.slice(1);
+      } else if (this.data.ContactHandphone[0] === '+') {
+        this.data.ContactHandphone = this.data.ContactHandphone.slice(1);
+      }
 
       /** Add to upload que if there is a video and had not been uploaded. */
       if (this.videoPath && !this.isVideoUpload)
@@ -672,7 +692,8 @@ export class PostNewPage {
           params: {
             UserId: this.data.UserId,
             UseCase: useCase,
-            Type: type
+            Type: type,
+            ProductName: this.data.ProductName.toLowerCase().replace(' ', '-')
           }
         };
         fileTransfer

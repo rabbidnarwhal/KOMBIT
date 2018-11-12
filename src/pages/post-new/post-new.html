@@ -102,15 +102,21 @@
         </ion-card>
         <form id="newContactForm" *ngIf="contactToggle" #formContact="ngForm">
           <ion-card class="card-item-container">
-            <ion-item no-lines class="card-item-input">
+            <ion-item *ngIf="!contactIsSelectable" no-lines class="card-item-input">
               <img item-start class="item-input-image-icon" src="assets/imgs/product-feature.png" />
-              <ion-input type="text" [(ngModel)]="data.ContactName" name="Contact Phone" placeholder="Contact Name" required [readonly]="contactToggle !== 3"></ion-input>
+              <ion-input type="text" [(ngModel)]="data.ContactName" name="Contact Name" placeholder="Contact Name" required [readonly]="contactToggle !== 3"></ion-input>
+            </ion-item>
+            <ion-item *ngIf="contactIsSelectable" no-lines class="card-item-input">
+              <img item-start class="item-input-image-icon" src="assets/imgs/product-feature.png" />
+              <ion-select class="input-select" [(ngModel)]="data.UserId" name="Contact Name" interface="popover" placeholder="Contact Name" required (ionChange)="contactChanged($event)">
+                <ion-option [value]="item.id" *ngFor="let item of listUser">{{item.name}}</ion-option>
+              </ion-select>
             </ion-item>
           </ion-card>
           <ion-card class="card-item-container">
             <ion-item no-lines class="card-item-input">
               <img item-start class="item-input-image-icon" src="assets/imgs/product-feature.png" />
-              <ion-input type="text" [(ngModel)]="data.ContactHandphone" name="Contact Handphone" placeholder="Contact Handphone" required [readonly]="contactToggle !== 3"></ion-input>
+              <ion-input type="tel" [(ngModel)]="data.ContactHandphone" name="Contact Handphone" placeholder="Contact Handphone" required [readonly]="contactToggle !== 3"></ion-input>
             </ion-item>
           </ion-card>
         </form>
