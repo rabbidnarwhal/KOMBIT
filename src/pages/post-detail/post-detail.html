@@ -61,7 +61,7 @@
         </button>
       </ion-col>
       <ion-col no-padding class="interaction-wrapper">
-        <button ion-button small class="interactionBtn" (click)="openWhatsapp()">
+        <button ion-button small class="interactionBtn" (click)="changePage('contact')">
           <ion-icon name="call"></ion-icon>
           <span>{{data.interaction.totalChat}}</span>
         </button>
@@ -74,6 +74,13 @@
     <ion-scroll class="comment" scrollY="true">
       <product-comment *ngIf="selectedPage === 'comment' && !isSearching" [data]="data" [page]="parentPage"></product-comment>
     </ion-scroll>
+  </div>
+
+  <div *ngIf="selectedPage === 'contact' && !isSearching">
+    <ion-icon class="popover-icon" name="arrow-back" (click)="back()"></ion-icon>
+    <!-- <ion-scroll class="comment" scrollY="true"> -->
+    <product-contact *ngIf="selectedPage === 'contact' && !isSearching" [data]="data" [page]="parentPage"></product-contact>
+    <!-- </ion-scroll> -->
   </div>
 
 </ion-content>

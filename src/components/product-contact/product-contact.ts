@@ -1,7 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { ProductDetail } from '../../models/products';
-import { Events } from 'ionic-angular';
+import { CallNumber } from '@ionic-native/call-number';
+import { Events, ActionSheetController } from 'ionic-angular';
+import { UtilityServiceProvider } from '../../providers/utility-service';
 
 @Component({
   selector: 'product-contact',
@@ -11,10 +13,16 @@ export class ProductContactComponent {
   @Input() data: ProductDetail;
   @Input() page: string;
   @Input() addressMap: string;
-  constructor(private dataProduct: DataProductServiceProvider, private event: Events) {}
+  constructor(
+    private dataProduct: DataProductServiceProvider,
+    private callNumber: CallNumber,
+    private actionCtrl: ActionSheetController,
+    private event: Events,
+    private utility: UtilityServiceProvider
+  ) {}
 
   openWhatsapp() {
-    const phone = this.data.contact.handphone.replace(/ |-|\+/g, '');
+    const phone = this.data.contactHandphone.replace(/ |-|\+/g, '');
     this.dataProduct
       .addChatProduct(this.data.id)
       .then(() => {
@@ -22,8 +30,53 @@ export class ProductContactComponent {
         if (this.page === 'home') this.event.publish('homeInteraction', { id: this.data.id, type: 'call' });
         else this.event.publish('postInteraction', { id: this.data.id, type: 'call' });
       })
-      .catch((err) => {});
+      .catch((err) => {
+        this.utility.showToast(err);
+      });
     window.open('https://api.whatsapp.com/send?phone=' + phone);
+  }
+
+  makePhoneCall() {
+    this.dataProduct
+      .addChatProduct(this.data.id)
+      .then(() => {
+        this.data.interaction.totalChat++;
+        if (this.page === 'home') this.event.publish('homeInteraction', { id: this.data.id, type: 'call' });
+        else this.event.publish('postInteraction', { id: this.data.id, type: 'call' });
+      })
+      .catch((err) => {
+        this.utility.showToast(err);
+      });
+    this.callNumber
+      .callNumber(this.data.contactHandphone, true)
+      .then((res) => console.log('Launched dialer!', res))
+      .catch((err) => console.log('Error launching dialer', err));
+  }
+
+  openCallChooser() {
+    this.actionCtrl
+      .create({
+        title: 'Choose:',
+        buttons: [
+          {
+            text: 'Phone call',
+            handler: () => {
+              this.makePhoneCall();
+            }
+          },
+          {
+            text: 'Whatsapp',
+            handler: () => {
+              this.openWhatsapp();
+            }
+          },
+          {
+            text: 'Cancel',
+            role: 'cancel'
+          }
+        ]
+      })
+      .present();
   }
 
   openMap() {
