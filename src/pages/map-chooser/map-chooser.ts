@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild, NgZone } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
 import { UtilityServiceProvider } from '../../providers/utility-service';
+import { google } from 'google-maps';
 import {
   Geocoder,
   GoogleMap,
