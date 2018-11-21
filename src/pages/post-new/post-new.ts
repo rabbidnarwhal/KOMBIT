@@ -47,7 +47,6 @@ export class PostNewPage {
   public segmentName: string = 'Description';
 
   private isVideoUpload: boolean = false;
-  public supplierAsContact: boolean = true;
   public contactIsSelectable: boolean = false;
 
   public imagePathSecure: Array<any> = [];
@@ -126,7 +125,7 @@ export class PostNewPage {
           this.contactIsSelectable = true;
           this.data.ContactHandphone = this.auth.getPrincipal().phoneNumber;
           this.data.ContactName = this.auth.getPrincipal().name;
-          this.data.UserId = this.auth.getPrincipal().id;
+          this.data.ContactId = this.auth.getPrincipal().id;
         } else if (data === 2) {
           this.contacts.pickContact().then((contact) => {
             this.data.ContactName = contact.name.formatted;
@@ -135,7 +134,9 @@ export class PostNewPage {
             });
             this.data.ContactHandphone = phone.length ? phone[0].value : contact.phoneNumbers[0].value;
           });
+          this.data.ContactId = 0;
         } else {
+          this.data.ContactId = 0;
           this.data.ContactHandphone = '';
           this.data.ContactName = '';
         }
@@ -153,9 +154,9 @@ export class PostNewPage {
     this.api.get('/users/list/').subscribe((sub) => (this.listUser = sub), (err) => this.utility.showToast(err));
   }
 
-  private contactChanged(e) {
+  contactChanged(e) {
     const selectedContact = this.listUser.filter((x) => x.id === e);
-    console.log('contact', selectedContact);
+    this.data.ContactId = selectedContact[0].id;
     this.data.ContactHandphone = selectedContact[0].handphone;
     this.data.ContactName = selectedContact[0].name;
   }
@@ -455,8 +456,12 @@ export class PostNewPage {
             res.file(
               (meta) => {
                 if (type === this.camera.MediaType.PICTURE) resolve(res.nativeURL);
-                else if (meta.type === 'video/mp4') resolve(res.nativeURL);
-                else reject('Video not supported. Only supporting .mp4 video file');
+                else if (meta.hasOwnProperty('type')) {
+                  if (meta.type === 'video/mp4') resolve(res.nativeURL);
+                } else {
+                  if (res.nativeURL.includes('.mp4')) resolve(res.nativeURL);
+                  else reject('Video not supported. Only supporting .mp4 video file');
+                }
               },
               (error) => reject(error.message)
             );
@@ -671,7 +676,7 @@ export class PostNewPage {
           .then((blob) => {
             const formData: FormData = new FormData();
             formData.append('File', blob);
-            formData.append('UserId', this.data.UserId + '');
+            formData.append('UserId', this.data.PosterId + '');
             formData.append('UseCase', useCase);
             formData.append('Type', type);
             formData.append('ProductName', this.data.ProductName.toLowerCase().replace(' ', '-'));
@@ -690,7 +695,7 @@ export class PostNewPage {
         const options: FileUploadOptions = {
           fileKey: 'File',
           params: {
-            UserId: this.data.UserId,
+            UserId: this.data.PosterId,
             UseCase: useCase,
             Type: type,
             ProductName: this.data.ProductName.toLowerCase().replace(' ', '-')
@@ -712,7 +717,12 @@ export class PostNewPage {
   /** Send product data to server. */
   private publishProduct() {
     console.log('publishing');
-    if (this.supplierAsContact) this.data.UserId = this.data.PosterId;
+    if (!this.data.ContactId) {
+      this.data.ContactId = this.data.PosterId;
+      this.data.PosterAsContact = false;
+    } else {
+      this.data.PosterAsContact = this.data.ContactId === this.data.PosterId ? true : false;
+    }
     for (const segment in this.quill) {
       if (this.quillContent.hasOwnProperty(segment)) {
         const converter = new QuillDeltaToHtmlConverter(this.quillContent[segment].ops, {});

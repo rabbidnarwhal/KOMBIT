@@ -108,7 +108,7 @@
             </ion-item>
             <ion-item *ngIf="contactIsSelectable" no-lines class="card-item-input">
               <img item-start class="item-input-image-icon" src="assets/imgs/product-feature.png" />
-              <ion-select class="input-select" [(ngModel)]="data.UserId" name="Contact Name" interface="popover" placeholder="Contact Name" required (ionChange)="contactChanged($event)">
+              <ion-select class="input-select" [(ngModel)]="data.ContactId" name="Contact Name" interface="popover" placeholder="Contact Name" required (ionChange)="contactChanged($event)">
                 <ion-option [value]="item.id" *ngFor="let item of listUser">{{item.name}}</ion-option>
               </ion-select>
             </ion-item>
@@ -146,7 +146,7 @@
         <ion-card class="card-item-container">
           <ion-item no-lines class="card-item-input">
             <img item-start class="item-input-image-icon" src="assets/imgs/product-price.png" />
-            <ion-input type="text" [(ngModel)]="price" name="Price" placeholder="Price Product (e.g.Rp.1000.000-Apps)" (ionChange)="commaSeparated()"></ion-input>
+            <ion-input type="tel" [(ngModel)]="price" name="Price" placeholder="Price Product (e.g.Rp.1000.000-Apps)" (ionChange)="commaSeparated()"></ion-input>
           </ion-item>
         </ion-card>
       </ion-col>

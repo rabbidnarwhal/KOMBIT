@@ -18,7 +18,7 @@ export class Product {
   totalComment: number;
   totalLike: number;
   totalView: number;
-  userId: number;
+  contactId: number;
 }
 
 export class NewProduct {
@@ -44,10 +44,11 @@ export class NewProduct {
   PosterId: number;
   Price: number;
   ProductName: string;
-  UserId: number;
+  ContactId: number;
   VideoPath: string;
   ContactHandphone: string;
   ContactName: string;
+  PosterAsContact: boolean;
   constructor(data) {
     this.CompanyId = data.companyId;
     this.HoldingId = data.holdingId;
@@ -77,7 +78,7 @@ export class NewProduct {
     this.PosterId = data.posterId;
     this.Price = data.price;
     this.ProductName = data.productName;
-    this.UserId = data.userId;
+    this.ContactId = data.contactId;
     this.VideoPath = data.videoPath;
     this.ContactHandphone = data.contactHandphone;
     this.ContactName = data.contactName;
@@ -152,6 +153,7 @@ export class ProductDetail {
   productClient: Array<ProductClientResponse>;
   attachment: Array<AttachmentFileResponse>;
   contact: Contact;
+  poster: Contact;
   interaction: Interaction;
   contactName: string;
   contactHandphone: string;
@@ -163,6 +165,7 @@ export class ProductDetail {
 }
 
 export class Contact {
+  id: number;
   name: string;
   email: string;
   jobTitle: string;
