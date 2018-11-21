@@ -17,6 +17,7 @@ export class ProductDetailComponent {
   // public attachmentData: any;
   public lockBtn: boolean = false;
   public attachmentOpen: boolean = false;
+  public fileIsLoading: boolean = false;
   constructor(
     private imageViewCtrl: ImageViewerController,
     private utility: UtilityServiceProvider,
@@ -27,6 +28,7 @@ export class ProductDetailComponent {
 
   downloadMarketingKit(file = null) {
     if (this.data.attachment.length === 1) {
+      this.fileIsLoading = true;
       this.downloadMarketingKit(this.data.attachment[0]);
     } else if (file === null) {
       this.attachmentOpen = !this.attachmentOpen;
@@ -47,16 +49,19 @@ export class ProductDetailComponent {
               })
               .then((res) => {
                 file.isLoading = false;
+                this.fileIsLoading = false;
                 this.utility.showToast(`${file.fileName} downloaded.`);
               })
               .catch((err) => {
                 file.isLoading = false;
+                this.fileIsLoading = false;
                 this.utility.showToast(JSON.stringify(err));
               });
           }
         },
         (err) => {
           file.isLoading = false;
+          this.fileIsLoading = false;
           this.utility.showToast(JSON.stringify(err));
         }
       );

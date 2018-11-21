@@ -59,9 +59,10 @@
 
     <ion-row>
       <ion-col class="text-center">
-        <button ion-button small class="marketing-kit-btn" (click)="downloadMarketingKit()">
-          <ion-icon name="download"></ion-icon>
-          <span>Marketing Kit</span>
+        <button ion-button small class="marketing-kit-btn" [disabled]="fileIsLoading" (click)="downloadMarketingKit()">
+          <ion-icon *ngIf="!fileIsLoading" name="download"></ion-icon>
+          <span *ngIf="!fileIsLoading">Marketing Kit</span>
+          <ion-spinner class="spinner-white" *ngIf="fileIsLoading"></ion-spinner>
         </button>
         <div class="margin-top-10" *ngIf="data.attachment.length> 1 && attachmentOpen">
           <ion-item class="attachment-item" *ngFor="let file of data.attachment">
