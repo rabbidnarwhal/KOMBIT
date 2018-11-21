@@ -34,8 +34,7 @@ export class MyApp {
     this.picture = 'assets/imgs/profile.png';
     this.pages = [
       { title: 'Notification', component: 'notification', icon: 'notifications', image: '' },
-      // { title: 'Create new post', component: 'newPost', icon: 'paper-plane', image: '' },
-      { title: 'My post', component: 'myPost', icon: 'share', image: '' },
+      { title: 'Appointment', component: 'AppointmentPage', icon: 'calendar', image: '' },
       { title: 'Company', component: 'company', icon: '', image: 'assets/imgs/company.png' },
       { title: 'Solution', component: 'SolutionPage', icon: '', image: 'assets/imgs/solution-menu.png' },
       { title: 'Setting', component: '', icon: 'settings', image: '' },
@@ -69,12 +68,12 @@ export class MyApp {
   }
 
   private changeSideMenus(role: string) {
-    let createPost = { title: 'Create new post', component: 'newPost', icon: 'paper-plane', image: '' };
+    let myPost = { title: 'My Post', component: 'myPost', icon: 'share', image: '' };
 
     if (role === 'Supplier') {
-      if (this.pages[1] !== createPost) this.pages.splice(1, 0, createPost);
+      if (this.pages[1] !== myPost) this.pages.splice(2, 0, myPost);
     } else if (role === 'Customer') {
-      if (this.pages[1] === createPost) this.pages.splice(1, 1);
+      if (this.pages[1] === myPost) this.pages.splice(2, 2);
     }
   }
 
