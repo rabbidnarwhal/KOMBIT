@@ -6,19 +6,17 @@ import { LoginResponse, LoginRequest } from '../models/login';
 import { PushNotificationProvider } from './push-notification';
 import { UtilityServiceProvider } from './utility-service';
 
-/*
-  Generated class for the AuthServiceProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class AuthServiceProvider {
   public authNotifier: BehaviorSubject<any> = new BehaviorSubject(null);
   private isLoggin: boolean;
   private principal: LoginResponse;
 
-  constructor(private api: ApiServiceProvider, private utility: UtilityServiceProvider, private push: PushNotificationProvider) {
+  constructor(
+    private api: ApiServiceProvider,
+    private utility: UtilityServiceProvider,
+    private push: PushNotificationProvider
+  ) {
     this.isLoggin = false;
     this.authCheck();
   }
@@ -37,13 +35,17 @@ export class AuthServiceProvider {
     loading.present();
     this.api.post('/users/login', credentials).subscribe(
       (sub: LoginResponse) => {
-        this.authenticate(sub).then(res => {
-          loading.dismiss();
-          this.loadConfig();
-          this.authNotifier.next(true);
-        });
+        loading.dismiss();
+        if (sub.role === 'Supplier' || sub.role === 'Customer') {
+          this.authenticate(sub).then((res) => {
+            this.loadConfig();
+            this.authNotifier.next(true);
+          });
+        } else {
+          this.utility.showToast('Unauthorized');
+        }
       },
-      error => {
+      (error) => {
         loading.dismiss();
         this.utility.showToast(error);
       }
@@ -66,12 +68,12 @@ export class AuthServiceProvider {
     const token = data.split(':');
     this.api.get('/users/' + token[1] + '/' + token[0]).subscribe(
       (sub: LoginResponse) => {
-        this.authenticate(sub).then(res => {
+        this.authenticate(sub).then((res) => {
           this.loadConfig();
           this.authNotifier.next(true);
         });
       },
-      err => {
+      (err) => {
         localStorage.removeItem('token');
         this.authNotifier.next(false);
       }
@@ -84,7 +86,7 @@ export class AuthServiceProvider {
     this.setPrincipal(data);
     this.push.topicNotifier.next({ sub: true, topic: 'combits', id: data.id });
     localStorage.setItem('token', data.idNumber + ':' + data.id + ':' + date);
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       resolve(true);
     });
   }
@@ -103,12 +105,12 @@ export class AuthServiceProvider {
 
   loadConfig() {
     this.api.get('/config').subscribe(
-      sub => {
-        sub.forEach(element => {
+      (sub) => {
+        sub.forEach((element) => {
           if (element.paramCode === 'DEFAULT_CURRENCY') Config.setCurrency(element.paramValue);
         });
       },
-      err => console.error(err)
+      (err) => console.error(err)
     );
   }
 }
