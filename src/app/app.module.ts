@@ -15,6 +15,7 @@ import { FormValidatorProvider } from '../providers/form-validator';
 import { PushNotificationProvider } from '../providers/push-notification';
 import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
 import { IonicImageViewerModule } from 'ionic-img-viewer';
+import { Network } from '@ionic-native/network';
 
 @NgModule({
   declarations: [ MyApp ],
@@ -41,7 +42,8 @@ import { IonicImageViewerModule } from 'ionic-img-viewer';
     { provide: ErrorHandler, useClass: IonicErrorHandler },
     PushNotificationProvider,
     DataProvinceServiceProvider,
-    Push
+    Push,
+    Network
   ]
 })
 export class AppModule {}
