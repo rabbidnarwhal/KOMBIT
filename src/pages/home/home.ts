@@ -266,15 +266,8 @@ export class HomePage {
   }
 
   showAllSolutions() {
-    // const popover = this.utility.showPopover(
-    //   'solution',
-    //   { optionSubject: 'isModal' },
-    //   'popover-width-solution',
-    //   true,
-    //   true
-    // );
-    // popover.present();
-    this.navCtrl.push('SolutionPage');
+    const popover = this.utility.showPopover('SolutionPage', { isModal: true }, 'popover-width-solution', true, true);
+    popover.present();
   }
 
   filterSolutions(solution) {

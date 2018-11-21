@@ -23,6 +23,10 @@ export class SolutionPage {
   ) {
     this.listSolution = new Array<Category>();
     this.filterItems();
+
+    if (this.navParams.data.params && this.navParams.data.params.hasOwnProperty('isModal')) {
+      this.isModal = this.navParams.data.params.isModal;
+    }
   }
   ionViewDidEnter() {
     if (this.listSolution.length) this.isSearching = false;
@@ -34,12 +38,6 @@ export class SolutionPage {
         this.isSearching = false;
       })
       .catch((err) => this.utility.showToast(err));
-  }
-
-  ionViewDidLoad() {
-    if (this.navParams.data && this.navParams.data.hasOwnProperty('optionSuject')) {
-      this.isModal = this.navParams.data.params.optionSubject === 'isModal' ? true : false;
-    }
   }
 
   filterItems() {
