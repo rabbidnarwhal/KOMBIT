@@ -6,4 +6,34 @@ page-map-popover {
     justify-content: center;
     align-items: center;
   }
+  ion-item {
+    padding-left: 8px !important;
+    min-height: 36px !important;
+    align-items: center !important;
+    ion-icon {
+      margin-bottom: 0px !important;
+      margin-top: 0px !important;
+      color: map-get($kombit-colors, 'btn');
+      &[name~='close'] {
+        color: #787878;
+        font-size: 20px;
+        margin-top: 8px !important;
+      }
+    }
+    .item-inner {
+      margin-left: 0px !important;
+      border: none !important;
+      box-shadow: none !important;
+      textarea {
+        margin: 4px 0px !important;
+        min-height: 16px;
+        height: 16px;
+        font-size: 14px;
+        font-weight: 300;
+      }
+    }
+  }
+  ion-list {
+    margin: 0 !important;
+  }
 }

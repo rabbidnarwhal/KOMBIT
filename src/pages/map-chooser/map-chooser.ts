@@ -3,7 +3,6 @@ import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { google } from 'google-maps';
 import {
-  Geocoder,
   GoogleMap,
   GoogleMapOptions,
   GoogleMaps,
@@ -257,9 +256,14 @@ export class MapChooserPage {
 
   private getLocationName(latLng: LatLng): Promise<string> {
     return new Promise((resolve, reject) => {
-      Geocoder.geocode({ position: latLng })
-        .then((res) => resolve(res[0].extra.lines.join(', ')))
-        .catch((err) => reject(err));
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ location: latLng }, (result, status) => {
+        if (status.toString() === 'OK') {
+          resolve(result[0].formatted_address);
+        } else {
+          reject('Geocoder Failed due to: ' + status);
+        }
+      });
     });
   }
 
