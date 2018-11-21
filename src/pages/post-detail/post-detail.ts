@@ -4,6 +4,7 @@ import { ProductDetail } from '../../models/products';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { Config } from '../../config/config';
+import { AuthServiceProvider } from '../../providers/auth-service';
 
 @IonicPage({
   name: 'detailPost'
@@ -34,8 +35,8 @@ export class PostDetailPage {
     this.dataProduct
       .getProductDetail(this.navParams.get('params').id)
       .then((res: ProductDetail) => {
-        console.log(res);
         this.data = res;
+        console.log(this.data);
         this.data.interaction.comment = this.data.interaction.comment.map((item) => {
           const obj = item;
           const time = new Date(item.commentDate);
@@ -55,7 +56,6 @@ export class PostDetailPage {
         }
       })
       .catch((err) => {
-        console.error('e', err);
         this.utility.showToast(err);
       });
   }
@@ -81,11 +81,19 @@ export class PostDetailPage {
   }
 
   back() {
-    this.selectedPage = 'detail';
+    if (this.selectedPage === 'appointment') {
+      this.selectedPage = 'contact';
+    } else {
+      this.selectedPage = 'detail';
+    }
   }
 
   changePage(page) {
     this.selectedPage = page;
+  }
+
+  makeAppointmentClicked(value) {
+    this.selectedPage = value;
   }
 
   openWhatsapp() {

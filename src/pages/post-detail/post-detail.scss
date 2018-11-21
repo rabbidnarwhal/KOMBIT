@@ -46,6 +46,8 @@ page-post-detail {
       height: 24px;
       background-color: #dedede;
       border-radius: 20px;
+      position: fixed;
+      float: right;
     }
     &::before {
       position: relative;

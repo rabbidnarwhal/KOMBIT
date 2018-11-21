@@ -1,86 +1,87 @@
-<!-- <ion-header>
-
-</ion-header> -->
-
 <ion-content class="popover">
-  <ion-icon class="popover-icon" name="close-circle" (click)="close()"></ion-icon>
-  <div class="spinner-container" *ngIf="isSearching">
+  <div>
+    <ion-icon class="popover-icon" name="close-circle" (click)="close()"></ion-icon>
+    <!-- <div class="spinner-container" *ngIf="isSearching">
     <div class="spinner-background">
       <ion-spinner></ion-spinner>
     </div>
-  </div>
-  <div *ngIf="selectedPage === 'detail' && !isSearching">
-    <ion-slides #slider class="slider-container" pager="true" spaceBetween="10">
-      <ion-slide class="slide-image-container" *ngFor="let foto of data.foto">
-        <img src="{{foto.fotoPath}}" alt="{{foto.fotoName}}" />
-      </ion-slide>
-    </ion-slides>
-    <ion-row>
-      <ion-col no-padding>
-        <ion-segment padding class="segment-product" [(ngModel)]="segmentName">
-          <ion-segment-button class="segment-product-button" value="Description">
-            Description
-          </ion-segment-button>
-          <ion-segment-button class="segment-product-button" value="Benefit">
-            Benefit
-          </ion-segment-button>
-          <ion-segment-button class="segment-product-button" value="Feature">
-            Feature
-          </ion-segment-button>
-          <ion-segment-button class="segment-product-button" value="Testimony">
-            Testimony
-          </ion-segment-button>
-        </ion-segment>
-      </ion-col>
-    </ion-row>
+  </div> -->
+    <div *ngIf="selectedPage === 'detail' && !isSearching">
+      <ion-slides #slider class="slider-container" pager="true" spaceBetween="10">
+        <ion-slide class="slide-image-container" *ngFor="let foto of data.foto">
+          <img src="{{foto.fotoPath}}" alt="{{foto.fotoName}}" />
+        </ion-slide>
+      </ion-slides>
+      <ion-row>
+        <ion-col no-padding>
+          <ion-segment padding class="segment-product" [(ngModel)]="segmentName">
+            <ion-segment-button class="segment-product-button" value="Description">
+              Description
+            </ion-segment-button>
+            <ion-segment-button class="segment-product-button" value="Benefit">
+              Benefit
+            </ion-segment-button>
+            <ion-segment-button class="segment-product-button" value="Feature">
+              Feature
+            </ion-segment-button>
+            <ion-segment-button class="segment-product-button" value="Testimony">
+              Testimony
+            </ion-segment-button>
+          </ion-segment>
+        </ion-col>
+      </ion-row>
 
-    <ion-scroll class="detail" scrollY="true">
-      <product-detail *ngIf="selectedPage === 'detail' && !isSearching" [data]="data" [segment]="segmentName"></product-detail>
-      <!-- <product-comment *ngIf="selectedPage === 'comment' && !isSearching" [data]="data" [page]="parentPage"></product-comment> -->
-      <!-- <product-contact *ngIf="selectedPage === 'contact' && !isSearching" [data]="data" [page]="parentPage"></product-contact> -->
-    </ion-scroll>
+      <ion-scroll class="detail" scrollY="true" *ngIf="selectedPage === 'detail' && !isSearching">
+        <product-detail [data]="data" [segment]="segmentName"></product-detail>
+        <!-- <product-comment *ngIf="selectedPage === 'comment' && !isSearching" [data]="data" [page]="parentPage"></product-comment> -->
+        <!-- <product-contact *ngIf="selectedPage === 'contact' && !isSearching" [data]="data" [page]="parentPage"></product-contact> -->
+      </ion-scroll>
 
-    <ion-row class="interaction-container">
-      <ion-col no-padding class="interaction-wrapper">
-        <button ion-button small class="interactionBtn">
-          <ion-icon name="flame"></ion-icon>
-          <span>{{data.interaction.totalView}}</span>
-        </button>
-      </ion-col>
-      <ion-col no-padding class="interaction-wrapper">
-        <button ion-button small class="interactionBtn" (click)="likeBtnClick()">
-          <ion-icon *ngIf="!lockBtn" [name]="data.interaction.isLike ? 'heart' : 'heart-outline'"></ion-icon>
-          <span *ngIf="!lockBtn">{{data.interaction.totalLike}}</span>
-          <ion-spinner name="dots" *ngIf="lockBtn"></ion-spinner>
-        </button>
-      </ion-col>
-      <ion-col no-padding class="interaction-wrapper">
-        <button ion-button small class="interactionBtn" (click)="changePage('comment')">
-          <img class="btn-icon-img-comment" src="assets/imgs/comment-white.png" />
-          <span>{{data.interaction.totalComment}}</span>
-        </button>
-      </ion-col>
-      <ion-col no-padding class="interaction-wrapper">
-        <button ion-button small class="interactionBtn" (click)="changePage('contact')">
-          <ion-icon name="call"></ion-icon>
-          <span>{{data.interaction.totalChat}}</span>
-        </button>
-      </ion-col>
-    </ion-row>
-  </div>
+      <ion-row class="interaction-container">
+        <ion-col no-padding class="interaction-wrapper">
+          <button ion-button small class="interactionBtn">
+            <ion-icon name="flame"></ion-icon>
+            <span>{{data.interaction.totalView}}</span>
+          </button>
+        </ion-col>
+        <ion-col no-padding class="interaction-wrapper">
+          <button ion-button small class="interactionBtn" (click)="likeBtnClick()">
+            <ion-icon *ngIf="!lockBtn" [name]="data.interaction.isLike ? 'heart' : 'heart-outline'"></ion-icon>
+            <span *ngIf="!lockBtn">{{data.interaction.totalLike}}</span>
+            <ion-spinner name="dots" *ngIf="lockBtn"></ion-spinner>
+          </button>
+        </ion-col>
+        <ion-col no-padding class="interaction-wrapper">
+          <button ion-button small class="interactionBtn" (click)="changePage('comment')">
+            <img class="btn-icon-img-comment" src="assets/imgs/comment-white.png" />
+            <span>{{data.interaction.totalComment}}</span>
+          </button>
+        </ion-col>
+        <ion-col no-padding class="interaction-wrapper">
+          <button ion-button small class="interactionBtn" (click)="changePage('contact')">
+            <ion-icon name="call"></ion-icon>
+            <span>{{data.interaction.totalChat}}</span>
+          </button>
+        </ion-col>
+      </ion-row>
+    </div>
 
-  <div *ngIf="selectedPage === 'comment' && !isSearching">
-    <ion-icon class="popover-icon" name="arrow-back" (click)="back()"></ion-icon>
-    <ion-scroll class="comment" scrollY="true">
-      <product-comment *ngIf="selectedPage === 'comment' && !isSearching" [data]="data" [page]="parentPage"></product-comment>
-    </ion-scroll>
-  </div>
+    <div *ngIf="selectedPage === 'comment' && !isSearching">
+      <ion-icon class="popover-icon" name="arrow-back" (click)="back()"></ion-icon>
+      <ion-scroll class="comment" scrollY="true">
+        <product-comment *ngIf="selectedPage === 'comment' && !isSearching" [data]="data" [page]="parentPage"></product-comment>
+      </ion-scroll>
+    </div>
 
-  <div *ngIf="selectedPage === 'contact' && !isSearching">
-    <ion-icon class="popover-icon" name="arrow-back" (click)="back()"></ion-icon>
-    <!-- <ion-scroll class="comment" scrollY="true"> -->
-    <product-contact *ngIf="selectedPage === 'contact' && !isSearching" [data]="data" [page]="parentPage"></product-contact>
-    <!-- </ion-scroll> -->
+    <div *ngIf="selectedPage === 'contact' && !isSearching">
+      <ion-icon class="popover-icon" name="arrow-back" (click)="back()"></ion-icon>
+      <product-contact *ngIf="selectedPage === 'contact' && !isSearching" [data]="data" [page]="parentPage" (makeAppointment)="makeAppointmentClicked($event)"></product-contact>
+    </div>
+
+    <div *ngIf="selectedPage === 'appointment' && !isSearching">
+      <ion-icon class="popover-icon" name="arrow-back" (click)="back()"></ion-icon>
+      <make-appointment *ngIf="selectedPage === 'appointment' && !isSearching" [data]="data" (closePage)="back()"></make-appointment>
+    </div>
   </div>
 
 </ion-content>
