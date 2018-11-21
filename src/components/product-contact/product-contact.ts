@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { ProductDetail } from '../../models/products';
 import { CallNumber } from '@ionic-native/call-number';
@@ -13,6 +13,8 @@ export class ProductContactComponent {
   @Input() data: ProductDetail;
   @Input() page: string;
   @Input() addressMap: string;
+
+  @Output() makeAppointment = new EventEmitter();
   constructor(
     private dataProduct: DataProductServiceProvider,
     private callNumber: CallNumber,
@@ -86,5 +88,9 @@ export class ProductContactComponent {
 
     // use below code if not going to open map to external app/browser
     // this.navCtrl.push('map-popover', { coordinate: this.data.contact.addressKoordinat });
+  }
+
+  makeAppointmentClicked() {
+    this.makeAppointment.emit('appointment');
   }
 }

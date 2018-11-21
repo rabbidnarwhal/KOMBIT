@@ -1,0 +1,29 @@
+ <ion-row padding class="margin-top-36">
+  <ion-col>
+    <form id="newAppointment" #form="ngForm">
+      <h4 style="text-align: center">Make Appointment</h4>
+      <ion-card class="card-item-container">
+        <ion-item no-lines class="card-item-input">
+          <ion-icon item-start class="item-input-icon" name="calendar"></ion-icon>
+          <ion-input type="text" [(ngModel)]="dateDisplay" name="Appointment Date" placeholder="Select Date" required readonly (click)="selectDate()"></ion-input>
+        </ion-item>
+      </ion-card>
+      <ion-card class="card-item-container">
+        <ion-item no-lines class="card-item-input">
+          <ion-icon item-start class="item-input-icon" name="pin"></ion-icon>
+          <ion-textarea type="text" [(ngModel)]="appointment.LocationName" id="appointmentLocation" name="Appointment Location" placeholder="Specify location" (ionChange)="adjustTextareaHeight()" (click)="selectLocation()" readonly required></ion-textarea>
+        </ion-item>
+      </ion-card>
+      <ion-card class="card-item-container">
+        <ion-item no-lines class="card-item-input">
+          <ion-icon item-start class="item-input-icon" name="create"></ion-icon>
+          <ion-textarea [(ngModel)]="appointment.Note" (ionChange)="adjustTextareaHeight()" name="Appointment Note" placeholder="Note"></ion-textarea>
+        </ion-item>
+      </ion-card>
+    </form>
+  </ion-col>
+</ion-row>
+
+<ion-row justify-content-center class="margin-top-20">
+  <button ion-button btn-kombit small type="button" (click)="createAppointment()">Send</button>
+</ion-row>

@@ -1,0 +1,27 @@
+<ion-header class="custom-background">
+  <ion-navbar>
+    <ion-title>Appointment</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-row>
+    <ion-col>
+      <ion-list>
+        <div class="spinner-container" *ngIf="isSearching">
+          <div class="spinner-background">
+            <ion-spinner></ion-spinner>
+          </div>
+        </div>
+        <div text-center *ngIf="!listAppointment.length && !isSearching">No appointment</div>
+        <ion-item *ngFor="let item of listAppointment" (click)="openDetail(item)">
+          <label class="title">{{item.userName}}</label>
+          <label class="time">{{item.date}}</label>
+          <br />
+          <p>{{item.status}}</p>
+        </ion-item>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+</ion-content>

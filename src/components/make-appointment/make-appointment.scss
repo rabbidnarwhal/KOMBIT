@@ -1,0 +1,41 @@
+make-appointment {
+  .card-item-container {
+    border: 1px solid #ededed;
+    border-radius: 8px;
+    box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3);
+    .item-input-icon {
+      margin: 0px;
+      padding-top: 6px;
+      font-size: 20px;
+    }
+  }
+
+  .card-item-input {
+    min-height: 1px;
+    .item-inner {
+      border-bottom: none !important;
+      box-shadow: none !important;
+      margin-left: 8px !important;
+      input,
+      textarea {
+        font-size: 14px;
+        margin-top: 6px;
+        margin-bottom: 6px;
+      }
+      .input-select {
+        font-size: 14px;
+        max-width: 100%;
+        width: 100%;
+        padding: 6px 8px;
+      }
+      .item-label {
+        font-size: 14px;
+        padding: 6px 8px;
+        margin: 0;
+      }
+      textarea {
+        min-height: 64px;
+      }
+    }
+  }
+}

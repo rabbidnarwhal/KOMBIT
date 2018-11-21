@@ -36,6 +36,11 @@
           <ion-icon name="call"></ion-icon>
         </button>
       </ion-col>
+      <ion-col *ngIf="data.posterAsContact || data.poster.id !== data.contact.id">
+        <button ion-button small class="interactionBtn" (click)="makeAppointmentClicked()">
+          <ion-icon name="calendar"></ion-icon>
+        </button>
+      </ion-col>
     </ion-row>
     <!-- <div class="static-map-container">
       <img *ngIf="data.contact.addressMap" [src]="data.contact.addressMap" (click)="openMap()" />
