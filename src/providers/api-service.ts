@@ -3,13 +3,28 @@ import { Injectable } from '@angular/core';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError } from 'rxjs/operators';
 import { Config } from '../config/config';
+import { Network } from '@ionic-native/network';
+import { Cordova } from '@ionic-native/core';
 
 @Injectable()
 export class ApiServiceProvider {
   private url: string;
+  private networkIsConnected = true;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private network: Network) {
     this.url = Config.API_URL;
+
+    if (this.network.type === 'none' || this.network.type === 'unknown') this.networkIsConnected = false;
+
+    this.network.onDisconnect().subscribe(() => {
+      this.networkIsConnected = false;
+    });
+
+    this.network.onConnect().subscribe(() => {
+      this.networkIsConnected = true;
+    });
+
+    if (!window['cordova']) this.networkIsConnected = true;
   }
 
   getUrl() {
@@ -17,25 +32,40 @@ export class ApiServiceProvider {
   }
 
   get(endpoint: string, httpOptions?: any) {
+    if (!this.networkIsConnected) {
+      return new ErrorObservable('Network error, make sure there are internet connection.');
+    }
     const options = this.createRequestHeader(httpOptions ? httpOptions : {});
     return this.http.get(this.getUrl() + endpoint, options).pipe(catchError(this.handleError));
   }
 
   getBlob(url: string, httpOptions?: any) {
+    if (!this.networkIsConnected) {
+      return new ErrorObservable('Network error, make sure there are internet connection.');
+    }
     return this.http.get(url, { responseType: 'blob' }).pipe(catchError(this.handleError));
   }
 
   download(url: string, httpOptions?: any) {
+    if (!this.networkIsConnected) {
+      return new ErrorObservable('Network error, make sure there are internet connection.');
+    }
     const options = this.createRequestHeader(httpOptions ? httpOptions : {});
     return this.http.get(url, options).pipe(catchError(this.handleError));
   }
 
   post(endpoint: string, body: any, httpOptions?: any) {
+    if (!this.networkIsConnected) {
+      return new ErrorObservable('Network error, make sure there are internet connection.');
+    }
     const options = this.createRequestHeader(httpOptions ? httpOptions : {});
     return this.http.post(this.getUrl() + endpoint, body, options).pipe(catchError(this.handleError));
   }
 
   postFormData(endpoint: string, body: any, httpOptions?: any) {
+    if (!this.networkIsConnected) {
+      return new ErrorObservable('Network error, make sure there are internet connection.');
+    }
     return this.http.post(this.getUrl() + endpoint, body).pipe(catchError(this.handleError));
   }
 
@@ -56,8 +86,8 @@ export class ApiServiceProvider {
         // return new ErrorObservable(error.error.ExceptionMessage);
         if (error.error.errorMessage instanceof Array) return new ErrorObservable(error.error.errorMessage.join('\n'));
         else return new ErrorObservable(error.error.errorMessage);
-      } else console.error(`error message`, error.message);
-      return new ErrorObservable(`An error occured.`);
+      } else return new ErrorObservable(error.message.toString());
     }
+    return new ErrorObservable(`An error occured.`);
   }
 }
