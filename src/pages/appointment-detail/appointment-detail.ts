@@ -39,9 +39,12 @@ export class AppointmentDetailPage {
         const time = new Date(res.date);
         time.setUTCHours(time.getUTCHours() + -time.getTimezoneOffset() / 60);
         this.data.date = time.toLocaleString();
-        this.data.userName = this.navParams.data.userName;
+        this.data.userName =
+          this.navParams.data.userName || this.auth.getPrincipal().role === 'Customer'
+            ? this.data.recepientName
+            : this.data.makerName;
         this.isCustomer = this.auth.getPrincipal().role === 'Customer' ? true : false;
-        this.isRejected = this.data.status === 'REJECT' ? true : false;
+        this.isRejected = this.data.status === 'REJECTED' ? true : false;
         this.createMap();
         console.log(this.isCustomer);
       })
@@ -51,9 +54,9 @@ export class AppointmentDetailPage {
   }
 
   answerAppointment(answer) {
-    if (answer === 'APPROVE') {
+    if (answer === 'APPROVED') {
       this.updateStatus(answer);
-    } else if (answer === 'REJECT') {
+    } else if (answer === 'REJECTED') {
       const prompt = this.alertCtrl.create({
         title: 'Reject Appointment',
         message: 'Enter a reason for this reject.',
@@ -127,6 +130,8 @@ export class AppointmentDetailPage {
   }
 
   rescheduleAppointment() {
-    alert('under developing');
+    this.utility
+      .showPopover('detailPost', { id: this.data.productId, page: 'appointment', useCase: 'appointment' })
+      .present();
   }
 }

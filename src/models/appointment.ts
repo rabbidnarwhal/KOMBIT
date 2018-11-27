@@ -18,6 +18,7 @@ export interface AppointmentResponse {
 
 export class AppointmentDetailResponse {
   id: number;
+  productId: number;
   makerName: string;
   recepientName: string;
   userName: string;

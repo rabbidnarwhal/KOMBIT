@@ -60,18 +60,27 @@
   <ion-row>
     <ion-col>
       <ion-card class="card-container">
-        <ion-label no-margin>Note</ion-label>
+        <ion-label no-margin class="title-label">Note</ion-label>
         <p>{{data.note}}</p>
       </ion-card>
     </ion-col>
   </ion-row>
 
-  <ion-row class="answer-button-container" *ngIf="!isCustomer || isRejected">
-    <ion-col no-padding class="answer-button-wrapper">
-      <button ion-button btn-kombit small type="button" class="answer-button" *ngIf="!isCustomer && !isRejected" (click)="answerAppointment('APPROVE')">Accept</button>
+  <ion-row *ngIf="isRejected">
+    <ion-col>
+      <ion-card class="card-container">
+        <ion-label no-margin  class="title-label">Message from {{data.userName}}</ion-label>
+        <p>{{data.rejectMessage}}</p>
+      </ion-card>
     </ion-col>
-    <ion-col no-padding class="answer-button-wrapper">
-      <button ion-button btn-kombit small type="button" class="answer-button" *ngIf="!isCustomer && !isRejected" (click)="answerAppointment('REJECT')">Reject</button>
+  </ion-row>
+
+  <ion-row class="answer-button-container" *ngIf="!isCustomer || isRejected">
+    <ion-col no-padding class="answer-button-wrapper" *ngIf="!isCustomer && !isRejected">
+      <button ion-button btn-kombit small type="button" class="answer-button" (click)="answerAppointment('APPROVED')">Accept</button>
+    </ion-col>
+    <ion-col no-padding class="answer-button-wrapper" *ngIf="!isCustomer && !isRejected">
+      <button ion-button btn-kombit small type="button" class="answer-button" (click)="answerAppointment('REJECTED')">Reject</button>
     </ion-col>
     <ion-col no-padding class="answer-button-wrapper" *ngIf="isCustomer && isRejected">
       <button ion-button btn-kombit small type="button" class="answer-button" (click)="rescheduleAppointment()">Reschedule</button>
