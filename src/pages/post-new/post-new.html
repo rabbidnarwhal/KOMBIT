@@ -160,7 +160,7 @@
             <ion-label class="item-label">Add Marketing kit</ion-label>
           </ion-item>
         </ion-card>
-        <ion-card class="card-item-container">
+        <ion-card class="card-item-container" *ngIf="attachmentFile.length">
           <ion-item no-lines class="card-item-input" *ngFor="let file of attachmentFile">
             <div item-start class="image-item-container">
               <img src="{{file.image}}" />

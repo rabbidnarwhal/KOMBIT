@@ -500,7 +500,6 @@ export class PostNewPage {
         this.imagePathSecure = this.imagePathSecure.map((element) => {
           let obj = element;
           if (!element.isFotoUpload) {
-            obj.isFotoUpload = true;
             this.fileUpload.push(this.uploadMediaFile('foto', element.path, 'foto'));
           }
           return obj;
@@ -508,11 +507,9 @@ export class PostNewPage {
       }
       let implementationExtend = new Array<any>();
       if (this.implementationPathSecure.length) {
-        console.log('implementation', this.implementationPathSecure);
         this.implementationPathSecure = this.implementationPathSecure.map((element) => {
           let obj = element;
           if (!element.isUpload) {
-            obj.isUpload = true;
             this.fileUpload.push(this.uploadMediaFile('foto', element.path, element.type));
             implementationExtend.push({ title: element.title });
           }
@@ -525,7 +522,6 @@ export class PostNewPage {
         this.clientPathSecure = this.clientPathSecure.map((element) => {
           let obj = element;
           if (!element.isUpload) {
-            obj.isUpload = true;
             this.fileUpload.push(this.uploadMediaFile('foto', element.path, 'client'));
           }
           return obj;
@@ -537,7 +533,6 @@ export class PostNewPage {
         this.certificatePathSecure = this.certificatePathSecure.map((element) => {
           let obj = element;
           if (!element.isUpload) {
-            obj.isUpload = true;
             this.fileUpload.push(this.uploadMediaFile('foto', element.path, 'certificate'));
           }
           return obj;
@@ -551,7 +546,6 @@ export class PostNewPage {
         this.attachmentFile = this.attachmentFile.map((element) => {
           const obj = element;
           if (!element.isUploaded) {
-            obj.isUploaded = true;
             this.fileUpload.push(this.uploadMediaFile('kit', element.path, 'attachment'));
             attachmentExtend.push({ name: element.name, type: element.type });
           }
@@ -577,6 +571,7 @@ export class PostNewPage {
                   this.isVideoUpload = true;
                   this.data.VideoPath = element.path;
                 } else if (segment === 'foto') {
+                  this.imagePathSecure[element.index].isFotoUpload = true;
                   this.data.Foto.push({
                     FotoName: element.name as string,
                     FotoPath: element.path as string,
@@ -584,6 +579,7 @@ export class PostNewPage {
                     UseCase: element.useCase as string
                   });
                 } else if (segment === 'attachment') {
+                  this.attachmentFile[element.index].isUploaded = true;
                   this.data.Attachment.push({
                     FileType: attachmentExtend[kitCount].type,
                     FileName: attachmentExtend[kitCount].name,
@@ -592,6 +588,7 @@ export class PostNewPage {
                   });
                   kitCount++;
                 } else if (segment === 'client') {
+                  this.clientPathSecure[element.index].isUpload = true;
                   this.data.ProductClient.push({
                     FotoName: element.name as string,
                     FotoPath: element.path as string,
@@ -599,6 +596,7 @@ export class PostNewPage {
                     UseCase: element.useCase as string
                   });
                 } else if (segment === 'certificate') {
+                  this.certificatePathSecure[element.index].isUpload = true;
                   this.data.ProductCertificate.push({
                     FotoName: element.name as string,
                     FotoPath: element.path as string,
@@ -606,6 +604,7 @@ export class PostNewPage {
                     UseCase: element.useCase as string
                   });
                 } else if (segment === 'implementationVideo' || segment === 'implementationImage') {
+                  this.implementationPathSecure[element.index].isUpload = true;
                   this.data.ProductImplementation.push({
                     Title: implementationExtend[implementationCount].title,
                     FotoName: element.name as string,
@@ -615,7 +614,7 @@ export class PostNewPage {
                   });
                   implementationCount++;
                 } else {
-                  const contentIndex = element.quillIndex;
+                  const contentIndex = element.index;
                   this.quillContent[segment].ops[contentIndex].insert = { image: element.path };
                 }
               });
@@ -649,8 +648,9 @@ export class PostNewPage {
         this.quillContent[segment] = element.getContents();
         if (this.quillContent[segment].ops.length) {
           this.quillContent[segment].ops.forEach((item, index) => {
+            console.log('quil', item);
             if (item.hasOwnProperty('insert') && item.insert.hasOwnProperty('imageurl')) {
-              if (item.insert.imageurl.indexOf('http://') !== 0 || item.insert.imageurl.indexOf('https://') !== 0)
+              if (!item.insert.imageurl.includes('http://') && !item.insert.imageurl.includes('https://'))
                 this.fileUpload.push(this.uploadMediaFile('foto', item.insert.imageurl, segment, index));
               else item.insert = { image: item.insert.imageurl };
             }
@@ -665,8 +665,8 @@ export class PostNewPage {
     type: string,
     path: string,
     useCase: string,
-    quillIndex: number = 0
-  ): Promise<{ path: string; name: string; useCase: string; quillIndex: number }> {
+    index: number = 0
+  ): Promise<{ path: string; name: string; useCase: string; index: number }> {
     return new Promise((resolve, reject) => {
       if (!window['cordova']) {
         console.log('me not cordova');
@@ -684,7 +684,7 @@ export class PostNewPage {
           })
           .then((response) => {
             response['useCase'] = useCase;
-            response['quillIndex'] = quillIndex;
+            response['index'] = index;
             resolve(response);
           })
           .catch((err) => {
@@ -701,12 +701,14 @@ export class PostNewPage {
             ProductName: this.data.ProductName.toLowerCase().replace(' ', '-')
           }
         };
+        console.log('upload', options);
+        console.log('upload-path', path);
         fileTransfer
           .upload(path, this.api.getUrl() + '/upload/product/', options)
           .then((data) => {
             let response = JSON.parse(data.response);
             response['useCase'] = useCase;
-            response['quillIndex'] = quillIndex;
+            response['index'] = index;
             resolve(response);
           })
           .catch((error) => reject('An error occured, unable to upload!'));
