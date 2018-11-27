@@ -14,7 +14,7 @@
   <ion-row text-center>
     <ion-col class="input-fields">
       <form id="formRegistration" #formRegistration="ngForm">
-        <ion-item class="form-select-item no-margin">
+        <ion-item class="form-select-item">
           <ion-select class="input-area" [(ngModel)]="registration.IdRole" name="Role" placeholder="role" interface="popover" required>
             <ion-option [value]="item.id" *ngFor="let item of listRoles">{{item.roleName}}</ion-option>
           </ion-select>
