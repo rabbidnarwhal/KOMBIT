@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage } from 'ionic-angular';
+import { IonicPage, NavController } from 'ionic-angular';
 import { AuthServiceProvider } from '../../providers/auth-service';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { Notification } from '../../models/notification';
@@ -18,7 +18,8 @@ export class NotificationPage {
   constructor(
     private auth: AuthServiceProvider,
     private utility: UtilityServiceProvider,
-    private dataNotification: DataNotificationServiceProvider
+    private dataNotification: DataNotificationServiceProvider,
+    private navCtrl: NavController
   ) {
     this.listNotification = [];
   }
@@ -32,8 +33,8 @@ export class NotificationPage {
     const userId = this.auth.getPrincipal().id;
     this.dataNotification
       .fetchListNotification(userId)
-      .then(res => {
-        this.listNotification = res.map(item => {
+      .then((res) => {
+        this.listNotification = res.map((item) => {
           const obj = item;
           const time = new Date(item.pushDate);
           time.setUTCHours(time.getUTCHours() + -time.getTimezoneOffset() / 60);
@@ -42,9 +43,19 @@ export class NotificationPage {
         });
         this.isSearching = false;
       })
-      .catch(err => {
+      .catch((err) => {
         this.isSearching = false;
         this.utility.showToast(err);
       });
+  }
+
+  openPage(item: Notification) {
+    if (item.moduleName === 'product') {
+      this.utility
+        .showPopover('detailPost', { id: item.moduleId, page: 'notification', useCase: item.moduleUseCase })
+        .present();
+    } else if (item.moduleName === 'appointment') {
+      this.navCtrl.push('AppointmentDetailPage', { appointmentId: item.moduleId, userName: null });
+    }
   }
 }

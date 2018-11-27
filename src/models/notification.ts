@@ -3,4 +3,7 @@ export class Notification {
   title: string;
   content: string;
   pushDate: string;
+  moduleId: number;
+  moduleName: string;
+  moduleUseCase: string;
 }
