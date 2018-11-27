@@ -47,7 +47,7 @@
     <div text-center class="not-found-text" *ngIf="!listSolution.length && !isSearchingSolution">Solution not found!</div>
     <ion-col col-3 *ngFor="let solution of listSolution" (click)="filterSolutions(solution)">
       <div class="solution-container">
-        <img *ngIf="!solution.image" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+        <img *ngIf="!solution.image" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="alt="" />
         <img *ngIf="solution.image" [src]="solution.image" alt="" />
       </div>
       <ion-label no-margin no-padding class="solution-text">{{solution.category}}</ion-label>
@@ -55,7 +55,7 @@
     <ion-col col-3 (click)="showAllSolutions(solution)">
       <div class="solution-container">
         <ion-icon name="apps"></ion-icon>
-        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="alt="" />
       </div>
       <ion-label no-margin no-padding class="solution-text">More</ion-label>
     </ion-col>

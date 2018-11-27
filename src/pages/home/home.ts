@@ -139,10 +139,13 @@ export class HomePage {
       this.postType = 'public';
     });
 
-    // this.events.subscribe('notification-arrived', () => {
-    // this.unreadNotification
-    // });
+    this.events.subscribe('notification-arrived', () => {
+      this.zone.run(() => {
+        this.unreadNotification++;
+      });
+    });
   }
+
   loadNotificationCount() {
     this.dataNotification
       .fetchUnReadNotificationCount(this.userId)
