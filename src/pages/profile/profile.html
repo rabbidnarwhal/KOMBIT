@@ -12,7 +12,7 @@
       <img [src]="picture" (click)="selectPicture()" />
     </div>
   </ion-row>
-  <div *ngIf="!isEdit">
+  <div *ngIf="!isEdit && !isPasswordEdit">
     <ion-row>
       <ion-col>
         <ion-label no-margin class="box-label divider-title">
@@ -95,7 +95,12 @@
     </ion-row>
     <ion-row text-center>
       <ion-col>
-        <button ion-button btn-kombit (click)="edit()">Edit</button>
+        <button ion-button btn-kombit (click)="edit('content')">Edit</button>
+      </ion-col>
+    </ion-row>
+    <ion-row text-center>
+      <ion-col>
+        <button ion-button btn-kombit (click)="edit('password')">Change Password</button>
       </ion-col>
     </ion-row>
   </div>
@@ -126,6 +131,20 @@
         <ion-label>Position</ion-label>
         <ion-input type="text" [(ngModel)]="data.addressKoordinat" name="Position" (click)="openMap('choose')" readonly></ion-input>
         <button ion-button btn-kombit type="button" (click)="save()">Save</button>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="isPasswordEdit">
+    <div class="input-fields">
+      <form id="formPassword" #formPassword="ngForm">
+        <ion-label>Current Password</ion-label>
+        <ion-input type="password" [(ngModel)]="password.Current" name="Occupation"></ion-input>
+        <ion-label>New Password</ion-label>
+        <ion-input type="password" pattern="(?=.*[0-9A-z@#$%^&+=\\s]).{1,}" [(ngModel)]="password.New" name="Job Title"></ion-input>
+        <ion-label>Confirm New Password</ion-label>
+        <ion-input type="password" pattern="(?=.*[0-9A-z@#$%^&+=\\s]).{1,}" [(ngModel)]="confirmPassword" name="Job Title"></ion-input>
+        <button ion-button btn-kombit type="button" (click)="savePassword()">Save</button>
       </form>
     </div>
   </div>

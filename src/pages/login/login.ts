@@ -35,4 +35,8 @@ export class LoginPage {
   signup() {
     this.navCtrl.push('registration');
   }
+
+  forgotPassword() {
+    this.navCtrl.push('ForgotPasswordPage');
+  }
 }

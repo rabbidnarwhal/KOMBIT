@@ -8,6 +8,8 @@ import { Config } from '../../config/config';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 import { DataProvinceServiceProvider } from '../../providers/dataProvince-service';
+import { FormValidatorProvider } from '../../providers/form-validator';
+import { ChangePassword } from '../../models/password';
 
 @IonicPage({
   name: 'profile'
@@ -20,16 +22,18 @@ export class ProfilePage {
   public data: User;
   public isSearching: boolean = false;
   public isEdit: boolean = false;
+  public isPasswordEdit: boolean = false;
   private id: number = 0;
   public listCompany: any = [];
   public listHoldingCompany: any = [];
   public mapImage: string;
   public picture: any;
   public city: string;
-  @ViewChild('formProfile')
-  form: NgForm;
-  @ViewChild(Navbar)
-  navBar: Navbar;
+  public confirmPassword: string;
+  public password: ChangePassword;
+  @ViewChild('formProfile') form: NgForm;
+  @ViewChild('formPassword') formPassword: NgForm;
+  @ViewChild(Navbar) navBar: Navbar;
   constructor(
     public navCtrl: NavController,
     private navParams: NavParams,
@@ -39,9 +43,11 @@ export class ProfilePage {
     private actionSheetCtrl: ActionSheetController,
     private camera: Camera,
     private transfer: FileTransfer,
-    private dataProvince: DataProvinceServiceProvider
+    private dataProvince: DataProvinceServiceProvider,
+    private formValidator: FormValidatorProvider
   ) {
     this.data = new User();
+    this.password = new ChangePassword();
     this.picture = 'assets/imgs/profile.png';
     this.id = this.navParams.data.id;
   }
@@ -57,15 +63,18 @@ export class ProfilePage {
         this.loadListHoldingCompany();
         this.loadListCompany();
       })
-      .catch(err => {
+      .catch((err) => {
         loading.dismiss();
         this.isSearching = false;
         this.utility.showToast(err);
       });
 
     this.navBar.backButtonClick = () => {
-      if (!this.isEdit) this.navCtrl.pop();
-      else this.isEdit = false;
+      if (!this.isEdit && !this.isPasswordEdit) this.navCtrl.pop();
+      else {
+        this.isEdit = false;
+        this.isPasswordEdit = false;
+      }
     };
   }
 
@@ -87,8 +96,9 @@ export class ProfilePage {
         Config.GOOGLE_MAP_API_KEY;
   }
 
-  edit() {
-    this.isEdit = true;
+  edit(type) {
+    this.isEdit = type === 'content' ? true : false;
+    this.isPasswordEdit = type === 'password' ? true : false;
   }
 
   save() {
@@ -100,16 +110,40 @@ export class ProfilePage {
         loading.dismiss();
         this.isEdit = false;
       })
-      .catch(err => {
+      .catch((err) => {
         loading.dismiss();
         this.utility.showToast(err);
       });
   }
 
+  savePassword() {
+    const loading = this.utility.showLoading();
+    loading.present();
+    this.formPassword.ngSubmit;
+    if (this.formPassword.valid) {
+      if (this.password.New === this.confirmPassword) {
+        this.changePassword(this.password)
+          .then((res) => {
+            loading.dismiss();
+            this.isPasswordEdit = false;
+            this.utility.showToast('Password changed!');
+          })
+          .catch((err) => {
+            loading.dismiss();
+            this.utility.showToast(err);
+          });
+      }
+    } else this.formValidator.getErrorMessage(this.formPassword);
+  }
+
+  private changePassword(request: ChangePassword) {
+    return this.api.post('/users/' + this.data.id + '/change-password', request).toPromise();
+  }
+
   openMap(type) {
     this.navCtrl.push('map-location', { type: type, coordinate: this.data.addressKoordinat });
 
-    this.events.subscribe('location', res => {
+    this.events.subscribe('location', (res) => {
       this.data.addressKoordinat = res.coordinate;
       this.events.unsubscribe('location');
     });
@@ -118,7 +152,7 @@ export class ProfilePage {
   selectCity() {
     this.navCtrl.push('searchable-select', { type: 'province' });
 
-    this.events.subscribe('province-location', sub => {
+    this.events.subscribe('province-location', (sub) => {
       this.city = `${sub.city.name}, ${sub.province.name}`;
       this.data.provinsiId = sub.province.id;
       this.data.kabKotaId = sub.city.id;
@@ -134,12 +168,12 @@ export class ProfilePage {
     return new Promise((resolve, reject) => {
       const header = { 'Cache-Control': 'no-cache' };
       this.api.get('/users/' + this.id, { headers: header }).subscribe(
-        sub => {
+        (sub) => {
           this.data = sub;
           if (this.data.kabKotaId && this.data.provinsiId) {
-            Promise.all([this.dataProvince.getCity(), this.dataProvince.getProvince()]).then(res => {
-              const city = res[0].filter(x => x.id === this.data.kabKotaId);
-              const province = res[1].filter(x => x.id === this.data.provinsiId);
+            Promise.all([ this.dataProvince.getCity(), this.dataProvince.getProvince() ]).then((res) => {
+              const city = res[0].filter((x) => x.id === this.data.kabKotaId);
+              const province = res[1].filter((x) => x.id === this.data.provinsiId);
               this.city = `${city[0].name}, ${province[0].name}`;
             });
           }
@@ -147,7 +181,7 @@ export class ProfilePage {
           this.picture = this.data.image ? this.data.image : 'assets/imgs/profile.png';
           resolve();
         },
-        err => reject(err)
+        (err) => reject(err)
       );
     });
   }
@@ -155,21 +189,21 @@ export class ProfilePage {
   private loadListCompany() {
     this.api
       .get('/holding/' + this.data.holdingId + '/company')
-      .subscribe(sub => (this.listCompany = sub), err => this.utility.showToast(err));
+      .subscribe((sub) => (this.listCompany = sub), (err) => this.utility.showToast(err));
   }
 
   private loadListHoldingCompany() {
-    this.api.get('/holding').subscribe(sub => (this.listHoldingCompany = sub), err => this.utility.showToast(err));
+    this.api.get('/holding').subscribe((sub) => (this.listHoldingCompany = sub), (err) => this.utility.showToast(err));
   }
 
   private saveProfile() {
     return new Promise((resolve, reject) => {
       const request: UserRequest = new UserRequest(this.data);
       this.api.post('/users/' + this.id, request).subscribe(
-        sub => {
+        (sub) => {
           resolve();
         },
-        err => {
+        (err) => {
           reject(err);
         }
       );
@@ -184,7 +218,7 @@ export class ProfilePage {
         const xhrBlob = new XMLHttpRequest();
         xhrBlob.open('GET', image, true);
         xhrBlob.responseType = 'blob';
-        xhrBlob.onload = e => {
+        xhrBlob.onload = (e) => {
           if (xhrBlob['status'] !== 200) {
             this.utility.showToast(`Your browser doesn't support blob API`);
             reject(xhrBlob);
@@ -213,11 +247,11 @@ export class ProfilePage {
         const fileTransfer: FileTransferObject = this.transfer.create();
         fileTransfer
           .upload(image, this.api.getUrl() + '/upload/user/' + this.id)
-          .then(data => {
+          .then((data) => {
             loading.dismiss();
             resolve(JSON.parse(data.response));
           })
-          .catch(error => {
+          .catch((error) => {
             loading.dismiss();
             reject(error);
           });
@@ -247,9 +281,9 @@ export class ProfilePage {
       });
       actionSheet.present();
     })
-      .then(sourceType => {
+      .then((sourceType) => {
         if (!window['cordova']) {
-          return new Promise(resolve => {
+          return new Promise((resolve) => {
             const input = document.createElement('input');
             input.type = 'file';
             input.accept = 'image/x-png,image/gif,image/jpeg';
@@ -269,12 +303,12 @@ export class ProfilePage {
           return this.camera.getPicture(options);
         }
       })
-      .then(imagePath => this.changePicture(imagePath))
-      .then(data => {
+      .then((imagePath) => this.changePicture(imagePath))
+      .then((data) => {
         this.picture = data.path;
         this.events.publish('picture-changed', data.path);
       })
-      .catch(error => {
+      .catch((error) => {
         if (error !== 'none') {
           console.error('Error: ', error);
           this.utility.showToast(error);
