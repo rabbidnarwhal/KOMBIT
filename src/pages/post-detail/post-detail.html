@@ -10,6 +10,7 @@
       <ion-slides #slider class="slider-container" pager="true" spaceBetween="10">
         <ion-slide class="slide-image-container" *ngFor="let foto of data.foto">
           <img src="{{foto.fotoPath}}" alt="{{foto.fotoName}}" />
+          <ion-icon class="share-button" name="share" (click)="shareProduct()"></ion-icon>
         </ion-slide>
       </ion-slides>
       <ion-row>

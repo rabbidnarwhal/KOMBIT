@@ -162,4 +162,14 @@ page-post-detail {
     width: 18px;
     margin-right: 6px;
   }
+
+  .share-button {
+    // $shadow-color: #0a0a0a;
+    position: absolute;
+    right: 24px;
+    bottom: 12px;
+    font-size: 24px;
+    color: map-get($kombit-colors, 'text');
+    // text-shadow: 1px 0px $shadow-color, -1px 0px $shadow-color, 1px 2px $shadow-color, 0px -1px $shadow-color;
+  }
 }

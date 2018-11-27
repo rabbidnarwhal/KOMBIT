@@ -4,7 +4,7 @@ import { ProductDetail } from '../../models/products';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { Config } from '../../config/config';
-import { AuthServiceProvider } from '../../providers/auth-service';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 @IonicPage({
   name: 'detailPost'
@@ -25,10 +25,16 @@ export class PostDetailPage {
     private navParams: NavParams,
     private utility: UtilityServiceProvider,
     private dataProduct: DataProductServiceProvider,
-    private event: Events
+    private event: Events,
+    private socialSharing: SocialSharing
   ) {
     this.data = new ProductDetail();
     this.parentPage = this.navParams.get('params').page;
+    if (this.navParams.data.params.hasOwnProperty('useCase')) {
+      console.log(this.navParams.data.params.useCase);
+      this.selectedPage =
+        this.navParams.data.params.useCase === 'comment' ? this.navParams.data.params.useCase : 'detail';
+    }
   }
 
   ionViewDidLoad() {
@@ -140,5 +146,16 @@ export class PostDetailPage {
         this.utility.showToast(err);
       }
     );
+  }
+
+  shareProduct() {
+    this.socialSharing
+      .share('Discover more of our product on our website.', '', '', 'http://kombit.org')
+      .then(() => {
+        console.log('shared');
+      })
+      .catch((err) => {
+        console.log('share', err);
+      });
   }
 }
