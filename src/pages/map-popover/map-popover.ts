@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef, NgZone } from '@angular/core';
 import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
 import { Platform } from 'ionic-angular';
 import { Config } from '../../config/config';
-import { LatLng, LocationService, MyLocationOptions, LatLngBounds } from '@ionic-native/google-maps';
+import { LatLng, LocationService, MyLocationOptions } from '@ionic-native/google-maps';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { google } from 'google-maps';
 
@@ -19,7 +19,6 @@ export class MapPopoverPage {
   @ViewChild('map') mapElement: ElementRef;
 
   private position: LatLng;
-  private currentPosition: LatLng;
   private map: google.maps.Map;
   private marker: google.maps.Marker;
   private infowindow: google.maps.InfoWindow;
@@ -44,70 +43,70 @@ export class MapPopoverPage {
     private events: Events
   ) {
     this.apiKey = Config.GOOGLE_MAP_API_KEY;
+    this.zoom = 16;
   }
 
   ionViewDidLoad(): void {
-    this.loadGoogleMaps().then(() => {
-      // this.addMarker(this.currentPosition, 'Destination');
-      // this.addMarker(this.position, 'Origin');
-      // this.createDirection();
-    });
+    this.loadGoogleMaps();
   }
 
-  private loadGoogleMaps(): Promise<any> {
-    return new Promise((resolve) => {
-      if (typeof google == 'undefined' || typeof google.maps == 'undefined') {
-        window['mapInit'] = () => {
-          this.initMap().then(() => {
-            this.loadMap();
-            resolve(true);
-          });
-        };
+  private loadGoogleMaps() {
+    if (typeof google == 'undefined' || typeof google.maps == 'undefined') {
+      window['mapInit'] = () => {
+        this.initMap();
+      };
 
-        let script = document.createElement('script');
-        script.id = 'googleMaps';
+      let script = document.createElement('script');
+      script.id = 'googleMaps';
 
-        if (this.apiKey) {
-          script.src = 'http://maps.google.com/maps/api/js?key=' + this.apiKey + '&callback=mapInit&libraries=places';
-        } else {
-          script.src = 'http://maps.google.com/maps/api/js?callback=mapInit';
-        }
-
-        document.body.appendChild(script);
+      if (this.apiKey) {
+        script.src = 'http://maps.google.com/maps/api/js?key=' + this.apiKey + '&callback=mapInit&libraries=places';
       } else {
-        this.initMap().then(() => {
-          this.loadMap();
-          resolve(true);
-        });
+        script.src = 'http://maps.google.com/maps/api/js?callback=mapInit';
       }
-    });
+
+      document.body.appendChild(script);
+    } else {
+      this.initMap();
+    }
   }
 
-  private initMap(): Promise<any> {
-    return new Promise((resolve) => {
-      this.getPosition()
-        .then((pos) => {
-          // this.position = new LatLng(
-          //   +this.navParams.data.coordinate.split(', ')[0],
-          //   +this.navParams.data.coordinate.split(', ')[1]
-          // );
-          // this.currentPosition = pos.latLng;
-          this.position = pos.latLng;
-          this.coordinate = pos.latLng.lat + ', ' + pos.latLng.lng;
-          resolve();
-        })
-        .catch((err) => {
-          this.utility.showToast('Unable to get location due to: ' + err.toString());
-          resolve();
-        });
-    });
+  private initMap() {
+    new Promise((resolve, reject) => {
+      if (this.navParams.data.coordinate) {
+        this.position = new LatLng(
+          +this.navParams.data.coordinate.split(', ')[0],
+          +this.navParams.data.coordinate.split(', ')[1]
+        );
+        resolve();
+      } else {
+        this.getPosition()
+          .then((pos) => {
+            this.position = pos.latLng;
+            resolve();
+          })
+          .catch((err) => {
+            this.utility.showToast('Unable to get location due to: ' + err.toString());
+            this.position = new LatLng(-8.636012911829676, 115.21293640136719);
+            this.zoom = 8;
+            resolve();
+          });
+      }
+    })
+      .then(() => {
+        this.coordinate = this.position.lat + ', ' + this.position.lng;
+        this.loadMap();
+      })
+      .catch((err) => {
+        this.utility.showToast(err);
+      });
   }
 
   private loadMap() {
     let mapOptions: google.maps.MapOptions = {
       center: this.position,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
-      zoom: 8,
+      zoom: this.zoom,
       fullscreenControl: false,
       // gestureHandling: 'none',
       keyboardShortcuts: false,
@@ -134,7 +133,7 @@ export class MapPopoverPage {
     this.placesService = new google.maps.places.PlacesService(this.map);
 
     this.getLocationName(this.position).then((res) => {
-      this.locationName = res;
+      this.zone.run(() => (this.locationName = res));
     });
 
     this.map.addListener('dragstart', () => {
@@ -178,22 +177,6 @@ export class MapPopoverPage {
     return LocationService.getMyLocation(options);
   }
 
-  private createDirection() {
-    const directionsDisplay = new google.maps.DirectionsRenderer();
-    const directionsService = new google.maps.DirectionsService();
-    const directionRequest = {
-      origin: this.currentPosition,
-      destination: this.position,
-      travelMode: google.maps.TravelMode.DRIVING
-    };
-    directionsDisplay.setMap(this.map);
-    directionsService.route(directionRequest, (response, status) => {
-      if (status === google.maps.DirectionsStatus.OK) {
-        directionsDisplay.setDirections(response);
-      }
-    });
-  }
-
   private getLocationName(latLng: LatLng): Promise<string> {
     return new Promise((resolve, reject) => {
       const geocoder = new google.maps.Geocoder();
@@ -208,7 +191,7 @@ export class MapPopoverPage {
   }
 
   searchLocation() {
-    if (this.locationName.length > 0) {
+    if (this.locationName.length > 1) {
       let config = {
         types: [ 'establishment' ],
         input: this.locationName,
@@ -234,12 +217,15 @@ export class MapPopoverPage {
   }
 
   selectPlace(place) {
-    this.places = [];
     this.placesService.getDetails({ placeId: place.place_id }, (details) => {
+      this.places = [];
       this.zone.run(() => {
+        this.locationName = details.formatted_address;
         this.coordinate = details.geometry.location.lat() + ', ' + details.geometry.location.lng();
         this.map.setCenter(new LatLng(details.geometry.location.lat(), details.geometry.location.lng()));
+        this.marker.setPosition(details.geometry.location);
       });
+      console.log('select place', details);
     });
   }
 

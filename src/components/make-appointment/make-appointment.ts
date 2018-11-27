@@ -36,10 +36,12 @@ export class MakeAppointmentComponent {
 
   selectLocation() {
     // this.navCtrl.push('map-location', { type: 'choose', coordinate: this.data.addressKoordinat });
-    this.navCtrl.push('map-popover', { type: 'choose', coordinate: this.data.poster.addressKoordinat });
+    this.navCtrl.push('map-popover', {
+      type: 'choose',
+      coordinate: this.appointment.LocationCoords || null
+    });
 
     this.events.subscribe('location-appointment', (res) => {
-      console.log('appointment-location', res);
       this.appointment.LocationCoords = res.coordinate;
       this.appointment.LocationName = res.address;
       this.events.unsubscribe('location-appointment');
@@ -74,10 +76,6 @@ export class MakeAppointmentComponent {
     this.appointment.MakerId = this.auth.getPrincipal().id;
     this.appointment.RecepientId = this.data.poster.id;
     this.appointment.ProductId = this.data.id;
-    // let time = new Date(this.appointment.Date);
-    // time = new Date(time.setUTCHours(time.getUTCHours() + time.getTimezoneOffset() / 60));
-    // this.appointment.Date = time.toLocaleString();
-    console.log('appontment succes', this.appointment);
     this.appointmentService
       .createAppointment(this.appointment)
       .then(() => {
