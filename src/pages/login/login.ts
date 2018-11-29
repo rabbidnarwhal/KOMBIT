@@ -15,6 +15,8 @@ import { LoginRequest } from '../../models/login';
 export class LoginPage {
   public credentials: LoginRequest;
   public isPasswordShown = false;
+  gridHeight = 'auto';
+  formHeight = 'auto';
 
   @ViewChild('form') form: NgForm;
   constructor(
@@ -23,6 +25,12 @@ export class LoginPage {
     private formValidator: FormValidatorProvider
   ) {
     this.credentials = new LoginRequest();
+  }
+
+  ionViewDidLoad() {
+    const appEl = <HTMLElement>document.getElementsByTagName('ION-APP')[0];
+    this.gridHeight = appEl.clientHeight + 'px';
+    this.formHeight = appEl.clientHeight - appEl.clientWidth - 64 + 'px';
   }
 
   signin() {

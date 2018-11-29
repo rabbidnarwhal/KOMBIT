@@ -50,7 +50,7 @@ export class MyApp {
       this.statusBar.backgroundColorByHexString('#f2703f');
       this.menu.enable(false, 'sideMenu');
       this.menu.swipeEnable(false, 'sideMenu');
-      this.keyboard.disableScroll(false);
+      this.keyboard.disableScroll(true);
       this.pushNotification.init();
       this.loadProvinceData();
       this.authCheck();
