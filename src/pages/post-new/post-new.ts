@@ -711,7 +711,7 @@ export class PostNewPage {
             response['index'] = index;
             resolve(response);
           })
-          .catch((error) => reject('An error occured, unable to upload!'));
+          .catch((error) => reject('An error occured when trying to upload, due: ' + error.toString()));
       }
     });
   }

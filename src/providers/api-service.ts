@@ -4,7 +4,6 @@ import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError } from 'rxjs/operators';
 import { Config } from '../config/config';
 import { Network } from '@ionic-native/network';
-import { Cordova } from '@ionic-native/core';
 
 @Injectable()
 export class ApiServiceProvider {
@@ -86,7 +85,7 @@ export class ApiServiceProvider {
         // return new ErrorObservable(error.error.ExceptionMessage);
         if (error.error.errorMessage instanceof Array) return new ErrorObservable(error.error.errorMessage.join('\n'));
         else return new ErrorObservable(error.error.errorMessage);
-      } else return new ErrorObservable(error.message.toString());
+      } else return new ErrorObservable('Error code: ' + error.status.toString());
     }
     return new ErrorObservable(`An error occured.`);
   }
