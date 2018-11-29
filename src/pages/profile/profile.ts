@@ -137,6 +137,7 @@ export class ProfilePage {
   }
 
   private changePassword(request: ChangePassword) {
+    request.UserName = this.data.username;
     return this.api.post('/users/' + this.data.id + '/change-password', request).toPromise();
   }
 
