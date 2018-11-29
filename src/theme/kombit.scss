@@ -1,6 +1,7 @@
 $kombit-colors: (bg-high: #f2703f, bg-low: #fbcb4d, btn: #f18b1d, text: #fdfdfd);
 $spinner-md-crescent-color: map-get($kombit-colors, 'btn');
 $spinner-md-dots-color: map-get($kombit-colors, 'text');
+
 @mixin color-background($direction) {
   background: map-get($kombit-colors, 'bg-high') !important;
   background: -moz-linear-gradient(
@@ -18,6 +19,17 @@ $spinner-md-dots-color: map-get($kombit-colors, 'text');
     map-get($kombit-colors, 'bg-low') 11%,
     map-get($kombit-colors, 'bg-high') 77%
   ) !important;
+}
+
+@mixin color-background-transparency($direction, $low, $high) {
+  background: rgba(242, 112, 63, 1) !important;
+  background: -moz-linear-gradient($direction, rgba(251, 203, 77, $low) 11%, rgba(242, 112, 63, $high) 77%) !important;
+  background: -webkit-linear-gradient(
+    $direction,
+    rgba(251, 203, 77, $low) 11%,
+    rgba(242, 112, 63, $high) 77%
+  ) !important;
+  background: linear-gradient($direction, rgba(251, 203, 77, $low) 11%, rgba(242, 112, 63, $high) 77%) !important;
 }
 
 @mixin color-item() {

@@ -26,12 +26,12 @@
         <ion-spinner></ion-spinner>
       </div>
     </div>
-    <ion-slides *ngIf="sliderProduct.length" pager="true" autoplay="4000" loop="true" (ionSlideTap)="slidesClicked()" (ionSlideAutoplayStop)="slideAutoPlayStopped()">
+    <ion-slides *ngIf="sliderProduct.length" pager="true" (ionSlideTap)="slidesClicked()" (ionSlideAutoplayStop)="slideAutoPlayStopped()">
       <ion-slide *ngFor="let item of sliderProduct">
         <img src="{{item.fotoPath}}" />
         <div class="slider-text">
           <ion-label no-margin no-padding class="text-product">{{item.productName}}</ion-label>
-          <ion-label no-margin no-padding>{{item.companyName}}</ion-label>
+          <ion-label no-margin no-padding class="sub-text-product">{{item.companyName}}</ion-label>
         </div>
         <ion-badge *ngIf="isPromoted" class="slider-badge">Promoted</ion-badge>
       </ion-slide>
