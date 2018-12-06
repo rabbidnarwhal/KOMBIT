@@ -6,9 +6,7 @@ import { DataProductServiceProvider } from '../../providers/dataProduct-service'
 import { Config } from '../../config/config';
 import { SocialSharing } from '@ionic-native/social-sharing';
 
-@IonicPage({
-  name: 'detailPost'
-})
+@IonicPage()
 @Component({
   selector: 'page-post-detail',
   templateUrl: 'post-detail.html'

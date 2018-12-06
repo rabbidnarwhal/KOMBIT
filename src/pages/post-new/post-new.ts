@@ -23,9 +23,7 @@ import { BehaviorSubject } from 'rxjs/rx';
 
 const ATTRIBUTES = [ 'alt', 'height', 'width' ];
 
-@IonicPage({
-  name: 'newPost'
-})
+@IonicPage()
 @Component({
   selector: 'page-post-new',
   templateUrl: 'post-new.html'
@@ -701,8 +699,6 @@ export class PostNewPage {
             ProductName: this.data.ProductName.toLowerCase().replace(' ', '-')
           }
         };
-        console.log('upload', options);
-        console.log('upload-path', path);
         fileTransfer
           .upload(path, this.api.getUrl() + '/upload/product/', options)
           .then((data) => {
@@ -731,7 +727,7 @@ export class PostNewPage {
         this.data[segment] = converter.convert();
       }
     }
-    console.log('end', this.data);
+    console.log('end data', this.data);
     if (this.postId) {
       return this.api.post('/product/' + this.postId, this.data).toPromise();
     } else {

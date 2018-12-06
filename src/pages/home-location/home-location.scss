@@ -5,7 +5,7 @@ page-home-location {
       font-size: 24px;
       display: inline-block;
       position: relative;
-      color: #fdfdfd;
+      color: $combitWhite;
       margin: 3px 11px 3px 11px;
     }
   }
@@ -21,10 +21,12 @@ page-home-location {
     height: 2.8rem !important;
     line-height: 2.8rem !important;
     font-size: 16px;
-    @include color-item();
+    // @include color-item();
+    color: $combitOrange;
   }
   .segment-activated {
-    @include color-border();
+    border-color: $combitOrange;
+    // @include color-border();
   }
   button {
     &[ion-item] {
@@ -44,7 +46,7 @@ page-home-location {
     .range-pin,
     .range-pin::before,
     .range-knob {
-      background: map-get($kombit-colors, 'btn') !important;
+      background: $combitOrange !important;
     }
   }
 }

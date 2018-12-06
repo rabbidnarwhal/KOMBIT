@@ -11,6 +11,12 @@
   <ion-row>
     <ion-col>
       <ion-list>
+        <div class="spinner-container" *ngIf="isSearching">
+          <div class="spinner-background">
+            <ion-spinner></ion-spinner>
+          </div>
+        </div>
+        <div text-center *ngIf="!listProducts.length && !isSearching">No post</div>
         <div *ngFor="let data of listProducts">
           <div class="post-list-box" [@postAnimation] *ngIf="data.id === selectedProductId" (click)="showDetail($event, data)">
             <div class="image-container">
@@ -75,3 +81,9 @@
     </ion-col>
   </ion-row>
 </ion-content>
+
+<ion-footer class="tab-menu">
+  <ion-toolbar class="tab-menu-toolbar">
+    <footer-menu></footer-menu>
+  </ion-toolbar>
+</ion-footer>

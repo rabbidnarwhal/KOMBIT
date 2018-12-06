@@ -85,7 +85,7 @@ page-profile {
     width: 172px;
   }
   a {
-    color: map-get($kombit-colors, 'btn');
+    color: $combitOrange;
     text-decoration: unset;
     font-weight: 400;
   }

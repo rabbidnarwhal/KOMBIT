@@ -18,7 +18,7 @@ page-post-new {
         top: 1px;
         padding: 5px 6px;
         font-size: 20px;
-        text-shadow: white 0 0 1px;
+        text-shadow: $combitWhite 0 0 1px;
       }
       .image {
         position: relative;
@@ -59,7 +59,7 @@ page-post-new {
   }
 
   .card-item-container {
-    border: 1px solid #ededed;
+    border: 1px solid $combitWhite;
     border-radius: 8px;
     box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3);
     .item-input-icon {
@@ -155,22 +155,28 @@ page-post-new {
     height: 2.8rem;
     margin-bottom: 10px;
     .segment-button.segment-product-button {
-      background-color: #dedede;
+      background-color: rgba(117, 117, 117, 0.4);
       height: 2.8rem !important;
       line-height: 2.8rem !important;
       font-size: 10px;
+      font-weight: 600;
       font-stretch: ultra-condensed;
-      font-weight: 400;
-      border-top: 2px solid;
+      border-top: none;
       border-bottom: none;
-      @include color-border();
-      @include color-item();
+      border-radius: 4px;
+      // @include color-border();
+      // @include color-item();
+      color: $combitBlack;
+      // border-color: $combitOrange;
       &.segment-activated {
-        color: map-get($kombit-colors, 'text') !important;
-        @include color-background(180deg);
+        color: $combitWhite !important;
+        // @include color-background(180deg);
+        background-color: $combitBlue;
+        font-weight: 400;
       }
     }
   }
+
   .attachment-button {
     background-color: transparent;
     border-radius: 20px;
@@ -178,7 +184,7 @@ page-post-new {
     // width: 36px;
     ion-icon {
       font-size: 32px;
-      color: map-get($kombit-colors, 'bg-high');
+      color: $combitOrange;
     }
   }
 

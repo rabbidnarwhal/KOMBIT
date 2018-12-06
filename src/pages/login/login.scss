@@ -16,10 +16,11 @@ page-login {
     width: 100%;
     // height: calc(100vh - 216px);
     z-index: 1;
-    @include color-background(0deg);
+    // @include color-background(0deg);
+    background-color: $combitBlue;
     &::after {
-      border-left: 86px solid #fff;
-      border-right: 86px solid #fff;
+      border-left: 86px solid $combitWhite;
+      border-right: 86px solid $combitWhite;
       border-top: 36px solid transparent;
       content: '';
       position: absolute;
@@ -49,17 +50,24 @@ page-login {
     }
   }
   ion-input {
-    background-color: #fdfdfd;
-    border: 1px solid #fdfdfd;
+    background-color: $combitWhite;
+    border: 1px solid $combitWhite;
     border-radius: 25px;
     margin-bottom: 8px;
     -ms-box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.2);
     box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.2);
     input {
       width: calc(100% - 8px - 24px) !important;
-      margin: 6px 16px !important;
+      margin: 10px 16px !important;
       text-align: center;
       font-size: 16px;
+    }
+  }
+
+  .link-text {
+    color: $combitGreen;
+    &.forgot {
+      color: $combitBlack;
     }
   }
 
@@ -77,6 +85,7 @@ page-login {
     // @media (min-height: 481px) {
     bottom: 64px;
     // }
+    padding: 0 48px;
     position: relative;
     z-index: 10;
   }
@@ -92,7 +101,7 @@ page-login {
   }
   ion-footer {
     a {
-      color: map-get($kombit-colors, 'btn');
+      color: $combitOrange;
     }
     &::before {
       background-image: none !important;

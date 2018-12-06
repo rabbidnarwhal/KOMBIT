@@ -5,9 +5,7 @@ import { AuthServiceProvider } from '../../providers/auth-service';
 import { FormValidatorProvider } from '../../providers/form-validator';
 import { LoginRequest } from '../../models/login';
 
-@IonicPage({
-  name: 'login'
-})
+@IonicPage()
 @Component({
   selector: 'page-login',
   templateUrl: 'login.html'

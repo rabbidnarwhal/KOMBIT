@@ -131,7 +131,7 @@ export class AppointmentDetailPage {
 
   rescheduleAppointment() {
     this.utility
-      .showPopover('detailPost', { id: this.data.productId, page: 'appointment', useCase: 'appointment' })
+      .showPopover('PostDetailPage', { id: this.data.productId, page: 'appointment', useCase: 'appointment' })
       .present();
   }
 }

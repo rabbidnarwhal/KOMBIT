@@ -10,10 +10,9 @@ import { FileTransfer, FileTransferObject } from '@ionic-native/file-transfer';
 import { DataProvinceServiceProvider } from '../../providers/dataProvince-service';
 import { FormValidatorProvider } from '../../providers/form-validator';
 import { ChangePassword } from '../../models/password';
+import { AuthServiceProvider } from '../../providers/auth-service';
 
-@IonicPage({
-  name: 'profile'
-})
+@IonicPage()
 @Component({
   selector: 'page-profile',
   templateUrl: 'profile.html'
@@ -36,7 +35,6 @@ export class ProfilePage {
   @ViewChild(Navbar) navBar: Navbar;
   constructor(
     public navCtrl: NavController,
-    private navParams: NavParams,
     private api: ApiServiceProvider,
     private utility: UtilityServiceProvider,
     private events: Events,
@@ -44,12 +42,13 @@ export class ProfilePage {
     private camera: Camera,
     private transfer: FileTransfer,
     private dataProvince: DataProvinceServiceProvider,
-    private formValidator: FormValidatorProvider
+    private formValidator: FormValidatorProvider,
+    private auth: AuthServiceProvider
   ) {
     this.data = new User();
     this.password = new ChangePassword();
     this.picture = 'assets/imgs/profile.png';
-    this.id = this.navParams.data.id;
+    this.id = this.auth.getPrincipal().id;
   }
 
   ionViewDidLoad() {
@@ -61,7 +60,9 @@ export class ProfilePage {
         loading.dismiss();
         this.isSearching = false;
         this.loadListHoldingCompany();
-        this.loadListCompany();
+        if (this.data.holdingId) {
+          this.loadListCompany();
+        }
       })
       .catch((err) => {
         loading.dismiss();
@@ -102,25 +103,29 @@ export class ProfilePage {
   }
 
   save() {
-    const loading = this.utility.showLoading();
-    loading.present();
-    this.saveProfile()
-      .then(() => this.loadUserData())
-      .then(() => {
-        loading.dismiss();
-        this.isEdit = false;
-      })
-      .catch((err) => {
-        loading.dismiss();
-        this.utility.showToast(err);
-      });
+    if (this.form.valid) {
+      const loading = this.utility.showLoading();
+      loading.present();
+      this.saveProfile()
+        .then(() => this.loadUserData())
+        .then(() => {
+          loading.dismiss();
+          this.isEdit = false;
+        })
+        .catch((err) => {
+          loading.dismiss();
+          this.utility.showToast(err);
+        });
+    } else {
+      this.utility.showToast(this.formValidator.getErrorMessage(this.form));
+    }
   }
 
   savePassword() {
-    const loading = this.utility.showLoading();
-    loading.present();
     this.formPassword.ngSubmit;
     if (this.formPassword.valid) {
+      const loading = this.utility.showLoading();
+      loading.present();
       if (this.password.New === this.confirmPassword) {
         this.changePassword(this.password)
           .then((res) => {
@@ -171,6 +176,7 @@ export class ProfilePage {
       this.api.get('/users/' + this.id, { headers: header }).subscribe(
         (sub) => {
           this.data = sub;
+          console.log(this.data);
           if (this.data.kabKotaId && this.data.provinsiId) {
             Promise.all([ this.dataProvince.getCity(), this.dataProvince.getProvince() ]).then((res) => {
               const city = res[0].filter((x) => x.id === this.data.kabKotaId);
@@ -200,6 +206,7 @@ export class ProfilePage {
   private saveProfile() {
     return new Promise((resolve, reject) => {
       const request: UserRequest = new UserRequest(this.data);
+      console.log(request);
       this.api.post('/users/' + this.id, request).subscribe(
         (sub) => {
           resolve();

@@ -85,7 +85,7 @@ export class ApiServiceProvider {
         // return new ErrorObservable(error.error.ExceptionMessage);
         if (error.error.errorMessage instanceof Array) return new ErrorObservable(error.error.errorMessage.join('\n'));
         else return new ErrorObservable(error.error.errorMessage);
-      } else return new ErrorObservable('Error code: ' + error.status.toString());
+      } else return new ErrorObservable(error.status.toString() + ': ' + error.statusText);
     }
     return new ErrorObservable(`An error occured.`);
   }

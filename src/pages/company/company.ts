@@ -47,6 +47,6 @@ export class CompanyPage {
   }
 
   companyClicked(company) {
-    this.navCtrl.push('home', { company: company });
+    this.navCtrl.push('HomePage', { company: company });
   }
 }

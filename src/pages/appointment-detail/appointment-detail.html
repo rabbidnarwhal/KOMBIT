@@ -52,7 +52,7 @@
         <div class="static-map-container">
           <img *ngIf="mapLocation" [src]="mapLocation" (click)="openMap()" />
         </div>
-        <ion-label no-padding no-margin>{{data.locationName}}</ion-label>
+        <ion-label class="appointment-text" no-padding no-margin>{{data.locationName}}</ion-label>
       </ion-card>
     </ion-col>
   </ion-row>
@@ -61,7 +61,7 @@
     <ion-col>
       <ion-card class="card-container">
         <ion-label no-margin class="title-label">Note</ion-label>
-        <p>{{data.note}}</p>
+        <ion-label no-margin class="appointment-text">{{data.note}}</ion-label>
       </ion-card>
     </ion-col>
   </ion-row>
@@ -69,8 +69,8 @@
   <ion-row *ngIf="isRejected">
     <ion-col>
       <ion-card class="card-container">
-        <ion-label no-margin  class="title-label">Message from {{data.userName}}</ion-label>
-        <p>{{data.rejectMessage}}</p>
+        <ion-label no-margin class="title-label">Message from {{data.userName}}</ion-label>
+        <ion-label no-margin class="appointment-text">{{data.rejectMessage}}</ion-label>
       </ion-card>
     </ion-col>
   </ion-row>

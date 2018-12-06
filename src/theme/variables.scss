@@ -27,16 +27,11 @@ $app-direction: ltr;
 // colors so you can add, rename and remove colors as needed.
 // The "primary" color is the only required color in the map.
 
-$colors: (
-  primary: #488aff,
-  secondary: #32db64,
-  danger: #f53d3d,
-  light: #f4f4f4,
-  dark: #222
-);
+$colors: (primary: #488aff, secondary: #32db64, danger: #f53d3d, light: #f4f4f4, dark: #222);
 
 // App iOS Variables
 // --------------------------------------------------
+
 // iOS only Sass variables can go here
 // App Material Design Variables
 // --------------------------------------------------
@@ -51,10 +46,8 @@ $colors: (
 // so that the above variables are used and Ionic's
 // default are overridden.
 @import 'ionic.theme.default';
-@import 'kombit.scss';
-@import 'quill.core';
-@import 'quill.snow';
-@import 'quill.bubble';
+@import 'combitVariable';
+
 // Ionicons
 // --------------------------------------------------
 // The premium icon font for Ionic. For more info, please see:

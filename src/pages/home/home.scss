@@ -1,4 +1,6 @@
 page-home {
+  $blueTransparacy: rgba(34, 33, 85, 0.7);
+
   .location-indicator {
     position: absolute;
     width: 100%;
@@ -16,12 +18,15 @@ page-home {
     border: none !important;
     height: 2.8rem !important;
     line-height: 2.8rem !important;
-    @include color-item();
+    // @include color-item();
+    color: $combitOrange;
   }
   .segment-activated {
-    @include color-background(180deg);
-    color: map-get($kombit-colors, 'text') !important;
-    @include color-border();
+    // @include color-background(180deg);
+    // @include color-border();
+    background-color: $combitOrange;
+    color: $combitWhite !important;
+    border-color: $combitOrange;
   }
   .post-list-box {
     &.promoted {
@@ -29,7 +34,8 @@ page-home {
       display: inline-block;
       margin-right: 2px;
       margin-left: 2px;
-      @include color-background(0deg);
+      background-color: $combitOrange;
+      // @include color-background(0deg);
       .promoted-image-container {
         padding: 4px;
         .post-image {
@@ -41,7 +47,7 @@ page-home {
         min-height: 28px;
         padding: 0 4px;
         font-size: 12px;
-        color: map-get($kombit-colors, 'text');
+        color: $combitWhite;
         ion-label {
           width: 80%;
           font-weight: 100;
@@ -62,7 +68,7 @@ page-home {
         width: 100%;
         padding: 0 4px;
         font-size: 12px;
-        color: map-get($kombit-colors, 'btn');
+        color: $combitOrange;
         display: flex;
         ion-label {
           width: 100%;
@@ -73,7 +79,7 @@ page-home {
     }
 
     margin-bottom: 16px;
-    background: map-get($kombit-colors, 'text');
+    background: $combitWhite;
     -ms-box-shadow: 0 4px 10px RGBA(0, 0, 0, 0.3);
     box-shadow: 0 4px 10px RGBA(0, 0, 0, 0.3);
     width: 100%;
@@ -94,10 +100,10 @@ page-home {
     margin: 0px;
     font-weight: 200;
     text-transform: capitalize;
-    @include color-background(180deg);
+    background-color: $combitOrange;
+    // @include color-background(180deg);
     border: none;
-    color: map-get($kombit-colors, 'text');
-    ion-icon + span {
+    color: $combitWhite ion-icon + span {
       margin-left: 6px;
     }
   }
@@ -120,7 +126,8 @@ page-home {
     font-size: 8px;
     margin: 4px 6px;
     ion-icon {
-      @include color-item();
+      // @include color-item();
+      color: $combitOrange;
       margin-right: 2px;
     }
     img {
@@ -135,7 +142,7 @@ page-home {
       font-size: 12px;
       margin-top: 4px;
       margin-right: 8px;
-      color: map-get($kombit-colors, 'text');
+      color: $combitWhite;
     }
   }
 
@@ -144,14 +151,15 @@ page-home {
     button {
       width: 48px;
       height: 48px;
-      @include color-background(180deg);
+      // @include color-background(180deg);
+      background-color: $combitOrange;
       ion-icon {
-        color: map-get($kombit-colors, 'text');
+        color: $combitWhite;
       }
     }
   }
   .random-images-slides {
-    height: 176px;
+    height: 196px;
     margin-bottom: 12px;
     .swiper-container {
       border-radius: 20px;
@@ -172,7 +180,11 @@ page-home {
     }
   }
 
-  .notification-button {
+  .menu-button {
+    min-width: 10px;
+  }
+
+  .toolbar-button {
     background-color: transparent;
     width: 36px;
     height: 36px;
@@ -180,9 +192,22 @@ page-home {
     font-size: 16px;
     border: none;
     box-shadow: none;
+    padding-bottom: 8px;
+    &.chat-image {
+      display: inline-block;
+      position: relative;
+      top: 12px;
+      margin-top: -12px;
+      margin-left: 0px;
+    }
+    &.notification-button {
+      float: right;
+      top: 14px;
+      right: 28px;
+    }
     ion-icon {
       font-size: 28px;
-      color: map-get($kombit-colors, 'text');
+      color: $combitWhite;
       // @include color-item();
       // &::before {
       // background: linear-gradient(
@@ -205,6 +230,12 @@ page-home {
       bottom: 8px;
       right: 8px;
       display: inline-block;
+      &.chat {
+        position: absolute;
+        top: 4px;
+        right: 0px;
+        bottom: 0px;
+      }
     }
     .notification-icon {
       position: absolute;
@@ -213,21 +244,23 @@ page-home {
 
   .slider-badge {
     position: absolute;
-    right: 12px;
-    bottom: 12px;
-    font-size: 12px;
-    background-color: map-get($kombit-colors, 'bg-high');
+    left: 24px;
+    top: 24px;
+    font-size: 13px;
+    background-color: $combitGreen;
+    font-weight: 300;
   }
 
   .slider-text {
-    // $shadow-color: map-get($kombit-colors, 'text');
-    @include color-background-transparency(270deg, 0.6, 0.9);
+    // $shadow-color: $combitWhite
+    // @include color-background-transparency(270deg, 0.6, 0.9);
+    background-color: $blueTransparacy;
     position: absolute;
-    bottom: 40px;
+    bottom: 28px;
     text-align: left;
     font-size: 12px;
     letter-spacing: 0.4px;
-    color: map-get($kombit-colors, 'text');
+    color: $combitWhite;
     // text-shadow: 1px 0px $shadow-color, -1px 0px $shadow-color, 1px 2px $shadow-color, 0px -1px $shadow-color;
     font-weight: 400;
     padding: 8px;
@@ -252,7 +285,7 @@ page-home {
     height: 50px;
     width: 50px;
     border-radius: 14px;
-    border: 1px solid #ddd;
+    border: 1px solid $combitWhite;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -265,10 +298,40 @@ page-home {
     ion-icon {
       font-size: 36px;
       position: absolute;
-      color: #aeaeae;
+      color: $combitGrey;
     }
   }
   [col-3] {
     text-align: -webkit-center;
+  }
+
+  .product-divider {
+    border: 3px solid rgba(117, 117, 117, 0.4);
+    border-radius: 12px;
+    margin: 8px 0px;
+  }
+
+  .total-like-text {
+    padding-left: 4px;
+  }
+
+  .home-searchbar {
+    width: calc(100% - 156px);
+    &.disable-left-button {
+      // margin-left: 72px;
+      width: calc(100% - 80px);
+      &.no-left-menu {
+        padding-left: 48px;
+      }
+    }
+  }
+  .show-back-button + .toolbar-content .home-searchbar {
+    margin-left: 18px;
+    width: calc(100% - 96px);
+  }
+
+  .show-back-button + .toolbar-content .home-searchbar.disable-left-button {
+    margin-left: 18px;
+    width: calc(100% - 96px);
   }
 }

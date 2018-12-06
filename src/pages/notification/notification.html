@@ -18,12 +18,18 @@
         </div>
         <div text-center *ngIf="!listNotification.length && !isSearching">Notification Empty</div>
         <ion-item *ngFor="let item of listNotification" (click)="openPage(item)">
-          <label class="title">{{item.title}}</label>
-          <label class="time">{{item.pushDate | timeAgo}}</label>
+          <label class="notification-title">{{item.title}}</label>
+          <label class="notification-time">{{item.pushDate | timeAgo}}</label>
           <br/>
-            <p>{{item.content}}</p>
+            <p class="notification-content">{{item.content}}</p>
           </ion-item>
         </ion-list>
       </ion-col>
     </ion-row>
   </ion-content>
+
+  <ion-footer class="tab-menu">
+    <ion-toolbar class="tab-menu-toolbar">
+      <footer-menu></footer-menu>
+    </ion-toolbar>
+  </ion-footer>

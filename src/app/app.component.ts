@@ -9,12 +9,13 @@ import { AuthServiceProvider } from '../providers/auth-service';
 import { MenuController } from 'ionic-angular/components/app/menu-controller';
 import { PushNotificationProvider } from '../providers/push-notification';
 import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
+import { Config } from '../config/config';
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
-  public rootPage: string = 'login';
+  public rootPage: string = 'LoginPage';
   public pages: Array<{ title: string; component: string; icon: string; image: string }>;
   public userName: string = '';
   public picture: string;
@@ -32,22 +33,14 @@ export class MyApp {
   ) {
     this.initializeApp();
     this.picture = 'assets/imgs/profile.png';
-    this.pages = [
-      { title: 'Notification', component: 'notification', icon: 'notifications', image: '' },
-      { title: 'Appointment', component: 'AppointmentPage', icon: 'calendar', image: '' },
-      { title: 'Company', component: 'company', icon: '', image: 'assets/imgs/company.png' },
-      { title: 'Solution', component: 'SolutionPage', icon: '', image: 'assets/imgs/solution-menu.png' },
-      { title: 'Setting', component: '', icon: 'settings', image: '' },
-      { title: 'Point', component: '', icon: '', image: 'assets/imgs/points.png' },
-      { title: 'Logout', component: 'logout', icon: 'log-out', image: '' }
-    ];
+    this.pages = [];
   }
 
   private initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleLightContent();
       this.statusBar.overlaysWebView(false);
-      this.statusBar.backgroundColorByHexString('#f2703f');
+      this.statusBar.backgroundColorByHexString('#222155');
       this.menu.enable(false, 'sideMenu');
       this.menu.swipeEnable(false, 'sideMenu');
       this.keyboard.disableScroll(true);
@@ -68,12 +61,10 @@ export class MyApp {
   }
 
   private changeSideMenus(role: string) {
-    let myPost = { title: 'My Post', component: 'myPost', icon: 'share', image: '' };
-
     if (role === 'Supplier') {
-      if (this.pages[1] !== myPost) this.pages.splice(2, 0, myPost);
+      this.pages = Config.SUPPLIER.SIDEMENU;
     } else if (role === 'Customer') {
-      if (this.pages[1] === myPost) this.pages.splice(2, 2);
+      this.pages = Config.CUSTOMER.SIDEMENU;
     }
   }
 
@@ -87,7 +78,7 @@ export class MyApp {
       if (!isFirstTime || isFirstTime !== 'false') {
         localStorage.setItem('firstTime', 'false');
         isFirstTime = 'false';
-        this.rootPage = 'welcome';
+        this.rootPage = 'WelcomePage';
       } else if (res) {
         if (!this.menu.isEnabled('sideMenu')) {
           this.menu.enable(true, 'sideMenu');
@@ -95,21 +86,21 @@ export class MyApp {
         }
         this.userName = this.auth.getPrincipal().name;
         this.picture = this.auth.getPrincipal().image ? this.auth.getPrincipal().image : this.picture;
-        this.rootPage = 'home';
+        this.rootPage = 'HomePage';
         this.changeSideMenus(this.auth.getPrincipal().role);
       } else {
         if (this.menu.isEnabled('sideMenu')) {
           this.menu.enable(false, 'sideMenu');
           this.menu.swipeEnable(false, 'sideMenu');
         }
-        this.rootPage = 'login';
+        this.rootPage = 'LoginPage';
       }
       this.splashScreen.hide();
     });
   }
 
   public profilePage() {
-    this.nav.push('profile', { id: this.auth.getPrincipal().id });
+    this.nav.push('ProfilePage', { id: this.auth.getPrincipal().id });
     this.menu.close('sideMenu');
 
     this.events.subscribe('picture-changed', (sub) => {

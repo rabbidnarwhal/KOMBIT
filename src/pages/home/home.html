@@ -1,13 +1,19 @@
 <ion-header class="custom-background">
   <ion-navbar>
-    <button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
+    <button ion-button menuToggle *ngIf="menuEnabled" class="menu-button">
+      <ion-icon [name]="menuIcon"></ion-icon>
     </button>
-    <ion-item class="top-searchbar">
+
+    <div *ngIf="chatEnabled" class="toolbar-button chat-image" (click)="toChatPage()">
+      <img src="assets/imgs/chat-white.png">
+      <ion-badge class="notification-badge chat" *ngIf="unreadChat"></ion-badge>
+    </div>
+
+    <ion-item class="top-searchbar home-searchbar" [class.disable-left-button]="!newPostEnabled" [class.no-left-menu]="!menuEnabled">
       <ion-input type="text" placeholder="search" [(ngModel)]="filterText" (input)="filterItems()"></ion-input>
       <ion-icon name="search" item-end></ion-icon>
     </ion-item>
-    <button *ngIf="notificationEnabled" ion-button class="notification-button" (click)="toNotificationPage()">
+    <button *ngIf="notificationEnabled" ion-button class="toolbar-button" [class.notification-button]="newPostEnabled" (click)="toNotificationPage()">
       <ion-icon name="notifications"></ion-icon>
       <ion-badge class="notification-badge" *ngIf="unreadNotification"></ion-badge>
     </button>
@@ -18,22 +24,21 @@
   </div>
 </ion-header>
 
-<ion-content padding>
-
+<ion-content padding class="has-searchbar">
   <ion-row *ngIf="sliderEnabled" class="random-images-slides">
     <div class="spinner-container" *ngIf="isSearchingSlider">
       <div class="spinner-background">
         <ion-spinner></ion-spinner>
       </div>
     </div>
-    <ion-slides *ngIf="sliderProduct.length" pager="true" (ionSlideTap)="slidesClicked()" (ionSlideAutoplayStop)="slideAutoPlayStopped()">
+    <ion-slides *ngIf="sliderProduct.length" pager="true" autoplay="4000" loop="true" (ionSlideTap)="slidesClicked()" (ionSlideAutoplayStop)="slideAutoPlayStopped()">
       <ion-slide *ngFor="let item of sliderProduct">
         <img src="{{item.fotoPath}}" />
         <div class="slider-text">
           <ion-label no-margin no-padding class="text-product">{{item.productName}}</ion-label>
           <ion-label no-margin no-padding class="sub-text-product">{{item.companyName}}</ion-label>
         </div>
-        <ion-badge *ngIf="isPromoted" class="slider-badge">Promoted</ion-badge>
+        <ion-badge *ngIf="isPromoted" class="slider-badge">Promote</ion-badge>
       </ion-slide>
     </ion-slides>
   </ion-row>
@@ -61,7 +66,8 @@
     </ion-col>
   </ion-row>
 
-  <ion-segment [(ngModel)]="postType" (ionChange)="segmentChanged()">
+  <div class="product-divider" *ngIf="dividerEnabled"></div>
+  <!-- <ion-segment [(ngModel)]="postType" (ionChange)="segmentChanged()">
     <ion-segment-button value="public">
       Public
     </ion-segment-button>
@@ -74,7 +80,7 @@
     <ion-segment-button value="location">
       Location
     </ion-segment-button>
-  </ion-segment>
+  </ion-segment> -->
 
   <ion-row>
     <div class="spinner-container" *ngIf="isSearching">
@@ -138,7 +144,7 @@
             <ion-col col-4 no-padding>
               <button ion-button full small class="box-button interactionBtn" (click)="likeBtnClick(post)">
                 <ion-icon *ngIf="!lockBtn || post !== selectedLikePost" [name]="post.isLike ? 'heart' : 'heart-outline'"></ion-icon>
-                <span *ngIf="!lockBtn || post !== selectedLikePost">{{post.totalLike}}</span>
+                <span class="total-like-text" *ngIf="!lockBtn || post !== selectedLikePost">{{post.totalLike}}</span>
                 <ion-spinner name="dots" *ngIf="lockBtn && post === selectedLikePost"></ion-spinner>
               </button>
             </ion-col>
@@ -152,9 +158,15 @@
     <div text-center class="not-found-text" *ngIf="!filteredItems.length && !isSearching">Post not found</div>
   </ion-row>
 
-  <ion-fab right bottom class="fab-button" *ngIf="newPostEnabled">
+  <!-- <ion-fab right bottom class="fab-button" *ngIf="newPostEnabled">
     <button ion-fab color="light" (click)="createNewPost()">
       <ion-icon name="create"></ion-icon>
     </button>
-  </ion-fab>
+  </ion-fab> -->
 </ion-content>
+
+<ion-footer class="tab-menu">
+  <ion-toolbar class="tab-menu-toolbar">
+    <footer-menu></footer-menu>
+  </ion-toolbar>
+</ion-footer>

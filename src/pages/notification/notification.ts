@@ -5,9 +5,7 @@ import { UtilityServiceProvider } from '../../providers/utility-service';
 import { Notification } from '../../models/notification';
 import { DataNotificationServiceProvider } from '../../providers/dataNotification-service';
 
-@IonicPage({
-  name: 'notification'
-})
+@IonicPage()
 @Component({
   selector: 'page-notification',
   templateUrl: 'notification.html'
@@ -51,9 +49,13 @@ export class NotificationPage {
 
   openPage(item: Notification) {
     if (item.moduleName === 'product') {
-      this.utility
-        .showPopover('detailPost', { id: item.moduleId, page: 'notification', useCase: item.moduleUseCase })
-        .present();
+      if (item.moduleUseCase === 'expired') {
+        this.navCtrl.push('PostNewPage', { id: item.moduleId });
+      } else {
+        this.utility
+          .showPopover('PostDetailPage', { id: item.moduleId, page: 'notification', useCase: item.moduleUseCase })
+          .present();
+      }
     } else if (item.moduleName === 'appointment') {
       this.navCtrl.push('AppointmentDetailPage', { appointmentId: item.moduleId, userName: null });
     }

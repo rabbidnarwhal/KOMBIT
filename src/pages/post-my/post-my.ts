@@ -6,9 +6,7 @@ import { Product } from '../../models/products';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { AuthServiceProvider } from '../../providers/auth-service';
 
-@IonicPage({
-  name: 'myPost'
-})
+@IonicPage()
 @Component({
   selector: 'page-post-my',
   animations: [
@@ -73,7 +71,7 @@ export class PostMyPage {
 
   showDetail(event, data) {
     event.stopPropagation();
-    this.utility.showPopover('detailPost', { id: data.id, page: 'post' }).present();
+    this.utility.showPopover('PostDetailPage', { id: data.id, page: 'post' }).present();
   }
 
   likeBtnClick(event, post) {
@@ -95,6 +93,6 @@ export class PostMyPage {
 
   editPost(event, post) {
     event.stopPropagation();
-    this.navCtrl.push('newPost', { id: post.id });
+    this.navCtrl.push('PostNewPage', { id: post.id });
   }
 }

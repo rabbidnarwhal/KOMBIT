@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { Category } from '../../models/category';
 import { DataCategoryServiceProvider } from '../../providers/dataCategory-service';
 import { UtilityServiceProvider } from '../../providers/utility-service';
+import { Events } from 'ionic-angular/util/events';
 
 @IonicPage()
 @Component({
@@ -19,7 +20,8 @@ export class SolutionPage {
     public navParams: NavParams,
     public navCtrl: NavController,
     private dataCategory: DataCategoryServiceProvider,
-    private utility: UtilityServiceProvider
+    private utility: UtilityServiceProvider,
+    private events: Events
   ) {
     this.listSolution = new Array<Category>();
     this.filterItems();
@@ -47,10 +49,19 @@ export class SolutionPage {
   }
 
   solutionClicked(solution) {
-    this.navCtrl.push('home', { solution: solution });
+    if (this.isModal) {
+      this.events.publish('solution-selected', solution);
+      this.navCtrl.pop();
+    } else {
+      this.navCtrl.push('HomePage', { solution: solution, modal: true });
+    }
   }
 
   dismissModal() {
     this.navCtrl.pop();
   }
+
+  // ionViewWillLeave() {
+
+  // }
 }

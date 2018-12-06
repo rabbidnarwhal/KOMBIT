@@ -8,10 +8,9 @@ import { LocationService, MyLocationOptions } from '@ionic-native/google-maps';
 import { Category } from '../../models/category';
 import { DataCategoryServiceProvider } from '../../providers/dataCategory-service';
 import { DataNotificationServiceProvider } from '../../providers/dataNotification-service';
+import { ChatServiceProvider } from '../../providers/chat-service';
 
-@IonicPage({
-  name: 'home'
-})
+@IonicPage()
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -31,6 +30,7 @@ export class HomePage {
   public filterText: string = '';
   public postType: string;
   public locationIndicatorText: string;
+  public menuIcon: string;
 
   public userId: number;
   public distance: number;
@@ -38,6 +38,7 @@ export class HomePage {
   public selectedCity: number;
   public numberRandomImages: number = 5;
   public unreadNotification: number = 0;
+  public unreadChat: number = 0;
 
   public isPromoted: boolean = true;
   public isSearching: boolean = true;
@@ -47,9 +48,11 @@ export class HomePage {
   public locationEnabled: boolean = false;
   public newPostEnabled: boolean;
   public notificationEnabled: boolean = true;
+  public chatEnabled: boolean = true;
   public solutionEnabled: boolean = true;
   public sliderEnabled: boolean = true;
-
+  public dividerEnabled: boolean = true;
+  public menuEnabled: boolean = true;
   constructor(
     private navCtrl: NavController,
     private navParams: NavParams,
@@ -59,6 +62,7 @@ export class HomePage {
     private events: Events,
     private auth: AuthServiceProvider,
     private dataNotification: DataNotificationServiceProvider,
+    private chatService: ChatServiceProvider,
     private zone: NgZone
   ) {
     this.postType = 'public';
@@ -68,6 +72,8 @@ export class HomePage {
     this.filterItems(this.locationEnabled);
     this.userId = this.auth.getPrincipal().id;
     this.newPostEnabled = this.auth.getPrincipal().role === 'Supplier' ? true : false;
+    this.chatEnabled = this.newPostEnabled ? true : false;
+    this.menuIcon = this.newPostEnabled ? 'more' : 'menu';
     this.notificationEnabled = this.navParams.data ? true : false;
   }
 
@@ -76,17 +82,39 @@ export class HomePage {
     this.loadPostData();
     if (this.navParams.data.solution || this.navParams.data.company) {
       this.notificationEnabled = false;
+      this.chatEnabled = false;
       this.sliderEnabled = false;
       this.isPromoted = false;
       this.solutionEnabled = false;
+      this.dividerEnabled = false;
     } else {
       this.postType = 'public';
+      if (this.navParams.data.favorite) {
+        this.postType = 'favorite';
+        this.notificationEnabled = false;
+        this.chatEnabled = false;
+        this.sliderEnabled = false;
+        this.isPromoted = false;
+        this.solutionEnabled = false;
+        this.dividerEnabled = false;
+        this.menuEnabled = false;
+      }
       this.loadSolution();
       this.loadNotificationCount();
+      this.loadChatCount();
     }
   }
 
   ionViewDidLoad() {
+    this.subscribeChatArrived();
+    this.subscribeFilterByLocation();
+    this.subscribeInteraction();
+    this.subscribeNotificationArrived();
+    this.subscribePostReload();
+    this.subscribeRemoveFilterByLocation();
+  }
+
+  subscribeInteraction() {
     this.events.subscribe('homeInteraction', (sub) => {
       const idx = this.listPost.findIndex((x) => x.id === sub.id);
       if (idx < 0) {
@@ -106,7 +134,9 @@ export class HomePage {
         this.filterItems(this.locationEnabled);
       }
     });
+  }
 
+  subscribeFilterByLocation() {
     this.events.subscribe('homeLocation', (sub) => {
       this.isSearching = true;
       this.postType = 'location';
@@ -127,21 +157,35 @@ export class HomePage {
           : `SELURUH ${sub.province.name}`;
       }
     });
+  }
 
+  subscribeRemoveFilterByLocation() {
+    this.events.subscribe('backFromLocation', () => {
+      this.postType = 'public';
+    });
+  }
+
+  subscribePostReload() {
     this.events.subscribe('postReload', () => {
       this.zone.run(() => {
         this.isSearching = true;
         this.loadPostData(true);
       });
     });
+  }
 
-    this.events.subscribe('backFromLocation', () => {
-      this.postType = 'public';
-    });
-
+  subscribeNotificationArrived() {
     this.events.subscribe('notification-arrived', () => {
       this.zone.run(() => {
         this.unreadNotification++;
+      });
+    });
+  }
+
+  subscribeChatArrived() {
+    this.events.subscribe('chat-arrived', () => {
+      this.zone.run(() => {
+        this.unreadChat++;
       });
     });
   }
@@ -151,6 +195,13 @@ export class HomePage {
       .fetchUnReadNotificationCount(this.userId)
       .then((res) => (this.unreadNotification = res.unRead))
       .catch((err) => this.utility.showToast(err));
+  }
+
+  loadChatCount() {
+    // this.chatService.getUnreadChatCount()
+    // .then(res => this.unreadChat = res)
+    // .catch(err => this.utility.showToast(err))
+    this.unreadChat = 0;
   }
 
   locationIndicatorClicked() {
@@ -203,11 +254,11 @@ export class HomePage {
   }
 
   showDetail(data) {
-    this.utility.showPopover('detailPost', { id: data.id, page: 'home' }).present();
+    this.utility.showPopover('PostDetailPage', { id: data.id, page: 'home' }).present();
   }
 
   createNewPost() {
-    this.navCtrl.push('newPost');
+    this.navCtrl.push('PostNewPage');
   }
 
   filterItems(isLocation) {
@@ -265,16 +316,20 @@ export class HomePage {
 
   editPost(event, post) {
     event.stopPropagation();
-    this.navCtrl.push('newPost', { id: post.id });
+    this.navCtrl.push('PostNewPage', { id: post.id });
   }
 
   showAllSolutions() {
     const popover = this.utility.showPopover('SolutionPage', { isModal: true }, 'popover-width-solution', true, true);
     popover.present();
+    this.events.subscribe('solution-selected', (solution) => {
+      this.filterSolutions(solution);
+      this.events.unsubscribe('solution-selected');
+    });
   }
 
   filterSolutions(solution) {
-    this.navCtrl.push('home', { solution: solution });
+    this.navCtrl.push('HomePage', { solution: solution });
   }
 
   slidesClicked() {
@@ -289,13 +344,19 @@ export class HomePage {
       this.showDetail(this.sliderProduct[idx - 1]);
     }
   }
+
   slideAutoPlayStopped() {
     setTimeout(() => {
       this.slides.startAutoplay();
     }, 5000);
   }
+
   toNotificationPage() {
-    this.navCtrl.push('notification');
+    this.navCtrl.push('NotificationPage');
+  }
+
+  toChatPage() {
+    this.navCtrl.push('ChatPage');
   }
 
   private nearMePost(dist): Promise<Array<any>> {

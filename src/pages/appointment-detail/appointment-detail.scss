@@ -28,8 +28,8 @@ page-appointment-detail {
   .box-content {
     white-space: pre-wrap;
     overflow-wrap: break-word;
-    word-break: break-all;
-    width: calc(100% - 80px);
+    word-break: break-word;
+    width: calc(100% - 136px);
     font-weight: 500;
   }
 
@@ -49,5 +49,13 @@ page-appointment-detail {
 
   .answer-button-wrapper {
     text-align: center;
+  }
+
+  .title-label {
+    font-weight: 500;
+  }
+
+  .appointment-text {
+    white-space: pre-wrap;
   }
 }

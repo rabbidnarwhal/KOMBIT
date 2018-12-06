@@ -16,11 +16,14 @@ product-detail {
       font-size: 9px;
       font-stretch: ultra-condensed;
       font-weight: 300;
-      @include color-border();
-      @include color-item();
+      // @include color-border();
+      // @include color-item();
+      border-color: $combitOrange;
+      color: $combitOrange;
       &.segment-activated {
-        color: map-get($kombit-colors, 'text') !important;
-        @include color-background(180deg);
+        color: $combitWhite !important;
+        // @include color-background(180deg);
+        background-color: $combitOrange;
       }
     }
   }
@@ -96,8 +99,9 @@ product-detail {
     width: 50%;
     border: none;
     border-radius: 6px;
-    color: map-get($kombit-colors, 'text');
-    @include color-background(180deg);
+    color: $combitWhite;
+    background-color: $combitGreen;
+    // @include color-background(180deg);
     ion-icon + span {
       margin-left: 6px;
     }
@@ -109,7 +113,8 @@ product-detail {
 
   .title-underline {
     border-bottom: 2px solid;
-    @include color-border();
+    // @include color-border();
+    border-color: $combitBlue;
   }
 
   .client-image-container {
@@ -124,10 +129,10 @@ product-detail {
     position: absolute;
     right: 16px;
     bottom: 16px;
-    color: orange;
+    color: $combitBlue;
   }
 
   .spinner-white svg circle {
-    stroke: #fff;
+    stroke: $combitWhite;
   }
 }

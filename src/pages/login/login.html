@@ -15,6 +15,9 @@
         <form id="formLogin" #form="ngForm">
           <ion-input required type="text" class="justify-input" [(ngModel)]="credentials.Username" name="Username" placeholder="User"></ion-input>
           <ion-input required type="password" [(ngModel)]="credentials.Password" name="Password" placeholder="Password"></ion-input>
+          <p margin-top>
+            <a class="link-text forgot" (click)="forgotPassword()">Forgot password?</a>
+          </p>
           <button ion-button btn-kombit small class="login-button" type="button" (click)="signin()">Login</button>
         </form>
       </ion-col>
@@ -22,11 +25,9 @@
     <ion-row class="login-footer">
       <ion-col>
         <p class="margin-top-0">Don't have an account?
-          <a (click)="signup()"> Sign up</a>
+          <a class="link-text" (click)="signup()"> Sign up</a>
         </p>
-        <p class="margin-top-0">
-          <a (click)="forgotPassword()">Forgot your password</a>
-        </p>
+
       </ion-col>
     </ion-row>
   </ion-grid>
