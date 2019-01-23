@@ -11,6 +11,7 @@ import { DataProvinceServiceProvider } from '../../providers/dataProvince-servic
 import { FormValidatorProvider } from '../../providers/form-validator';
 import { ChangePassword } from '../../models/password';
 import { AuthServiceProvider } from '../../providers/auth-service';
+import { ChatServiceProvider } from '../../providers/chat-service';
 
 @IonicPage()
 @Component({
@@ -43,7 +44,8 @@ export class ProfilePage {
     private transfer: FileTransfer,
     private dataProvince: DataProvinceServiceProvider,
     private formValidator: FormValidatorProvider,
-    private auth: AuthServiceProvider
+    private auth: AuthServiceProvider,
+    private chatService: ChatServiceProvider
   ) {
     this.data = new User();
     this.password = new ChangePassword();
@@ -79,7 +81,9 @@ export class ProfilePage {
     };
   }
 
-  ionViewWillUnload() {}
+  ionViewWillLeave() {
+    this.events.unsubscribe('picture-changed');
+  }
 
   createMap() {
     const position = this.data.addressKoordinat ? this.data.addressKoordinat.split(', ') : [];
@@ -322,5 +326,15 @@ export class ProfilePage {
           this.utility.showToast(error);
         }
       });
+  }
+
+  logout() {
+    this.utility
+      .confirmAlert('Are you sure to logout?', 'Logout')
+      .then((res) => {
+        this.chatService.unregister();
+        this.auth.logout();
+      })
+      .catch((err) => console.error(err));
   }
 }
