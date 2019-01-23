@@ -16,35 +16,22 @@ page-post-my {
       }
     }
   }
-  .box-label {
-    margin: 0 6px;
-  }
-  .box-button {
+
+  .interaction-button {
     margin: 0px;
     font-weight: 200;
     text-transform: capitalize;
-    // @include color-background(180deg);
     background-color: $combitOrange;
     border: none;
     color: $combitWhite ion-icon + span {
       margin-left: 6px;
     }
   }
-  .box-content {
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-    word-break: break-word;
-    width: calc(100% - 78px);
-    font-weight: 500;
-  }
-  .box-text {
-    width: 52px;
-  }
-  .box-icon {
+
+  .interaction-container {
     font-size: 10px;
     margin: 4px 6px;
     ion-icon {
-      // @include color-item();
       color: $combitOrange;
       margin-right: 2px;
     }
@@ -53,8 +40,9 @@ page-post-my {
       margin-right: 2px;
     }
   }
-  button.item {
-    min-height: 1rem !important;
+
+  .post-list-container {
+    min-height: 1rem;
     background-color: $combitWhite;
     border: 1px solid $combitWhite;
     border-radius: 10px;
@@ -62,10 +50,41 @@ page-post-my {
     -ms-box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3);
     box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3);
     ion-label {
-      width: calc(100% - 8px - 24px) !important;
-      margin: 6px 16px !important;
+      width: calc(100% - 8px - 24px);
+      margin: 6px 16px;
       text-align: center;
-      font-weight: 900;
     }
+  }
+
+  .detail-container {
+    margin: 0 6px;
+    &.has-button-inside {
+      display: inline-block;
+      width: calc(100% - 64px);
+    }
+    .detail-label {
+      width: 52px;
+      display: inline-block;
+    }
+    .detail-content {
+      display: inline-block;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      width: calc(100% - 78px);
+      font-weight: 500;
+    }
+  }
+  .action-button-container {
+    float: right;
+    font-size: 18px;
+    margin-right: 8px;
+    ion-icon {
+      margin: 0 2px;
+    }
+  }
+
+  .like-icon-number {
+    margin-left: 4px;
   }
 }

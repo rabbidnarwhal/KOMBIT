@@ -12,37 +12,21 @@ export class DataProductServiceProvider {
 
   getListAllProducts(): Promise<Array<Product>> {
     const userId = this.auth.getPrincipal().id;
-    return new Promise((resolve, reject) => {
-      this.api
-        .get('/product/like/user/' + userId, { headers: this.header })
-        .subscribe((sub) => resolve(sub), (error) => reject(error));
-    });
+    return this.api.get('/product/like/user/' + userId, { headers: this.header }).toPromise();
   }
 
   getListUserProducts(): Promise<Array<Product>> {
     const userId = this.auth.getPrincipal().id;
-    return new Promise((resolve, reject) => {
-      this.api
-        .get('/product/user/' + userId, { headers: this.header })
-        .subscribe((sub) => resolve(sub), (error) => reject(error));
-    });
+    return this.api.get('/product/user/' + userId, { headers: this.header }).toPromise();
   }
 
   getProductDetail(id): Promise<ProductDetail> {
     const userId = this.auth.getPrincipal().id;
-    return new Promise((resolve, reject) => {
-      this.api
-        .get('/product/' + id + '/user/' + userId, { headers: this.header })
-        .subscribe((sub) => resolve(sub), (error) => reject(error));
-    });
+    return this.api.get('/product/' + id + '/user/' + userId, { headers: this.header }).toPromise();
   }
 
   getProductContentEdit(id): Promise<NewProduct> {
-    return new Promise((resolve, reject) => {
-      this.api
-        .get('/product/' + id + '/edit', { headers: this.header })
-        .subscribe((sub) => resolve(sub), (error) => reject(error));
-    });
+    return this.api.get('/product/' + id + '/edit', { headers: this.header }).toPromise();
   }
 
   addNewProduct(request: NewProduct) {
@@ -59,55 +43,55 @@ export class DataProductServiceProvider {
   }
 
   addViewProduct(productId) {
-    return new Promise((resolve, reject) => {
-      const request = {
-        IsViewed: true,
-        ProductId: productId,
-        ViewedBy: this.auth.getPrincipal().id
-      };
-      this.api.post('/interaction/view', request).subscribe((sub) => resolve(), (err) => reject(err));
-    });
+    const request = {
+      IsViewed: true,
+      ProductId: productId,
+      ViewedBy: this.auth.getPrincipal().id
+    };
+    return this.api.post('/interaction/view', request).toPromise();
   }
 
   addChatProduct(productId) {
-    return new Promise((resolve, reject) => {
-      const request = {
-        IsChat: true,
-        ProductId: productId,
-        ChatBy: this.auth.getPrincipal().id
-      };
-      this.api.post('/interaction/chat', request).subscribe((sub) => resolve(), (err) => reject(err));
-    });
+    const request = {
+      IsChat: true,
+      ProductId: productId,
+      ChatBy: this.auth.getPrincipal().id
+    };
+    return this.api.post('/interaction/chat', request).toPromise();
   }
 
   addCommentProduct(productId, content) {
-    return new Promise((resolve, reject) => {
-      const request = {
-        IsComment: true,
-        ProductId: productId,
-        CommentBy: this.auth.getPrincipal().id,
-        Comment: content
-      };
-      this.api.post('/interaction/comment', request).subscribe((sub) => resolve(), (err) => reject(err));
-    });
+    const request = {
+      IsComment: true,
+      ProductId: productId,
+      CommentBy: this.auth.getPrincipal().id,
+      Comment: content
+    };
+    return this.api.post('/interaction/comment', request).toPromise();
   }
 
-  modifyLikeProduct(productId, isLike) {
-    return new Promise((resolve, reject) => {
-      const request = {
-        IsLike: isLike,
-        ProductId: productId,
-        LikedBy: this.auth.getPrincipal().id
-      };
-      this.api.post('/interaction/like', request).subscribe((sub) => resolve(), (err) => reject(err));
-    });
+  modifyLikeProduct(productId: number, isLike): Promise<any> {
+    const request = {
+      IsLike: isLike,
+      ProductId: productId,
+      LikedBy: this.auth.getPrincipal().id
+    };
+    return this.api.post('/interaction/like', request).toPromise();
   }
 
-  getCommentByName() {
+  getCommentByName(): string {
     return this.auth.getPrincipal().name;
   }
 
-  getHoldingId() {
+  getUserId(): number {
+    return this.auth.getPrincipal().id;
+  }
+
+  getHoldingId(): number {
     return this.auth.getPrincipal().holdingId;
+  }
+
+  deleteProduct(id: number): Promise<any> {
+    return this.api.delete('/product/' + id).toPromise();
   }
 }

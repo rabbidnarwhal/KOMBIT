@@ -68,6 +68,14 @@ export class ApiServiceProvider {
     return this.http.post(this.getUrl() + endpoint, body).pipe(catchError(this.handleError));
   }
 
+  delete(endpoint: string, httpOptions?: any) {
+    if (!this.networkIsConnected) {
+      return new ErrorObservable('Network error, make sure there are internet connection.');
+    }
+    const options = this.createRequestHeader(httpOptions ? httpOptions : {});
+    return this.http.delete(this.getUrl() + endpoint, options).pipe(catchError(this.handleError));
+  }
+
   private createRequestHeader(options?: any): any {
     const headers = options.hasOwnProperty('headers') ? options.headers : {};
     headers['Content-Type'] = 'application/json';

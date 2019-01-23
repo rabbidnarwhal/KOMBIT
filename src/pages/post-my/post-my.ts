@@ -35,6 +35,10 @@ export class PostMyPage {
   }
 
   ionViewDidEnter() {
+    this.getProducts();
+  }
+
+  getProducts() {
     this.isSearching = true;
     this.dataProduct
       .getListUserProducts()
@@ -63,6 +67,10 @@ export class PostMyPage {
           this.listProducts[idx].isLike = false;
         }
     });
+  }
+
+  ionViewWillLeave() {
+    this.event.unsubscribe('postInteraction');
   }
 
   showPost(data) {
@@ -94,5 +102,21 @@ export class PostMyPage {
   editPost(event, post) {
     event.stopPropagation();
     this.navCtrl.push('PostNewPage', { id: post.id });
+  }
+
+  deletePost(event, post: Product) {
+    event.stopPropagation();
+    this.utility
+      .confirmAlert('Warning, This action is irreversible!!', 'Delete Post?')
+      .then(() => {
+        return this.dataProduct.deleteProduct(post.id);
+      })
+      .then((res) => {
+        this.getProducts();
+        this.utility.showToast('Post deleted!');
+      })
+      .catch((err) => {
+        this.utility.showToast(err);
+      });
   }
 }
