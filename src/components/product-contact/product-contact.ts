@@ -2,8 +2,9 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { ProductDetail } from '../../models/products';
 import { CallNumber } from '@ionic-native/call-number';
-import { Events, ActionSheetController } from 'ionic-angular';
+import { Events, ActionSheetController, NavController } from 'ionic-angular';
 import { UtilityServiceProvider } from '../../providers/utility-service';
+import { UserChatInfo } from '../../models/user';
 
 @Component({
   selector: 'product-contact',
@@ -16,6 +17,7 @@ export class ProductContactComponent {
 
   @Output() makeAppointment = new EventEmitter();
   constructor(
+    private navCtrl: NavController,
     private dataProduct: DataProductServiceProvider,
     private callNumber: CallNumber,
     private actionCtrl: ActionSheetController,
@@ -92,5 +94,22 @@ export class ProductContactComponent {
 
   makeAppointmentClicked() {
     this.makeAppointment.emit('appointment');
+  }
+
+  openChatPage() {
+    const senderId = this.dataProduct.getUserId();
+    const receiverId = this.data.contact.id;
+    const receiver: UserChatInfo = {
+      id: receiverId,
+      image: this.data.contact.image,
+      name: this.data.contact.name
+    };
+    let roomId = '';
+    if (senderId > receiverId) {
+      roomId = btoa('room_' + receiverId + '_' + senderId);
+    } else {
+      roomId = btoa('room_' + senderId + '_' + receiverId);
+    }
+    this.navCtrl.push('ChatRoomPage', { roomId: roomId, receiver: receiver });
   }
 }

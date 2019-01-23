@@ -87,6 +87,7 @@ export class HomePage {
       this.isPromoted = false;
       this.solutionEnabled = false;
       this.dividerEnabled = false;
+      this.menuEnabled = false;
     } else {
       this.postType = 'public';
       if (this.navParams.data.favorite) {
@@ -103,15 +104,21 @@ export class HomePage {
       this.loadNotificationCount();
       this.loadChatCount();
     }
-  }
-
-  ionViewDidLoad() {
     this.subscribeChatArrived();
     this.subscribeFilterByLocation();
     this.subscribeInteraction();
     this.subscribeNotificationArrived();
     this.subscribePostReload();
     this.subscribeRemoveFilterByLocation();
+  }
+
+  ionViewWillLeave() {
+    this.events.unsubscribe('backFromLocation');
+    this.events.unsubscribe('chat:arrived');
+    this.events.unsubscribe('homeInteraction');
+    this.events.unsubscribe('homeLocation');
+    this.events.unsubscribe('notification-arrived');
+    this.events.unsubscribe('postReload');
   }
 
   subscribeInteraction() {
@@ -183,7 +190,7 @@ export class HomePage {
   }
 
   subscribeChatArrived() {
-    this.events.subscribe('chat-arrived', () => {
+    this.events.subscribe('chat:arrived', (data: any) => {
       this.zone.run(() => {
         this.unreadChat++;
       });
@@ -198,10 +205,10 @@ export class HomePage {
   }
 
   loadChatCount() {
-    // this.chatService.getUnreadChatCount()
-    // .then(res => this.unreadChat = res)
-    // .catch(err => this.utility.showToast(err))
-    this.unreadChat = 0;
+    this.chatService
+      .getUnreadChatCount()
+      .then((res) => (this.unreadChat = res.unRead))
+      .catch((err) => this.utility.showToast(err));
   }
 
   locationIndicatorClicked() {

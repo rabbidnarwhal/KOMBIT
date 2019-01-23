@@ -16,10 +16,14 @@
         </div>
         <div text-center *ngIf="!chats.length && !isSearching">No chats</div>
         <ion-item *ngFor="let chat of chats" (click)="openDetail(chat)">
-          <label class="title">{{chat.userName}}</label>
-          <label class="time">{{chat.date}}</label>
-          <br />
-          <p>{{chat.latestMessage}}</p>
+          <div class="message-body">
+            <label class="title">{{chat.receiverName}}</label>
+            <p>{{chat.latestChat}}</p>
+          </div>
+          <div class="badge-container">
+            <ion-badge *ngIf="chat.unRead">{{chat.unRead}}</ion-badge>
+          </div>
+          <label class="time">{{chat.date | timeAgo}}</label>
         </ion-item>
       </ion-list>
     </ion-col>

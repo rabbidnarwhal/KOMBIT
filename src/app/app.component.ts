@@ -4,11 +4,13 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { Keyboard } from '@ionic-native/keyboard';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { UtilityServiceProvider } from '../providers/utility-service';
 import { AuthServiceProvider } from '../providers/auth-service';
+import { ChatServiceProvider } from '../providers/chat-service';
+import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
 import { MenuController } from 'ionic-angular/components/app/menu-controller';
 import { PushNotificationProvider } from '../providers/push-notification';
-import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
+import { UtilityServiceProvider } from '../providers/utility-service';
+
 import { Config } from '../config/config';
 @Component({
   templateUrl: 'app.html'
@@ -20,16 +22,17 @@ export class MyApp {
   public userName: string = '';
   public picture: string;
   constructor(
-    private platform: Platform,
-    private statusBar: StatusBar,
-    private splashScreen: SplashScreen,
-    private utility: UtilityServiceProvider,
+    private chatService: ChatServiceProvider,
     private auth: AuthServiceProvider,
-    private menu: MenuController,
-    private keyboard: Keyboard,
+    private dataProvince: DataProvinceServiceProvider,
     private events: Events,
+    private keyboard: Keyboard,
+    private menu: MenuController,
+    private platform: Platform,
     private pushNotification: PushNotificationProvider,
-    private dataProvince: DataProvinceServiceProvider
+    private splashScreen: SplashScreen,
+    private statusBar: StatusBar,
+    private utility: UtilityServiceProvider
   ) {
     this.initializeApp();
     this.picture = 'assets/imgs/profile.png';
@@ -54,7 +57,10 @@ export class MyApp {
     if (page.component === 'logout') {
       this.utility
         .confirmAlert('Are you sure to logout?', 'Logout')
-        .then((res) => this.auth.logout())
+        .then((res) => {
+          this.chatService.unregister();
+          this.auth.logout();
+        })
         .catch((err) => console.error(err));
     } else if (page.component) this.nav.push(page.component);
     else alert('Not implemented yet');
@@ -86,8 +92,9 @@ export class MyApp {
         }
         this.userName = this.auth.getPrincipal().name;
         this.picture = this.auth.getPrincipal().image ? this.auth.getPrincipal().image : this.picture;
-        this.rootPage = 'HomePage';
         this.changeSideMenus(this.auth.getPrincipal().role);
+        this.chatService.initConnection();
+        this.rootPage = 'HomePage';
       } else {
         if (this.menu.isEnabled('sideMenu')) {
           this.menu.enable(false, 'sideMenu');
@@ -105,7 +112,6 @@ export class MyApp {
 
     this.events.subscribe('picture-changed', (sub) => {
       this.picture = sub;
-      this.events.unsubscribe('picture-changed');
     });
   }
 

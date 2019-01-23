@@ -42,8 +42,11 @@ export class PushNotificationProvider {
 
     this.pushObject.on('notification').subscribe((sub) => {
       if (sub.additionalData.foreground) {
-        if (sub.additionalData.newPost && sub.additionalData.newPost === 'True') {
+        if (sub.additionalData.hasOwnProperty('newPost') && sub.additionalData.newPost === 'True') {
           this.events.publish('postReload');
+        } else if (sub.additionalData.hasOwnProperty('newChat') && sub.additionalData.newChat === 'True') {
+          this.events.publish('chat:arrived', { roomId: null });
+          this.utility.showToast(sub.message);
         } else {
           this.events.publish('notification-arrived');
           this.utility.showToast(sub.message);

@@ -1,24 +1,41 @@
 export class ChatResponse {
-  id: number;
   date: string;
-  receiverName: string;
-  receiverId: number;
+  id: number;
   latestChat: string;
+  latestUser: string;
+  receiverId: number;
+  receiverName: string;
+  receiverImage: string;
   roomId: string;
-  unread: number;
+  unRead: number;
 }
 
 export class ChatRequest {
-  senderId: number;
-  receiverId: number;
-  message: string;
-  roomId: string;
+  SenderId: number;
+  ReceiverId: number;
+  Message: string;
+  RoomId: string;
+  Date: string;
 }
 
 export class ChatRoomResponse {
   chat: string;
-  isUnread: boolean;
-  senderName: string;
-  receiverName: string
+  date: string;
+  isRead: boolean;
   receiverId: number;
+  receiverName: string;
+  senderId: number;
+  senderName: string;
+  status: string;
+}
+
+export class ChatMessage {
+  messageId: string;
+  userId: string;
+  userName: string;
+  userAvatar: string;
+  toUserId: string;
+  time: number | string;
+  message: string;
+  status: string;
 }

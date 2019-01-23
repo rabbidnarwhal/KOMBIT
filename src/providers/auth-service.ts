@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { LoginResponse, LoginRequest } from '../models/login';
 import { PushNotificationProvider } from './push-notification';
 import { UtilityServiceProvider } from './utility-service';
+import { ChatServiceProvider } from './chat-service';
 
 @Injectable()
 export class AuthServiceProvider {
@@ -56,6 +57,7 @@ export class AuthServiceProvider {
     const loading = this.utility.showLoading();
     loading.present();
     localStorage.removeItem('token');
+    localStorage.removeItem('socketId');
     setTimeout(() => {
       loading.dismiss();
       this.push.topicNotifier.next({ sub: false, topic: 'combits', id: this.principal.id });

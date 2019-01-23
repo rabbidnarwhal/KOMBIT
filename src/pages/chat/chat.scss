@@ -15,8 +15,22 @@ page-chat {
         float: right;
       }
       p {
-        font-size: 12px;
+        font-size: 14px;
       }
     }
+  }
+
+  .message-body {
+    display: inline-block;
+    width: 80%;
+  }
+
+  .badge-container {
+    display: inline-flex;
+    width: 20%;
+    height: 100%;
+    position: relative;
+    bottom: 12px;
+    justify-content: center;
   }
 }

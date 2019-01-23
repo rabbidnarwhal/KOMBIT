@@ -1,3 +1,5 @@
+import { LoginResponse } from './login';
+
 export class User {
   id: number;
   username: string;
@@ -20,6 +22,20 @@ export class User {
   image: string;
   provinsiId: number;
   kabKotaId: number;
+}
+
+export class UserChatInfo {
+  id: number;
+  name: string;
+  image: string;
+
+  constructor(user: LoginResponse = null) {
+    if (user !== null) {
+      this.id = user.id;
+      this.name = user.name;
+      this.image = user.image;
+    }
+  }
 }
 
 export class UserRequest {
