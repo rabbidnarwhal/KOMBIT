@@ -1,7 +1,8 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, NgZone } from '@angular/core';
 import { Config } from '../../config/config';
-import { NavController, ViewController } from 'ionic-angular';
+import { NavController, ViewController, Events } from 'ionic-angular';
 import { AuthServiceProvider } from '../../providers/auth-service';
+import { ChatServiceProvider } from '../../providers/chat-service';
 
 @Component({
   selector: 'footer-menu',
@@ -16,20 +17,34 @@ export class FooterMenuComponent {
   constructor(
     private navCtrl: NavController,
     private authService: AuthServiceProvider,
-    private viewCtrl: ViewController
+    private viewCtrl: ViewController,
+    private zone: NgZone,
+    private events: Events,
+    private chatService: ChatServiceProvider
   ) {
     this.role = this.authService.getPrincipal().role;
   }
 
   ngOnInit() {
     this.getTabMenu();
-    this.page = this.viewCtrl.data.hasOwnProperty('favorite') ? 'FavoritePage' : this.viewCtrl.id;
+    if (this.viewCtrl.data.hasOwnProperty('favorite')) {
+      this.page = 'FavoritePage';
+    } else if (this.viewCtrl.data.hasOwnProperty('solution')) {
+      this.page = 'SolutionPage';
+    } else {
+      this.page = this.viewCtrl.id;
+    }
+  }
+
+  ngOnDestroy() {
+    this.events.unsubscribe('chat:arrived');
   }
 
   getTabMenu() {
     if (this.role === 'Customer') {
       this.menuContent = Config.CUSTOMER.TABMENU;
       this.loadUnreadChat();
+      this.subscribeChatArrived();
     } else {
       this.menuContent = Config.SUPPLIER.TABMENU;
     }
@@ -59,6 +74,17 @@ export class FooterMenuComponent {
   }
 
   loadUnreadChat() {
-    // this.unreadChat = 1;
+    this.chatService
+      .getUnreadChatCount()
+      .then((res) => (this.unreadChat = res.unRead))
+      .catch((err) => console.log(err));
+  }
+
+  subscribeChatArrived() {
+    this.events.subscribe('chat:arrived', (data: any) => {
+      this.zone.run(() => {
+        this.unreadChat++;
+      });
+    });
   }
 }

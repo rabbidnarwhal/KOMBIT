@@ -13,6 +13,7 @@
       <ion-input type="text" placeholder="search" [(ngModel)]="filterText" (input)="filterItems()"></ion-input>
       <ion-icon name="search" item-end></ion-icon>
     </ion-item>
+
     <button *ngIf="notificationEnabled" ion-button class="toolbar-button" [class.notification-button]="newPostEnabled" (click)="toNotificationPage()">
       <ion-icon name="notifications"></ion-icon>
       <ion-badge class="notification-badge" *ngIf="unreadNotification"></ion-badge>
@@ -67,20 +68,6 @@
   </ion-row>
 
   <div class="product-divider" *ngIf="dividerEnabled"></div>
-  <!-- <ion-segment [(ngModel)]="postType" (ionChange)="segmentChanged()">
-    <ion-segment-button value="public">
-      Public
-    </ion-segment-button>
-    <ion-segment-button value="holding">
-      Holding
-    </ion-segment-button>
-    <ion-segment-button value="favorite">
-      Favorite
-    </ion-segment-button>
-    <ion-segment-button value="location">
-      Location
-    </ion-segment-button>
-  </ion-segment> -->
 
   <ion-row>
     <div class="spinner-container" *ngIf="isSearching">
@@ -158,11 +145,6 @@
     <div text-center class="not-found-text" *ngIf="!filteredItems.length && !isSearching">Post not found</div>
   </ion-row>
 
-  <!-- <ion-fab right bottom class="fab-button" *ngIf="newPostEnabled">
-    <button ion-fab color="light" (click)="createNewPost()">
-      <ion-icon name="create"></ion-icon>
-    </button>
-  </ion-fab> -->
 </ion-content>
 
 <ion-footer class="tab-menu">

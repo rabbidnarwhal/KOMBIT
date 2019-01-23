@@ -1,21 +1,27 @@
-import { HttpClientModule } from '@angular/common/http';
-import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserModule } from '@angular/platform-browser';
 import { ErrorHandler, NgModule } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+
 import { Keyboard } from '@ionic-native/keyboard';
+import { Network } from '@ionic-native/network';
+import { Push } from '@ionic-native/push';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
-import { Push } from '@ionic-native/push';
+
 import { MyApp } from './app.component';
+
 import { ApiServiceProvider } from '../providers/api-service';
 import { AuthServiceProvider } from '../providers/auth-service';
-import { UtilityServiceProvider } from '../providers/utility-service';
+import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
 import { FormValidatorProvider } from '../providers/form-validator';
 import { PushNotificationProvider } from '../providers/push-notification';
-import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
+import { UtilityServiceProvider } from '../providers/utility-service';
+
 import { IonicImageViewerModule } from 'ionic-img-viewer';
-import { Network } from '@ionic-native/network';
+import { ChatServiceProvider } from '../providers/chat-service';
 
 @NgModule({
   declarations: [ MyApp ],
@@ -34,16 +40,17 @@ import { Network } from '@ionic-native/network';
   providers: [
     ApiServiceProvider,
     AuthServiceProvider,
+    ChatServiceProvider,
+    DataProvinceServiceProvider,
     FormValidatorProvider,
     Keyboard,
+    Network,
+    Push,
+    PushNotificationProvider,
     SplashScreen,
     StatusBar,
     UtilityServiceProvider,
-    { provide: ErrorHandler, useClass: IonicErrorHandler },
-    PushNotificationProvider,
-    DataProvinceServiceProvider,
-    Push,
-    Network
+    { provide: ErrorHandler, useClass: IonicErrorHandler }
   ]
 })
 export class AppModule {}

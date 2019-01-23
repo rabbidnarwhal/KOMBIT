@@ -3,7 +3,7 @@
     <div class="container">
       <img *ngIf="!item.image" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="alt="" />
       <img *ngIf="item.image" [src]="item.image" alt="" />
-      <ion-badge class="notification-badge chat" *ngIf="item.component === 'PostChatPage' && unreadChat"></ion-badge>
+      <ion-badge class="notification-badge chat" *ngIf="item.component === 'ChatPage' && unreadChat"></ion-badge>
     </div>
     <ion-label no-margin no-padding class="tab-menu-label">{{item.title}}</ion-label>
   </ion-col>

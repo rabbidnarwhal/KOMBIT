@@ -148,7 +148,7 @@ export class PostDetailPage {
 
   shareProduct() {
     this.socialSharing
-      .share('Discover more of our product on our website.', '', '', 'http://kombit.org')
+      .share('Check out this product.', '', '', 'http://kombit.org/product/' + this.data.id)
       .then(() => {
         console.log('shared');
       })

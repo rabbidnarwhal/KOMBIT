@@ -46,7 +46,6 @@ export class AppointmentDetailPage {
         this.isCustomer = this.auth.getPrincipal().role === 'Customer' ? true : false;
         this.isRejected = this.data.status === 'REJECTED' ? true : false;
         this.createMap();
-        console.log(this.isCustomer);
       })
       .catch((err) => {
         this.utility.showToast(err);

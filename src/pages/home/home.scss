@@ -316,7 +316,7 @@ page-home {
   }
 
   .home-searchbar {
-    width: calc(100% - 156px);
+    width: calc(100% - 144px);
     &.disable-left-button {
       // margin-left: 72px;
       width: calc(100% - 80px);
@@ -325,13 +325,16 @@ page-home {
       }
     }
   }
-  .show-back-button + .toolbar-content .home-searchbar {
-    margin-left: 18px;
+  .show-back-button + .toolbar-content .home-searchbar.disable-left-button {
+    margin-left: 0px;
     width: calc(100% - 96px);
   }
 
-  .show-back-button + .toolbar-content .home-searchbar.disable-left-button {
-    margin-left: 18px;
-    width: calc(100% - 96px);
+  .show-back-button + .toolbar-content .home-searchbar.no-left-menu {
+    &.disable-left-button {
+      padding-left: 0px;
+    }
+    margin-left: 0px;
+    width: calc(100% - 56px);
   }
 }
