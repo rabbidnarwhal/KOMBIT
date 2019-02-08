@@ -1,4 +1,4 @@
-import { Component, Input, NgZone } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { Config } from '../../config/config';
 import { NavController, ViewController, Events } from 'ionic-angular';
 import { AuthServiceProvider } from '../../providers/auth-service';

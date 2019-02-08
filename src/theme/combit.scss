@@ -81,6 +81,12 @@ ion-popover.popover-width .popover-content {
   left: calc(100vw - 97.5%) !important;
   top: 8px !important;
   border-radius: 12px;
+  > .popover-viewport {
+    height: 100%;
+    .scroll-content {
+      height: 100%;
+    }
+  }
 }
 
 ion-popover.popover-width-full {

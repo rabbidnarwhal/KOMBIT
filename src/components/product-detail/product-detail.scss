@@ -54,6 +54,7 @@ product-detail {
   }
 
   .text-container {
+    font-weight: 300;
     img {
       display: flex;
       justify-content: center;
@@ -119,10 +120,14 @@ product-detail {
 
   .client-image-container {
     width: 100%;
-    border-radius: 12px;
+    height: 40px;
     img {
+      box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3);
+      border-radius: 20px;
       width: 100%;
-      object-fit: cover;
+      height: 100%;
+      object-fit: contain;
+      padding: 2px;
     }
   }
   .zoom-icon {
@@ -134,5 +139,34 @@ product-detail {
 
   .spinner-white svg circle {
     stroke: $combitWhite;
+  }
+
+  div.description-title-label-container {
+    font-size: 120%;
+    text-align: center;
+    background-color: $combitBlue;
+    line-height: 2.5rem;
+    border-radius: 2rem;
+    color: $combitWhite;
+    margin: 0px 18% 16px 18% !important;
+    width: 64%;
+    &.description {
+      &::before {
+        top: 12px;
+      }
+    }
+    &.implementation {
+      &::before {
+        top: 0px;
+      }
+    }
+    &::before {
+      border-bottom: 3px solid $combitOrange;
+      position: absolute;
+      content: "";
+      top: 1px;
+      width: 52%;
+      left: 24%;
+    }
   }
 }

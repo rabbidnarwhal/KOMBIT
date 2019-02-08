@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavParams, Events, ViewController } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { IonicPage, NavParams, Events, ViewController, Scroll } from 'ionic-angular';
 import { ProductDetail } from '../../models/products';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
@@ -15,9 +15,11 @@ export class PostDetailPage {
   public data: ProductDetail;
   public lockBtn: boolean = false;
   public isSearching: boolean = true;
+  public isMore: boolean = false;
   public selectedPage: string = 'detail';
   public parentPage: string = '';
   public segmentName: string = 'Description';
+  @ViewChild('scrollWeb') scrollWeb: Scroll;
   constructor(
     private viewCtrl: ViewController,
     private navParams: NavParams,
@@ -29,7 +31,6 @@ export class PostDetailPage {
     this.data = new ProductDetail();
     this.parentPage = this.navParams.get('params').page;
     if (this.navParams.data.params.hasOwnProperty('useCase')) {
-      console.log(this.navParams.data.params.useCase);
       this.selectedPage =
         this.navParams.data.params.useCase === 'comment' ? this.navParams.data.params.useCase : 'detail';
     }
@@ -40,7 +41,6 @@ export class PostDetailPage {
       .getProductDetail(this.navParams.get('params').id)
       .then((res: ProductDetail) => {
         this.data = res;
-        console.log(this.data);
         this.data.interaction.comment = this.data.interaction.comment.map((item) => {
           const obj = item;
           const time = new Date(item.commentDate);
@@ -48,6 +48,12 @@ export class PostDetailPage {
           obj.commentDate = time.toLocaleString();
           return obj;
         });
+        this.data.productImplementationImage = this.data.productImplementation.filter(
+          (x) => x.useCase === 'implementationImage'
+        );
+        this.data.productImplementationVideo = this.data.productImplementation.filter(
+          (x) => x.useCase === 'implementationVideo'
+        );
         // this.createMap();
         this.isSearching = false;
         return this.dataProduct.addViewProduct(this.data.id);
@@ -62,6 +68,19 @@ export class PostDetailPage {
       .catch((err) => {
         this.utility.showToast(err);
       });
+  }
+
+  ngAfterViewInit() {
+    let interval = setInterval(() => {
+      if (this.scrollWeb) {
+        clearInterval(interval);
+        this.scrollWeb.addScrollEventListener((ev) => {
+          if (!this.isMore && ev.target.offsetHeight + ev.target.scrollTop >= ev.target.scrollHeight) {
+            this.isMore = true;
+          }
+        });
+      }
+    }, 100);
   }
 
   createMap() {
@@ -155,5 +174,11 @@ export class PostDetailPage {
       .catch((err) => {
         console.log('share', err);
       });
+  }
+
+  activeMore() {
+    setTimeout(() => {
+      this.isMore = true;
+    }, 500);
   }
 }

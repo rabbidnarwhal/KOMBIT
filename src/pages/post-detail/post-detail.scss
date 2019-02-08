@@ -66,6 +66,9 @@ page-post-detail {
       padding-top: 0px !important;
       padding-bottom: 0px !important;
     }
+    &.more-is-open {
+      height: calc(100vh - 276px);
+    }
   }
 
   ion-scroll.comment {
@@ -180,5 +183,28 @@ page-post-detail {
     font-size: 24px;
     color: $combitWhite;
     // text-shadow: 1px 0px $shadow-color, -1px 0px $shadow-color, 1px 2px $shadow-color, 0px -1px $shadow-color;
+  }
+
+  .footer-button {
+    text-align: center;
+    width: 50%;
+    margin-left: 25%;
+    font-size: 110%;
+    &::before {
+      border-bottom: 2px solid;
+      position: absolute;
+      bottom: 0px;
+      content: "";
+      width: 10%;
+      left: 45%;
+    }
+    &::after {
+      border-bottom: 2px solid;
+      position: absolute;
+      top: 30px;
+      content: "";
+      width: 5%;
+      left: 47.5%;
+    }
   }
 }
