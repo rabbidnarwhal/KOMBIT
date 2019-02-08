@@ -1,15 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events, Content, Platform } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams, Events, Platform } from 'ionic-angular';
 import { DataProvinceServiceProvider } from '../../providers/dataProvince-service';
 import { City } from '../../models/city';
 import { Province } from '../../models/province';
-
-/**
- * Generated class for the HomeLocationPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage({
   name: 'home-location'
@@ -36,17 +29,13 @@ export class HomeLocationPage {
     private events: Events,
     private dataProvince: DataProvinceServiceProvider,
     private platform: Platform
-  ) {
-  }
+  ) {}
 
-  ionViewWillLoad(){
-    Promise.all([
-      this.dataProvince.getCity(),
-      this.dataProvince.getProvince()
-    ]).then(res => {
+  ionViewWillLoad() {
+    Promise.all([ this.dataProvince.getCity(), this.dataProvince.getProvince() ]).then((res) => {
       this.listCity = res[0];
       this.listProvince = res[1];
-    })
+    });
   }
 
   filterItems() {
@@ -55,12 +44,12 @@ export class HomeLocationPage {
       this.filteredItems = [];
       setTimeout(() => {
         if (!this.listCity.length) {
-          this.dataProvince.getCity().then(res => {
+          this.dataProvince.getCity().then((res) => {
             this.listCity = res;
-            this.filteredItems = this.listCity.filter(x => x.provinsiId === this.selectedProvince.id);
-          })    
+            this.filteredItems = this.listCity.filter((x) => x.provinsiId === this.selectedProvince.id);
+          });
         } else {
-          this.filteredItems = this.listCity.filter(x => x.provinsiId === this.selectedProvince.id);
+          this.filteredItems = this.listCity.filter((x) => x.provinsiId === this.selectedProvince.id);
         }
       }, 50);
     } else {
@@ -95,7 +84,7 @@ export class HomeLocationPage {
   }
 
   private registerBackButtonHandler() {
-    this.unregisterBackButtonAction = this.platform.registerBackButtonAction(event => {
+    this.unregisterBackButtonAction = this.platform.registerBackButtonAction((event) => {
       this.backButtonHandler();
     }, 1011);
   }

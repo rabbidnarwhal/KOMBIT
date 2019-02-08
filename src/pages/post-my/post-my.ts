@@ -1,27 +1,18 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
+import { IonicPage, NavController, Events } from 'ionic-angular';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { Product } from '../../models/products';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { AuthServiceProvider } from '../../providers/auth-service';
 
-/**
- * Generated class for the PostMyPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
-@IonicPage({
-  name: 'myPost'
-})
+@IonicPage()
 @Component({
   selector: 'page-post-my',
   animations: [
     trigger('postAnimation', [
-      transition(':enter', [style({ opacity: 0 }), animate('500ms', style({ opacity: 1 }))]),
-      transition(':leave', [style({ opacity: 1 }), animate('500ms', style({ opacity: 0 }))])
+      transition(':enter', [ style({ opacity: 0 }), animate('500ms', style({ opacity: 1 })) ]),
+      transition(':leave', [ style({ opacity: 1 }), animate('500ms', style({ opacity: 0 })) ])
     ])
   ],
   templateUrl: 'post-my.html'
@@ -44,22 +35,26 @@ export class PostMyPage {
   }
 
   ionViewDidEnter() {
+    this.getProducts();
+  }
+
+  getProducts() {
     this.isSearching = true;
     this.dataProduct
       .getListUserProducts()
-      .then(res => {
+      .then((res) => {
         this.isSearching = false;
         this.listProducts = res;
       })
-      .catch(err => {
+      .catch((err) => {
         this.isSearching = false;
         this.utility.showToast(err);
       });
   }
 
   ionViewDidLoad() {
-    this.event.subscribe('postInteraction', sub => {
-      const idx = this.listProducts.findIndex(x => x.id === sub.id);
+    this.event.subscribe('postInteraction', (sub) => {
+      const idx = this.listProducts.findIndex((x) => x.id === sub.id);
       if (sub.type === 'view') this.listProducts[idx].totalView++;
       if (sub.type === 'call') this.listProducts[idx].totalChat++;
       if (sub.type === 'comment') this.listProducts[idx].totalComment++;
@@ -74,15 +69,21 @@ export class PostMyPage {
     });
   }
 
+  ionViewWillLeave() {
+    this.event.unsubscribe('postInteraction');
+  }
+
   showPost(data) {
     this.selectedProductId = this.selectedProductId === data ? 0 : data;
   }
 
-  showDetail(data) {
-    this.utility.showPopover('detailPost', { id: data.id, page: 'post' }).present();
+  showDetail(event, data) {
+    event.stopPropagation();
+    this.utility.showPopover('PostDetailPage', { id: data.id, page: 'post' }).present();
   }
 
-  likeBtnClick(post) {
+  likeBtnClick(event, post) {
+    event.stopPropagation();
     post.isLike = !post.isLike;
     this.lockBtn = true;
     this.dataProduct.modifyLikeProduct(post.id, post.isLike).then(
@@ -91,14 +92,31 @@ export class PostMyPage {
         post.totalLike = post.isLike ? post.totalLike + 1 : post.totalLike - 1;
         this.utility.showToast(post.isLike ? 'Product Liked' : 'Product Unliked', 1000);
       },
-      err => {
+      (err) => {
         this.lockBtn = false;
         this.utility.showToast(err);
       }
     );
   }
 
-  editPost(post) {
-    this.navCtrl.push('newPost', { id: post.id });
+  editPost(event, post) {
+    event.stopPropagation();
+    this.navCtrl.push('PostNewPage', { id: post.id });
+  }
+
+  deletePost(event, post: Product) {
+    event.stopPropagation();
+    this.utility
+      .confirmAlert('Warning, This action is irreversible!!', 'Delete Post?')
+      .then(() => {
+        return this.dataProduct.deleteProduct(post.id);
+      })
+      .then((res) => {
+        this.getProducts();
+        this.utility.showToast('Post deleted!');
+      })
+      .catch((err) => {
+        this.utility.showToast(err);
+      });
   }
 }

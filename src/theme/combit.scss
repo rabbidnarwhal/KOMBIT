@@ -1,0 +1,240 @@
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 100;
+  src: url('../assets/fonts/ubuntu-light.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 500;
+  src: url('../assets/fonts/ubuntu-medium.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 300;
+  src: url('../assets/fonts/ubuntu-regular.ttf') format('truetype');
+}
+
+@mixin box() {
+  min-height: 1rem !important;
+  background-color: $combitWhite;
+  border: 1px solid $combitWhite;
+  border-radius: 20px !important;
+  padding: 4px 12px !important;
+  margin-bottom: 8px !important;
+  -ms-box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3) !important;
+  box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3) !important;
+}
+
+ion-header.custom-background {
+  .toolbar-background {
+    background: $combitBlue;
+    //  @include color-background(0deg);
+  }
+  .show-back-button + div.toolbar-content div.toolbar-title {
+    margin-right: 56px !important;
+  }
+  div.toolbar-content {
+    div.toolbar-title {
+      margin-right: 0px !important;
+      text-align: center !important;
+      color: $combitWhite !important;
+      font-weight: 100 !important;
+      // font-size: 16px !important;
+    }
+    div.toolbar-title-ios {
+      margin-right: 0px !important;
+    }
+  }
+}
+
+ion-header {
+  button.bar-button,
+  button.back-button {
+    color: $combitWhite !important;
+  }
+}
+
+ion-navbar.toolbar.toolbar-md {
+  min-height: 40px;
+}
+
+ion-content.content.content-md:not(.menu-content):not(.popover):not(.login):not(.has-searchbar) {
+  > .fixed-content {
+    margin-top: 42px !important;
+  }
+  > .scroll-content {
+    margin-top: 42px !important;
+  }
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+ion-popover.popover-width .popover-content {
+  width: 95% !important;
+  max-height: calc(100% - 16px) !important;
+  height: 100% !important;
+  left: calc(100vw - 97.5%) !important;
+  top: 8px !important;
+  border-radius: 12px;
+}
+
+ion-popover.popover-width-full {
+  .popover-content {
+    width: 100% !important;
+    max-height: 100% !important;
+    height: 100% !important;
+    left: 0px !important;
+    border-radius: 0px;
+    top: 0px !important;
+  }
+}
+
+ion-popover.popover-width-solution {
+  background-color: RGBA(0, 0, 0, 0.5);
+  .popover-content {
+    width: 100% !important;
+    max-height: 400px !important;
+    height: 100% !important;
+    left: 0px !important;
+    top: auto !important;
+    border-radius: 0px;
+    bottom: 0px !important;
+  }
+}
+
+ion-popover.popover-width-marketing-kit {
+  background-color: RGBA(0, 0, 0, 0.5);
+  .popover-content {
+    width: 100% !important;
+    max-height: 240px !important;
+    height: 100% !important;
+    left: 0px !important;
+    top: auto !important;
+    border-radius: 0px;
+    bottom: 0px !important;
+  }
+}
+
+ion-popover.popover-width-contact {
+  background-color: RGBA(0, 0, 0, 0.5);
+  .popover-content {
+    width: 100% !important;
+    max-height: 296px !important;
+    height: 100% !important;
+    left: 0px !important;
+    top: auto !important;
+    border-radius: 0px;
+    bottom: 0px !important;
+  }
+}
+
+.top-searchbar {
+  margin-top: 6px;
+  margin-bottom: 6px;
+  width: calc(100% - 96px);
+  display: inline-flex;
+  min-height: 2.6rem;
+  background-color: transparent;
+  -ms-box-shadow: 0 4px 10px RGBA(0, 0, 0, 0.3);
+  box-shadow: 0 4px 10px RGBA(0, 0, 0, 0.3);
+  margin-left: 16px;
+  padding-left: 0px;
+  border-radius: 25px;
+  .item-inner {
+    border: 1px solid $combitWhite !important;
+    background-color: $combitWhite;
+    box-shadow: none;
+    border-radius: 25px;
+    font-size: 16px;
+    box-shadow: none !important;
+    ion-icon {
+      min-height: 10px;
+      margin: 0px;
+      font-size: 18px;
+      color: $combitBlue;
+    }
+    input {
+      text-align: center;
+      margin: 10px 0px;
+      padding-left: 32px;
+      width: calc(100% - 4.5px);
+    }
+  }
+}
+
+.font-size-10 {
+  font-size: 10px !important;
+}
+
+.no-border {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.no-margin {
+  margin: 0 !important;
+}
+
+.margin-top-0 {
+  margin-top: 0px !important;
+}
+
+.margin-top-10 {
+  margin-top: 10px !important;
+}
+
+.margin-top-20 {
+  margin-top: 20px !important;
+}
+
+.margin-top-36 {
+  margin-top: 36px !important;
+}
+
+.margin-vertical-20 {
+  margin: 20px 0 !important;
+}
+
+.toast-message {
+  white-space: pre-line;
+}
+
+.spinner-container {
+  text-align: center;
+  margin-top: 10%;
+  width: 100%;
+  position: absolute;
+  z-index: 10000;
+  right: 0px;
+  left: 0px;
+  .spinner-background {
+    margin-right: calc(50% - 18px);
+    margin-left: calc(50% - 18px);
+    background-color: $combitWhite;
+    border-radius: 50%;
+    box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.5);
+    ion-spinner {
+      width: 32px;
+      height: 32px;
+      top: 2px;
+    }
+  }
+}
+
+.not-found-text {
+  margin-top: 48px;
+  width: 100%;
+}
+
+[btn-kombit] {
+  border-radius: 20px !important;
+  background-color: $combitOrange !important;
+  text-transform: capitalize !important;
+  padding: 12px 24px !important;
+  margin-bottom: 20px !important;
+}

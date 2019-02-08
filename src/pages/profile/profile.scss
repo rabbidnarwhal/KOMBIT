@@ -1,6 +1,13 @@
 page-profile {
   .static-map-container {
     margin-top: 10px;
+    height: 216px;
+    display: flex;
+    justify-content: center;
+    img {
+      object-fit: contain;
+      height: 100%;
+    }
   }
   .box-content {
     white-space: pre-wrap;
@@ -26,9 +33,12 @@ page-profile {
     border-radius: 0px !important;
   }
   .image-container {
+    width: 100%;
     text-align: center;
+    height: 216px;
     img {
-      width: 50%;
+      object-fit: contain;
+      height: 100%;
     }
   }
   .input-fields {
@@ -75,7 +85,7 @@ page-profile {
     width: 172px;
   }
   a {
-    color: map-get($kombit-colors, 'btn');
+    color: $combitOrange;
     text-decoration: unset;
     font-weight: 400;
   }

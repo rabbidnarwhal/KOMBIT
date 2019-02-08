@@ -1,15 +1,8 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController } from 'ionic-angular';
 import { Company } from '../../models/company';
 import { DataCompanyServiceProvider } from '../../providers/dataCompany-service';
 import { UtilityServiceProvider } from '../../providers/utility-service';
-
-/**
- * Generated class for the CompanyPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage({
   name: 'company'
@@ -23,7 +16,11 @@ export class CompanyPage {
   public filteredItems: Array<Company>;
   public filterText: string = '';
   public isSearching: boolean = true;
-  constructor(public navCtrl: NavController, private dataCompany: DataCompanyServiceProvider, private utility: UtilityServiceProvider) {
+  constructor(
+    public navCtrl: NavController,
+    private dataCompany: DataCompanyServiceProvider,
+    private utility: UtilityServiceProvider
+  ) {
     this.companies = new Array<Company>();
     this.filterItems();
   }
@@ -32,24 +29,24 @@ export class CompanyPage {
     this.isSearching = true;
     this.dataCompany
       .getListCompany()
-      .then(res => {
+      .then((res) => {
         this.isSearching = false;
         this.companies = res;
         this.filterItems();
       })
-      .catch(err => {
+      .catch((err) => {
         this.isSearching = false;
         this.utility.showToast(err);
       });
   }
 
   filterItems() {
-    this.filteredItems = this.companies.filter(res => {
+    this.filteredItems = this.companies.filter((res) => {
       return res.companyName.toLowerCase().indexOf(this.filterText.trim().toLowerCase()) !== -1;
     });
   }
 
   companyClicked(company) {
-    this.navCtrl.push('home', { company: company });
+    this.navCtrl.push('HomePage', { company: company });
   }
 }

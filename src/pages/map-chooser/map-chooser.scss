@@ -10,9 +10,9 @@ page-map-chooser {
     ion-icon {
       margin-bottom: 0px !important;
       margin-top: 0px !important;
-      color: map-get($kombit-colors, 'btn');
+      color: $combitOrange;
       &[name~='close'] {
-        color: #787878;
+        color: $combitGrey;
         font-size: 20px;
         margin-top: 8px !important;
       }

@@ -7,11 +7,14 @@ product-contact {
   }
   .static-map-container {
     padding: 6px;
+    height: 216px;
+  }
+  img {
+    object-fit: contain;
+    height: 100%;
   }
   .image-container {
     text-align: center;
-    img {
-      width: 70%
-    }
+    height: 216px;
   }
 }

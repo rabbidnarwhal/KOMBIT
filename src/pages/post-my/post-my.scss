@@ -1,42 +1,38 @@
 page-post-my {
-  $color: map-get($kombit-colors, 'text');
   .post-list-box {
     margin-bottom: 16px;
-    background: $color;
+    background: $combitWhite;
     -ms-box-shadow: 0 4px 10px RGBA(0, 0, 0, 0.3);
     box-shadow: 0 4px 10px RGBA(0, 0, 0, 0.3);
     width: 100%;
     font-size: 12px;
+    .image-container {
+      height: 216px;
+      display: flex;
+      justify-content: center;
+      > img {
+        height: 100%;
+        object-fit: contain;
+      }
+    }
   }
-  .box-label {
-    margin: 0 6px;
-  }
-  .box-button {
+
+  .interaction-button {
     margin: 0px;
     font-weight: 200;
     text-transform: capitalize;
-    @include color-background(180deg);
+    background-color: $combitOrange;
     border: none;
-    color: map-get($kombit-colors, 'text');
-    ion-icon+span {
+    color: $combitWhite ion-icon + span {
       margin-left: 6px;
     }
   }
-  .box-content {
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-    word-break: break-word;
-    width: calc(100% - 78px);
-    font-weight: 500;
-  }
-  .box-text {
-    width: 52px;
-  }
-  .box-icon {
+
+  .interaction-container {
     font-size: 10px;
     margin: 4px 6px;
     ion-icon {
-      @include color-item();
+      color: $combitOrange;
       margin-right: 2px;
     }
     img {
@@ -44,19 +40,51 @@ page-post-my {
       margin-right: 2px;
     }
   }
-  button.item {
-    min-height: 1rem !important;
-    background-color: $color;
-    border: 1px solid $color;
+
+  .post-list-container {
+    min-height: 1rem;
+    background-color: $combitWhite;
+    border: 1px solid $combitWhite;
     border-radius: 10px;
     margin-bottom: 8px;
     -ms-box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3);
     box-shadow: 4px 4px 10px RGBA(0, 0, 0, 0.3);
     ion-label {
-      width: calc(100% - 8px - 24px) !important;
-      margin: 6px 16px !important;
+      width: calc(100% - 8px - 24px);
+      margin: 6px 16px;
       text-align: center;
-      font-weight: 900;
     }
+  }
+
+  .detail-container {
+    margin: 0 6px;
+    &.has-button-inside {
+      display: inline-block;
+      width: calc(100% - 64px);
+    }
+    .detail-label {
+      width: 52px;
+      display: inline-block;
+    }
+    .detail-content {
+      display: inline-block;
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+      word-break: break-word;
+      width: calc(100% - 78px);
+      font-weight: 500;
+    }
+  }
+  .action-button-container {
+    float: right;
+    font-size: 18px;
+    margin-right: 8px;
+    ion-icon {
+      margin: 0 2px;
+    }
+  }
+
+  .like-icon-number {
+    margin-left: 4px;
   }
 }

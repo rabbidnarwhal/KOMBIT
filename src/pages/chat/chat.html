@@ -1,0 +1,37 @@
+<ion-header class="custom-background">
+  <ion-navbar>
+    <ion-title>Chat</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-row>
+    <ion-col>
+      <ion-list>
+        <div class="spinner-container" *ngIf="isSearching">
+          <div class="spinner-background">
+            <ion-spinner></ion-spinner>
+          </div>
+        </div>
+        <div text-center *ngIf="!chats.length && !isSearching">No chats</div>
+        <ion-item *ngFor="let chat of chats" (click)="openDetail(chat)">
+          <div class="message-body">
+            <label class="title">{{chat.receiverName}}</label>
+            <p>{{chat.latestChat}}</p>
+          </div>
+          <div class="badge-container">
+            <ion-badge *ngIf="chat.unRead">{{chat.unRead}}</ion-badge>
+          </div>
+          <label class="time">{{chat.date | timeAgo}}</label>
+        </ion-item>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+</ion-content>
+
+<ion-footer class="tab-menu">
+  <ion-toolbar class="tab-menu-toolbar">
+    <footer-menu></footer-menu>
+  </ion-toolbar>
+</ion-footer>

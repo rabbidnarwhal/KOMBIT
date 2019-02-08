@@ -1,32 +1,34 @@
-<!--
-  Generated template for the LoginPage page.
 
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-<div class="login-background">
-
-</div>
-<ion-content no-scroll padding class="login">
-  <ion-grid text-center>
-    <div class="logo-container">
-      <img src="assets/imgs/logo-white.png">
-    </div>
-    <ion-row>
+<ion-content no-padding class="login">
+  <ion-grid no-padding text-center [ngStyle]="{'height': gridHeight}">
+    <ion-row no-padding>
+      <ion-col>
+        <div class="login-background">
+          <div class="logo-container">
+            <img src="assets/imgs/combit-logo.png">
+          </div>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row class="login-form" [ngStyle]="{'height': formHeight}">
       <ion-col>
         <form id="formLogin" #form="ngForm">
           <ion-input required type="text" class="justify-input" [(ngModel)]="credentials.Username" name="Username" placeholder="User"></ion-input>
           <ion-input required type="password" [(ngModel)]="credentials.Password" name="Password" placeholder="Password"></ion-input>
+          <p margin-top>
+            <a class="link-text forgot" (click)="forgotPassword()">Forgot password?</a>
+          </p>
+          <button ion-button btn-kombit small class="login-button" type="button" (click)="signin()">Login</button>
         </form>
+      </ion-col>
+    </ion-row>
+    <ion-row class="login-footer">
+      <ion-col>
+        <p class="margin-top-0">Don't have an account?
+          <a class="link-text" (click)="signup()"> Sign up</a>
+        </p>
+
       </ion-col>
     </ion-row>
   </ion-grid>
 </ion-content>
-<ion-footer no-shadow>
-  <ion-toolbar text-center>
-    <p class="margin-top-0">Don't have an account?
-      <a (click)="signup()"> Sign up</a>
-    </p>
-    <button ion-button btn-kombit small type="button" (click)="signin()">Login</button>
-  </ion-toolbar>
-</ion-footer>

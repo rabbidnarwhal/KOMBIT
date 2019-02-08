@@ -1,0 +1,22 @@
+page-appointment {
+  ion-item {
+    border-bottom: 1px solid $combitOrange !important;
+    border-radius: 20px;
+    .item-inner {
+      border-bottom: none !important;
+      label.title {
+        font-weight: 500;
+        font-size: 16px;
+        padding-right: 8px;
+      }
+      label.time {
+        font-size: 12px;
+        color: $combitGrey;
+        float: right;
+      }
+      p {
+        font-size: 12px;
+      }
+    }
+  }
+}

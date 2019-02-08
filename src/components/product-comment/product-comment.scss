@@ -1,12 +1,12 @@
 product-comment {
   .fixed-textarea-container {
-    background-color: map-get($kombit-colors, 'text');
-    border-bottom: 1px solid #dedede;
+    background-color: $combitWhite;
+    border-bottom: 1px solid $combitWhite;
     position: fixed;
     z-index: 1;
     padding: 6px 8px 0px 8px;
     margin-top: -18px;
-    width: calc(100% - 64px);
+    width: calc(100% - 24px);
     .item-inner {
       border-bottom: none !important;
       textarea {
@@ -20,7 +20,7 @@ product-comment {
   .comment-box-container {
     padding-top: 62px;
     ion-item {
-      border-bottom: 1px solid #dedede;
+      border-bottom: 1px solid $combitWhite;
       .item-inner {
         border-bottom: none !important;
         label.title {
@@ -30,7 +30,7 @@ product-comment {
         }
         label.time {
           font-size: 12px;
-          color: #757575;
+          color: $combitGrey;
         }
         p {
           font-size: 12px;

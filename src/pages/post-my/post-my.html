@@ -1,9 +1,3 @@
-<!--
-  Generated template for the PostMyPage page.
-
-  See http://ionicframework.com/docs/components/#navigation for more info on
-  Ionic pages and navigation.
--->
 <ion-header class="custom-background">
 
   <ion-navbar>
@@ -17,36 +11,48 @@
   <ion-row>
     <ion-col>
       <ion-list>
+        <div class="spinner-container" *ngIf="isSearching">
+          <div class="spinner-background">
+            <ion-spinner></ion-spinner>
+          </div>
+        </div>
+        <div text-center *ngIf="!listProducts.length && !isSearching">No post</div>
         <div *ngFor="let data of listProducts">
-          <div class="post-list-box" [@postAnimation] *ngIf="data.id === selectedProductId">
-            <img *ngIf="data.fotoPath" [src]="data.fotoPath" />
-            <ion-label no-margin class="box-label">
-              <ion-label no-padding no-margin class="inline-flex box-text">Product</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-content">{{data.productName}}</ion-label>
-              <ion-icon *ngIf="data.userId === userId" name="create" (click)="editPost(data)"></ion-icon>
-            </ion-label>
-            <ion-label no-margin class="box-label">
-              <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-content">{{data.companyName}}</ion-label>
-            </ion-label>
-            <ion-label no-margin class="box-label">
-              <ion-label no-padding no-margin class="inline-flex box-text">Holding</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-content">{{data.holdingName}}</ion-label>
-            </ion-label>
-            <ion-label no-margin class="box-label">
-              <ion-label no-padding no-margin class="inline-flex box-text">Solution</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-content">{{data.categoryName}}</ion-label>
-            </ion-label>
-            <ion-label no-margin class="box-label" *ngIf="data.isIncludePrice">
-              <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-content">{{data.currency}} {{data.price | number}}</ion-label>
-            </ion-label>
-            <ion-row text-center class="box-icon">
+          <div class="post-list-box" [@postAnimation] *ngIf="data.id === selectedProductId" (click)="showDetail($event, data)">
+            <div class="image-container">
+              <img *ngIf="data.fotoPath" [src]="data.fotoPath" />
+            </div>
+            <div class="detail-container" [class.has-button-inside]="data.posterId === userId">
+              <span class="detail-label">Product</span>
+              <span class="detail-divider">:</span>
+              <span class="detain-content">{{data.productName}}</span>
+            </div>
+            <div class="action-button-container" *ngIf="data.posterId === userId">
+              <ion-icon name="trash" (click)="deletePost($event, data)"></ion-icon>
+              <ion-icon name="create" (click)="editPost($event, data)"></ion-icon>
+            </div>
+            <div class="detail-container" [class.has-button-inside]="data.posterId === userId">
+              <span class="detail-label">Company</span>
+              <span class="detail-divider">:</span>
+              <span class="detain-content">{{data.companyName}}</span>
+            </div>
+            <div class="detail-container">
+              <span class="detail-label">Holding</span>
+              <span class="detail-divider">:</span>
+              <span class="detain-content">{{data.holdingName}}</span>
+            </div>
+            <div class="detail-container">
+              <span class="detail-label">Solution</span>
+              <span class="detail-divider">:</span>
+              <span class="detain-content">{{data.categoryName}}</span>
+            </div>
+            <div class="detail-container" *ngIf="data.isIncludePrice">
+              <span class="detail-label">Price</span>
+              <span class="detail-divider">:</span>
+              <span class="detain-content">{{data.currency}} {{data.price | number}}</span>
+            </div>
+
+            <ion-row text-center class="interaction-container">
               <ion-col no-padding>
                 <ion-icon name="eye"></ion-icon>
                 <span>{{data.totalView}} Views</span>
@@ -60,22 +66,29 @@
                 <span>{{data.totalComment}} Comments</span>
               </ion-col>
             </ion-row>
+
             <ion-row>
               <ion-col no-padding>
-                <button ion-button full small class="box-button" (click)="likeBtnClick(data)">
+                <button ion-button full small class="interaction-button" (click)="likeBtnClick($event, data)">
                   <ion-icon *ngIf="!lockBtn || data.id !== selectedProductId" [name]="data.isLike ? 'heart' : 'heart-outline'"></ion-icon>
-                  <span *ngIf="!lockBtn || data.id !== selectedProductId">{{data.totalLike}}</span>
+                  <span class="like-icon-number" *ngIf="!lockBtn || data.id !== selectedProductId">{{data.totalLike}}</span>
                   <ion-spinner name="dots" *ngIf="lockBtn && data.id === selectedProductId"></ion-spinner>
                 </button>
               </ion-col>
               <ion-col no-padding>
-                <button ion-button full small class="box-button" (click)="showDetail(data)">Discovery More</button>
+                <button ion-button full small class="interaction-button" (click)="showDetail($event, data)">Discovery More</button>
               </ion-col>
             </ion-row>
           </div>
-          <button ion-item no-lines (click)="showPost(data.id)">{{data.productName}}</button>
+          <button class="post-list-container" ion-item no-lines (click)="showPost(data.id)">{{data.productName}}</button>
         </div>
       </ion-list>
     </ion-col>
   </ion-row>
 </ion-content>
+
+<ion-footer class="tab-menu">
+  <ion-toolbar class="tab-menu-toolbar">
+    <footer-menu></footer-menu>
+  </ion-toolbar>
+</ion-footer>

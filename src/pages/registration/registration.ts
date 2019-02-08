@@ -1,17 +1,10 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
+import { IonicPage, NavController, Events } from 'ionic-angular';
 import { RegistrationRequest } from '../../models/registration';
 import { NgForm } from '@angular/forms';
 import { ApiServiceProvider } from '../../providers/api-service';
 import { FormValidatorProvider } from '../../providers/form-validator';
 import { UtilityServiceProvider } from '../../providers/utility-service';
-
-/**
- * Generated class for the RegistrationPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage({
   name: 'registration'
@@ -23,9 +16,10 @@ import { UtilityServiceProvider } from '../../providers/utility-service';
 export class RegistrationPage {
   @ViewChild('formRegistration') form: NgForm;
   public registration: RegistrationRequest;
-  public listIDType: any = [];
-  public listCompany: any = [];
-  public listHoldingCompany: any = [];
+  public listIDType: Array<any> = [];
+  public listCompany: Array<any> = [];
+  public listRoles: Array<any> = [];
+  public listHoldingCompany: Array<any> = [];
   public isLoading: boolean = false;
   public holdingId: number;
   public city: string;
@@ -38,17 +32,22 @@ export class RegistrationPage {
     private events: Events
   ) {
     this.registration = new RegistrationRequest();
+    this.listRoles = [
+      { id: 1, roleName: 'Customer' },
+      { id: 2, roleName: 'Supplier' }
+      // { id: 3, roleName: 'Admin' }
+    ];
   }
 
   ionViewDidLoad() {
     this.loadListHoldingCompany();
-    this.loadListIDType();
+    // this.loadListIDType();
 
-    this.events.subscribe('location', res => {
+    this.events.subscribe('location', (res) => {
       this.registration.AddressKoordinat = res.coordinate;
     });
 
-    this.events.subscribe('province-location', sub => {
+    this.events.subscribe('province-location', (sub) => {
       this.city = `${sub.city.name}, ${sub.province.name}`;
       this.registration.ProvinsiId = sub.province.id;
       this.registration.KabKotaId = sub.city.id;
@@ -59,22 +58,22 @@ export class RegistrationPage {
     this.events.unsubscribe('location');
     this.events.unsubscribe('province-location');
   }
-
   register() {
     if (this.form.valid) {
       const loading = this.utility.showLoading();
       loading.present();
-      if (this.registration.Handphone[0] === '6') this.registration.Handphone = '+' + this.registration.Handphone;
-      else this.registration.Handphone = '+62' + this.registration.Handphone.slice(1);
+      if (this.registration.Handphone[0] === '0') {
+        this.registration.Handphone = '62' + this.registration.Handphone.slice(1);
+      }
       this.api.post('/users/register', this.registration).subscribe(
-        sub => {
+        (sub) => {
           loading.dismiss();
           this.utility
-            .confirmAlert('Register Success', '', 'Ok')
+            .confirmAlert('Register Success', '', 'Ok', '')
             .then(() => this.navCtrl.pop())
             .catch(() => this.navCtrl.pop());
         },
-        err => {
+        (err) => {
           loading.dismiss();
           this.utility.showToast(err);
         }
@@ -97,11 +96,11 @@ export class RegistrationPage {
   private loadListCompany() {
     this.isLoading = true;
     this.api.get('/holding/' + this.holdingId + '/company').subscribe(
-      sub => {
+      (sub) => {
         this.listCompany = sub;
         this.isLoading = false;
       },
-      err => {
+      (err) => {
         this.utility.showToast(err);
         this.isLoading = false;
       }
@@ -109,10 +108,6 @@ export class RegistrationPage {
   }
 
   private loadListHoldingCompany() {
-    this.api.get('/holding').subscribe(sub => (this.listHoldingCompany = sub), err => this.utility.showToast(err));
-  }
-
-  private loadListIDType() {
-    this.api.get('/idtype').subscribe(sub => (this.listIDType = sub), err => this.utility.showToast(err));
+    this.api.get('/holding').subscribe((sub) => (this.listHoldingCompany = sub), (err) => this.utility.showToast(err));
   }
 }

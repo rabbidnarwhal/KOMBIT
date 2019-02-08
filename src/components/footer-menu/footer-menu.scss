@@ -1,0 +1,35 @@
+footer-menu {
+  .row-container {
+    justify-content: center;
+    ion-col {
+      margin: 0 3px;
+      text-align: center;
+    }
+  }
+  .container {
+    width: 36px;
+    display: inline-block;
+  }
+  .tab-menu-label {
+    font-size: 10px;
+    white-space: pre-wrap;
+  }
+
+  .notification-badge {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    padding: 0;
+    background-color: red;
+    bottom: 8px;
+    right: 8px;
+    display: inline-block;
+    &.chat {
+      position: absolute;
+      top: 4px;
+      right: 10px;
+      bottom: 0px;
+    }
+  }
+}

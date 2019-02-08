@@ -6,13 +6,8 @@ import { LoginResponse, LoginRequest } from '../models/login';
 import { PushNotificationProvider } from './push-notification';
 import { UtilityServiceProvider } from './utility-service';
 import { Platform } from 'ionic-angular';
+import { ChatServiceProvider } from './chat-service';
 
-/*
-  Generated class for the AuthServiceProvider provider.
-
-  See https://angular.io/guide/dependency-injection for more info on providers
-  and Angular DI.
-*/
 @Injectable()
 export class AuthServiceProvider {
   public authNotifier: BehaviorSubject<any> = new BehaviorSubject(null);
@@ -23,8 +18,8 @@ export class AuthServiceProvider {
   constructor(
     private api: ApiServiceProvider,
     private utility: UtilityServiceProvider,
-    private push: PushNotificationProvider,
-    private platform: Platform
+    private platform: Platform,
+    private push: PushNotificationProvider
   ) {
     this.isLoggin = false;
     this.authCheck();
@@ -45,11 +40,15 @@ export class AuthServiceProvider {
     loading.present();
     this.api.post('/users/login', credentials).subscribe(
       (sub: LoginResponse) => {
-        this.authenticate(sub).then(res => {
-          loading.dismiss();
-          this.loadConfig();
-          this.authNotifier.next(true);
-        });
+        loading.dismiss();
+        if (sub.role === 'Supplier' || sub.role === 'Customer') {
+          this.authenticate(sub).then(res => {
+            this.loadConfig();
+            this.authNotifier.next(true);
+          });
+        } else {
+          this.utility.showToast('Unauthorized');
+        }
       },
       error => {
         loading.dismiss();
@@ -62,6 +61,7 @@ export class AuthServiceProvider {
     const loading = this.utility.showLoading();
     loading.present();
     localStorage.removeItem('token');
+    localStorage.removeItem('socketId');
     setTimeout(() => {
       loading.dismiss();
 

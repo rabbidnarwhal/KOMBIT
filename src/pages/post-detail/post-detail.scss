@@ -37,10 +37,21 @@ page-post-detail {
     margin-top: 10px;
     font-size: 30px;
     position: absolute;
+    z-index: 10000;
     &[name~='close-circle'] {
       right: 20px;
       top: 0;
       color: map-get($colors, 'danger');
+      width: 24px;
+      height: 24px;
+      background-color: $combitWhite;
+      border-radius: 20px;
+      position: fixed;
+      float: right;
+    }
+    &::before {
+      position: relative;
+      bottom: 3px;
     }
     &[name~='arrow-back'] {
       left: 20px;
@@ -48,9 +59,20 @@ page-post-detail {
     }
   }
 
-  ion-scroll {
-    height: calc(100vh - 136px);
+  ion-scroll.detail {
+    height: calc(100vh - 318px);
     .scroll-content {
+      height: 100%;
+      padding-top: 0px !important;
+      padding-bottom: 0px !important;
+    }
+  }
+
+  ion-scroll.comment {
+    height: calc(100vh - 40px);
+    margin-top: 24px;
+    .scroll-content {
+      height: 100%;
       padding-top: 0px !important;
       padding-bottom: 0px !important;
     }
@@ -75,13 +97,88 @@ page-post-detail {
     margin: 8px 0 !important;
   }
 
+  .interaction-container {
+    margin: 0 8px;
+  }
+  .interaction-wrapper {
+    margin: 0 2px;
+  }
   .interactionBtn {
     width: 100%;
     border: none;
-    color: map-get($kombit-colors, 'text');
-    @include color-background(180deg);
+    border-radius: 6px;
+    color: $combitWhite;
+    background-color: $combitBlue;
+    //  @include color-background(180deg);
     ion-icon + span {
       margin-left: 6px;
     }
+    &.contact {
+      background-color: $combitGreen;
+    }
+  }
+
+  .slider-container .swiper-pagination {
+    text-align: left;
+    padding: 0 24px;
+    bottom: 12px;
+    button {
+      background-color: $combitWhite;
+      width: 12px;
+      height: 12px;
+    }
+  }
+  .slide-image-container {
+    height: 216px;
+    .slide-zoom {
+      display: flex;
+      height: 100%;
+      img {
+        object-fit: fill;
+        width: 100%;
+      }
+    }
+  }
+
+  .segment.segment-product {
+    height: 2.8rem;
+    margin-bottom: 10px;
+    padding: 16px 0;
+    .segment-button.segment-product-button {
+      background-color: rgba(117, 117, 117, 0.4);
+      height: 2.8rem !important;
+      line-height: 2.8rem !important;
+      font-size: 10px;
+      font-weight: 600;
+      font-stretch: ultra-condensed;
+      border-top: none;
+      border-bottom: none;
+      border-radius: 4px;
+      // @include color-border();
+      // @include color-item();
+      color: $combitBlack;
+      // border-color: $combitOrange;
+      &.segment-activated {
+        color: $combitWhite !important;
+        // @include color-background(180deg);
+        background-color: $combitBlue;
+        font-weight: 400;
+      }
+    }
+  }
+
+  .btn-icon-img-comment {
+    width: 18px;
+    margin-right: 6px;
+  }
+
+  .share-button {
+    // $shadow-color: #0a0a0a;
+    position: absolute;
+    right: 24px;
+    bottom: 12px;
+    font-size: 24px;
+    color: $combitWhite;
+    // text-shadow: 1px 0px $shadow-color, -1px 0px $shadow-color, 1px 2px $shadow-color, 0px -1px $shadow-color;
   }
 }

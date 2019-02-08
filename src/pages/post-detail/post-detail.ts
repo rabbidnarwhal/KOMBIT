@@ -1,20 +1,12 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, Events } from 'ionic-angular';
+import { IonicPage, NavParams, Events, ViewController } from 'ionic-angular';
 import { ProductDetail } from '../../models/products';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { Config } from '../../config/config';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
-/**
- * Generated class for the PostDetailPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
-@IonicPage({
-  name: 'detailPost'
-})
+@IonicPage()
 @Component({
   selector: 'page-post-detail',
   templateUrl: 'post-detail.html'
@@ -25,15 +17,22 @@ export class PostDetailPage {
   public isSearching: boolean = true;
   public selectedPage: string = 'detail';
   public parentPage: string = '';
+  public segmentName: string = 'Description';
   constructor(
-    private navCtrl: NavController,
+    private viewCtrl: ViewController,
     private navParams: NavParams,
     private utility: UtilityServiceProvider,
     private dataProduct: DataProductServiceProvider,
-    private event: Events
+    private event: Events,
+    private socialSharing: SocialSharing
   ) {
     this.data = new ProductDetail();
     this.parentPage = this.navParams.get('params').page;
+    if (this.navParams.data.params.hasOwnProperty('useCase')) {
+      console.log(this.navParams.data.params.useCase);
+      this.selectedPage =
+        this.navParams.data.params.useCase === 'comment' ? this.navParams.data.params.useCase : 'detail';
+    }
   }
 
   ionViewDidLoad() {
@@ -41,23 +40,26 @@ export class PostDetailPage {
       .getProductDetail(this.navParams.get('params').id)
       .then((res: ProductDetail) => {
         this.data = res;
-        this.data.interaction.comment = this.data.interaction.comment.map(item => {
+        console.log(this.data);
+        this.data.interaction.comment = this.data.interaction.comment.map((item) => {
           const obj = item;
           const time = new Date(item.commentDate);
           time.setUTCHours(time.getUTCHours() + -time.getTimezoneOffset() / 60);
           obj.commentDate = time.toLocaleString();
           return obj;
         });
-        this.createMap();
+        // this.createMap();
         this.isSearching = false;
         return this.dataProduct.addViewProduct(this.data.id);
       })
       .then(() => {
-        if (this.parentPage === 'home') this.event.publish('homeInteraction', { id: this.data.id, type: 'view' });
-        else this.event.publish('postInteraction', { id: this.data.id, type: 'view' });
+        if (this.parentPage === 'home') {
+          this.event.publish('homeInteraction', { id: this.data.id, type: 'view' });
+        } else {
+          this.event.publish('postInteraction', { id: this.data.id, type: 'view' });
+        }
       })
-      .catch(err => {
-        console.error('e', err);
+      .catch((err) => {
         this.utility.showToast(err);
       });
   }
@@ -79,14 +81,79 @@ export class PostDetailPage {
   }
 
   close() {
-    this.navCtrl.pop();
+    this.viewCtrl.dismiss();
   }
 
   back() {
-    this.selectedPage = 'detail';
+    if (this.selectedPage === 'appointment') {
+      this.selectedPage = 'contact';
+    } else {
+      this.selectedPage = 'detail';
+    }
   }
 
   changePage(page) {
     this.selectedPage = page;
+  }
+
+  makeAppointmentClicked(value) {
+    this.selectedPage = value;
+  }
+
+  openWhatsapp() {
+    const phone = this.data.contact.handphone.replace(/ |-|\+/g, '');
+    this.dataProduct
+      .addChatProduct(this.data.id)
+      .then(() => {
+        this.data.interaction.totalChat++;
+        if (this.parentPage === 'home') {
+          this.event.publish('homeInteraction', { id: this.data.id, type: 'call' });
+        } else {
+          this.event.publish('postInteraction', { id: this.data.id, type: 'call' });
+        }
+      })
+      .catch((err) => {});
+    window.open('https://api.whatsapp.com/send?phone=' + phone);
+  }
+
+  likeBtnClick() {
+    this.data.interaction.isLike = !this.data.interaction.isLike;
+    this.lockBtn = true;
+    this.dataProduct.modifyLikeProduct(this.data.id, this.data.interaction.isLike).then(
+      () => {
+        this.lockBtn = false;
+        this.data.interaction.totalLike = this.data.interaction.isLike
+          ? this.data.interaction.totalLike + 1
+          : this.data.interaction.totalLike - 1;
+        this.utility.showToast(this.data.interaction.isLike ? 'Product Liked' : 'Product Unliked', 1000);
+        if (this.parentPage === 'home')
+          this.event.publish('homeInteraction', {
+            id: this.data.id,
+            type: 'like',
+            isLike: this.data.interaction.isLike
+          });
+        else
+          this.event.publish('postInteraction', {
+            id: this.data.id,
+            type: 'like',
+            isLike: this.data.interaction.isLike
+          });
+      },
+      (err) => {
+        this.lockBtn = false;
+        this.utility.showToast(err);
+      }
+    );
+  }
+
+  shareProduct() {
+    this.socialSharing
+      .share('Check out this product.', '', '', 'http://kombit.org/product/' + this.data.id)
+      .then(() => {
+        console.log('shared');
+      })
+      .catch((err) => {
+        console.log('share', err);
+      });
   }
 }

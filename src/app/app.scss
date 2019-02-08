@@ -14,6 +14,11 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 
+@import '../theme/combit';
+@import 'quill.core';
+@import 'quill.snow';
+@import 'quill.bubble';
+
 ion-menu {
   .header-md::after {
     background-image: none;
@@ -23,31 +28,32 @@ ion-menu {
     margin-top: 16px;
     background-color: transparent;
     text-align: center;
+    height: 150px;
+    width: 100%;
     img {
-      height: 150px;
-      width: 150px;
+      height: 100%;
       border-radius: 50%;
-      object-fit: cover;
+      object-fit: contain;
     }
 
-    h4 {
+    + h4 {
       margin: 6px 0;
-      color: map-get($kombit-colors, 'btn');
+      color: $combitOrange;
     }
   }
   ion-content {
-    background-color: #242424 !important;
+    background-color: $combitBlue !important;
 
     button.item-block {
       min-height: 2.4rem;
       background-color: transparent;
       ion-icon {
         margin: 4px 8px 4px 0px !important;
-        color: map-get($kombit-colors, 'btn');
+        color: $combitOrange;
       }
       ion-label {
         // margin: 0 !important;
-        color: map-get($kombit-colors, 'text');
+        color: $combitWhite;
         font-weight: 200;
       }
     }
@@ -57,5 +63,14 @@ ion-menu {
     + .item-inner {
       margin-left: 20px;
     }
+  }
+}
+
+.tab-menu {
+  background-color: rgba(117, 117, 117, 0.4);
+
+  .tab-menu-toolbar {
+    margin-top: 4px;
+    padding: 0px;
   }
 }

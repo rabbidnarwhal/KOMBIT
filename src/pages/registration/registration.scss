@@ -1,38 +1,57 @@
 page-registration {
-  $colorHigh: map-get($kombit-colors, 'bg-high');
-  $colorLow: map-get($kombit-colors, 'bg-low');
-  $colorText: map-get($kombit-colors, 'text');
-  $colorBtn: map-get($kombit-colors, 'btn');
-
   ion-input {
-    background-color: $colorText;
-    border: 1px solid $colorText;
+    background-color: $combitWhite;
+    border: 1px solid $combitWhite;
     border-radius: 25px;
     margin-bottom: 8px;
     input {
       width: calc(100% - 8px - 24px) !important;
-      margin: 8px 16px !important;
+      margin: 10px 16px !important;
       text-align: center;
+      font-size: 16px;
     }
   }
 
   .input-fields {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding: 32px;
   }
 
-  ion-item {
-    min-height: 1rem !important;
-    padding: 8px 16px !important;
-    margin-bottom: 8px !important;
-    border-radius: 20px !important;
+  .role-item {
+    background-color: transparent;
+    min-height: 1rem;
+    .item-inner {
+      border-bottom: none !important;
+      .role-label {
+        color: $combitWhite;
+        font-size: 18px;
+      }
+      .role-radio {
+        top: 16px;
+        right: 32px;
+        .radio-checked {
+          border-color: $combitWhite;
+          .radio-inner {
+            background-color: $combitWhite;
+          }
+        }
+      }
+    }
+  }
+
+  .form-select-item {
+    min-height: 1rem;
+    padding: 8px 16px;
+    margin-bottom: 8px;
+    border-radius: 20px;
     .item-inner {
       border-bottom: none !important;
       ion-select {
-        font-size: 14px !important;
-        max-width: 100% !important;
-        width: 100% !important;
-        padding: 0 2px 0 0 !important;
+        font-size: 16px;
+        max-width: 100%;
+        width: 100%;
+        margin-top: 2px;
+        margin-bottom: 2px;
+        padding: 0 2px 0 0;
         text-align: center;
         div.select-text,
         div.select-placeholder {
@@ -42,9 +61,9 @@ page-registration {
     }
   }
 
-  h2 {
+  h1 {
     text-transform: uppercase;
-    color: $colorText;
+    color: $combitWhite;
   }
 
   ion-header {
@@ -59,8 +78,9 @@ page-registration {
     }
   }
 
-  ion-content {
-    @include color-background(0deg);
+  ion-content.registration-content {
+    background-color: $combitBlue;
+    // @include color-background(0deg);
   }
 
   div.line {
@@ -68,7 +88,7 @@ page-registration {
     z-index: 1;
 
     &:after {
-      border-top: 2px solid $colorText;
+      border-top: 2px solid $combitWhite;
       content: '';
       margin: 0 auto;
       position: absolute;
@@ -81,7 +101,7 @@ page-registration {
     }
 
     &:before {
-      border-top: 2px solid $colorText;
+      border-top: 2px solid $combitWhite;
       content: '';
       margin: 0 auto;
       position: absolute;
@@ -101,6 +121,12 @@ page-registration {
   }
 
   form button {
-    width: 216px;
+    &[btn-kombit] {
+      margin-top: 48px;
+      // width: 216px;
+      font-size: 18px;
+      font-weight: 100;
+      background-color: $combitGreen !important;
+    }
   }
 }

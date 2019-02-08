@@ -1,0 +1,13 @@
+<ion-content padding class="popover">
+  <div class="image-icon-container">
+    <img src="assets/imgs/product-cancel-modal.png" (click)="dismissModal()"/>
+  </div>
+  <h3>Marketing Kit File</h3>
+  <ion-row>
+    <ion-col col-3 *ngFor="let file of marketingFiles">
+      <div class="image-container" (click)="selectFileType(file.type)">
+        <img src="{{file.path}}" />
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-content>

@@ -1,0 +1,89 @@
+<ion-header class="custom-background">
+  <ion-navbar>
+    <ion-title>Appointment Detail</ion-title>
+  </ion-navbar>
+</ion-header>
+
+
+<ion-content padding>
+  <ion-row>
+    <ion-col>
+      <ion-card class="card-container">
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Appointment with</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider"> : </ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.userName}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Date</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.date}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Status</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.status}}</ion-label>
+        </ion-label>
+      </ion-card>
+
+      <ion-card class="card-container">
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Product Name</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider"> : </ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.productName}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider"> : </ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.productCompany}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Solution</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider"> : </ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.productSolution}}</ion-label>
+        </ion-label>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+
+  <ion-row>
+    <ion-col>
+      <ion-card class="card-container">
+        <div class="static-map-container">
+          <img *ngIf="mapLocation" [src]="mapLocation" (click)="openMap()" />
+        </div>
+        <ion-label class="appointment-text" no-padding no-margin>{{data.locationName}}</ion-label>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+
+  <ion-row>
+    <ion-col>
+      <ion-card class="card-container">
+        <ion-label no-margin class="title-label">Note</ion-label>
+        <ion-label no-margin class="appointment-text">{{data.note}}</ion-label>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+
+  <ion-row *ngIf="isRejected">
+    <ion-col>
+      <ion-card class="card-container">
+        <ion-label no-margin class="title-label">Message from {{data.userName}}</ion-label>
+        <ion-label no-margin class="appointment-text">{{data.rejectMessage}}</ion-label>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+
+  <ion-row class="answer-button-container" *ngIf="!isCustomer || isRejected">
+    <ion-col no-padding class="answer-button-wrapper" *ngIf="!isCustomer && !isRejected">
+      <button ion-button btn-kombit small type="button" class="answer-button" (click)="answerAppointment('APPROVED')">Accept</button>
+    </ion-col>
+    <ion-col no-padding class="answer-button-wrapper" *ngIf="!isCustomer && !isRejected">
+      <button ion-button btn-kombit small type="button" class="answer-button" (click)="answerAppointment('REJECTED')">Reject</button>
+    </ion-col>
+    <ion-col no-padding class="answer-button-wrapper" *ngIf="isCustomer && isRejected">
+      <button ion-button btn-kombit small type="button" class="answer-button" (click)="rescheduleAppointment()">Reschedule</button>
+    </ion-col>
+  </ion-row>
+</ion-content>

@@ -1,20 +1,11 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { ApiServiceProvider } from '../../providers/api-service';
+import { IonicPage, NavController } from 'ionic-angular';
 import { AuthServiceProvider } from '../../providers/auth-service';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { Notification } from '../../models/notification';
+import { DataNotificationServiceProvider } from '../../providers/dataNotification-service';
 
-/**
- * Generated class for the NotificationPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
-
-@IonicPage({
-  name: 'notification'
-})
+@IonicPage()
 @Component({
   selector: 'page-notification',
   templateUrl: 'notification.html'
@@ -23,11 +14,10 @@ export class NotificationPage {
   isSearching: boolean = true;
   listNotification: Array<Notification>;
   constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
-    private api: ApiServiceProvider,
     private auth: AuthServiceProvider,
-    private utility: UtilityServiceProvider
+    private utility: UtilityServiceProvider,
+    private dataNotification: DataNotificationServiceProvider,
+    private navCtrl: NavController
   ) {
     this.listNotification = [];
   }
@@ -39,10 +29,10 @@ export class NotificationPage {
   private loadListNotification() {
     this.isSearching = true;
     const userId = this.auth.getPrincipal().id;
-    const header = { 'Cache-Control': 'no-cache' };
-    this.api.get('/notification/user/' + userId, { headers: header }).subscribe(
-      sub => {
-        this.listNotification = sub.map(item => {
+    this.dataNotification
+      .fetchListNotification(userId)
+      .then((res) => {
+        this.listNotification = res.map((item) => {
           const obj = item;
           const time = new Date(item.pushDate);
           time.setUTCHours(time.getUTCHours() + -time.getTimezoneOffset() / 60);
@@ -50,11 +40,24 @@ export class NotificationPage {
           return obj;
         });
         this.isSearching = false;
-      },
-      err => {
+      })
+      .catch((err) => {
         this.isSearching = false;
         this.utility.showToast(err);
+      });
+  }
+
+  openPage(item: Notification) {
+    if (item.moduleName === 'product') {
+      if (item.moduleUseCase === 'expired') {
+        this.navCtrl.push('PostNewPage', { id: item.moduleId });
+      } else {
+        this.utility
+          .showPopover('PostDetailPage', { id: item.moduleId, page: 'notification', useCase: item.moduleUseCase })
+          .present();
       }
-    );
+    } else if (item.moduleName === 'appointment') {
+      this.navCtrl.push('AppointmentDetailPage', { appointmentId: item.moduleId, userName: null });
+    }
   }
 }

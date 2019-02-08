@@ -1,0 +1,20 @@
+<ion-content padding class="popover">
+  <div class="image-icon-container">
+    <img src="assets/imgs/product-cancel-modal.png" (click)="dismissModal()" />
+  </div>
+  <h3>Contact Person</h3>
+  <ion-row>
+    <ion-col>
+      <ion-item *ngFor="let contactType of contactTypeList" (click)="selectContactType(contactType.id)">
+        <div item-start class="image-item-container">
+          <img src="{{contactType.image}}" />
+        </div>
+        <p>
+          <span>{{contactType.title}}</span>
+          <br/>
+            <span *ngIf="contactType.subtitle">{{contactType.subtitle}}</span>
+          </p>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+  </ion-content>

@@ -1,65 +1,146 @@
-<!-- Generated template for the ProductDetailComponent component -->
-<ion-row>
-  <div>
-    <ion-label no-margin class="box-label">
-      <ion-label no-padding no-margin class="inline-flex box-text">Product</ion-label>
-      <ion-label no-margin no-padding class="inline-flex box-divider"> : </ion-label>
-      <ion-label no-margin no-padding class="inline-flex box-content">{{data.productName}}</ion-label>
-    </ion-label>
-    <ion-label no-margin class="box-label">
-      <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>
-      <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-      <ion-label no-margin no-padding class="inline-flex box-content">{{data.companyName}}</ion-label>
-    </ion-label>
-    <ion-label no-margin class="box-label">
-      <ion-label no-padding no-margin class="inline-flex box-text">Solution</ion-label>
-      <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-      <ion-label no-margin no-padding class="inline-flex box-content">{{data.categoryName}}</ion-label>
-    </ion-label>
-    <ion-label no-margin class="box-label" *ngIf="data.isIncludePrice">
-      <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
-      <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-      <ion-label no-margin no-padding class="inline-flex box-content">{{data.currency}} {{data.price | number}}</ion-label>
-    </ion-label>
+<div>
+  <div padding *ngIf="segment === 'Description'">
     <ion-row>
-      <ion-col no-padding>
-        <button ion-button small class="interactionBtn" (click)="likeBtnClick()">
-          <ion-icon *ngIf="!lockBtn" [name]="data.interaction.isLike ? 'heart' : 'heart-outline'"></ion-icon>
-          <span *ngIf="!lockBtn">{{data.interaction.totalLike}}</span>
-          <ion-spinner name="dots" *ngIf="lockBtn"></ion-spinner>
-        </button>
+      <ion-col>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Product</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider"> : </ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.productName}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.companyName}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label">
+          <ion-label no-padding no-margin class="inline-flex box-text">Solution</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.categoryName}}</ion-label>
+        </ion-label>
+        <ion-label no-margin class="box-label" *ngIf="data.isIncludePrice">
+          <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
+          <ion-label no-margin no-padding class="inline-flex box-content">{{data.currency}} {{data.price | number}}</ion-label>
+        </ion-label>
       </ion-col>
-      <ion-col no-padding>
-        <button ion-button small class="interactionBtn" (click)="changePage('comment')">
-          <img class="btn-icon-img-comment" src="assets/imgs/comment-white.png" />
-          <span>{{data.interaction.totalComment}}</span>
-        </button>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <div class="text-container" [innerHtml]="data.description"></div>
       </ion-col>
-      <ion-col no-padding>
-        <button ion-button small class="interactionBtn" (click)="changePage('contact')">
-          <ion-icon name="person"></ion-icon>
-        </button>
+    </ion-row>
+
+    <ion-row *ngIf="data.videoPath">
+      <ion-col>
+        <div text-center class="video-container">
+          <video controls width="100%">
+            <source [src]="data.videoPath" type="video/mp4" />
+          </video>
+        </div>
       </ion-col>
     </ion-row>
   </div>
-  <div id="wrapper margin-top-10">
-    <ion-slides #slider pager="true" spaceBetween="10">
-      <ion-slide *ngFor="let foto of data.foto">
-        <img [src]="foto.fotoPath" [alt]="foto.fotoName" />
-      </ion-slide>
-    </ion-slides>
+
+  <div padding *ngIf="segment === 'Benefit'">
+    <!-- <ion-row>
+      <ion-col>
+        <ion-label class="description-title">{{data.productName}} Specification:</ion-label>
+        <div class="text-container" [innerHtml]="data.benefit"></div>
+      </ion-col>
+    </ion-row> -->
+
+    <ion-row>
+      <ion-col>
+        <ion-label class="description-title">Benefit:</ion-label>
+        <div class="text-container" [innerHtml]="data.benefit"></div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col class="text-center">
+        <button ion-button small class="marketing-kit-btn" [disabled]="fileIsLoading" (click)="downloadMarketingKit()">
+          <ion-icon *ngIf="!fileIsLoading" name="download"></ion-icon>
+          <span *ngIf="!fileIsLoading">Marketing Kit</span>
+          <ion-spinner class="spinner-white" *ngIf="fileIsLoading"></ion-spinner>
+        </button>
+        <div class="margin-top-10" *ngIf="data.attachment.length> 1 && attachmentOpen">
+          <ion-item class="attachment-item" *ngFor="let file of data.attachment">
+            <ion-label>{{file.fileName}}</ion-label>
+            <ion-icon item-end *ngIf="!file.isLoading" name="download" (click)="downloadMarketingKit(file)"></ion-icon>
+            <ion-spinner item-end *ngIf="file.isLoading"></ion-spinner>
+          </ion-item>
+        </div>
+      </ion-col>
+    </ion-row>
   </div>
-  <div>
-    <h6>Description:</h6>
-    <p>{{data.description}}</p>
+
+  <div padding *ngIf="segment === 'Feature'">
+    <ion-row>
+      <ion-col>
+        <ion-label class="description-title">Feature:</ion-label>
+        <div class="text-container" [innerHtml]="data.feature"></div>
+      </ion-col>
+    </ion-row>
   </div>
-  <div text-center class="video-container" *ngIf="data.videoPath">
-    <video controls width="100%">
-      <source [src]="data.videoPath" type="video/mp4" />
-    </video>
+
+  <div padding *ngIf="segment === 'Testimony'">
+    <ion-row>
+      <ion-col>
+        <ion-label class="description-title title-underline">Product Certificate:</ion-label>
+        <ion-row>
+          <ion-col col-4 *ngFor="let certificate of data.productCertificate">
+            <div class="certificate-image-container">
+              <img src="{{certificate.fotoPath}}" #myImage />
+            </div>
+            <ion-icon name="search" class="zoom-icon" (click)="presentImage(myImage)"></ion-icon>
+          </ion-col>
+        </ion-row>
+        <div>
+          <p>{{data.certificate}}</p>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-label class="description-title title-underline">Product Implementation:</ion-label>
+        <ion-row>
+          <ion-col col-6 *ngFor="let implementation of data.productImplementation">
+            <div *ngIf="implementation.useCase === 'implementationImage'" class="implementation-container">
+              <div class="wrapper">
+                <img src="{{implementation.fotoPath}}" />
+              </div>
+              <ion-label>{{implementation.title}}</ion-label>
+            </div>
+            <div *ngIf="implementation.useCase === 'implementationVideo'" class="implementation-container">
+              <div class="wrapper">
+                <video controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer">
+                  <source [src]="implementation.fotoPath" type="video/mp4" />
+                </video>
+              </div>
+              <ion-label>{{implementation.title}}</ion-label>
+            </div>
+          </ion-col>
+        </ion-row>
+        <div class="text-container" [innerHtml]="data.implementation"></div>
+        <!-- <div>
+          <p>{{data.implementation}}</p>
+        </div> -->
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col>
+        <ion-label class="description-title title-underline">Existing Client:</ion-label>
+        <ion-row>
+          <ion-col col-2 *ngFor="let client of data.productClient">
+            <div class="client-image-container">
+              <img src="{{client.fotoPath}}" />
+            </div>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
   </div>
-  <div *ngIf="data.credentials">
-    <h6>Success story or client review:</h6>
-    <p>{{data.credentials}}</p>
-  </div>
-</ion-row>
+</div>

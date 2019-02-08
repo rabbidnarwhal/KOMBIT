@@ -1,0 +1,61 @@
+page-appointment-detail {
+  .static-map-container {
+    padding: 6px;
+    height: 216px;
+  }
+  img {
+    object-fit: contain;
+    height: 100%;
+  }
+  .image-container {
+    text-align: center;
+    height: 216px;
+  }
+
+  .box-label {
+    margin: 0 6px;
+  }
+
+  ion-header ion-label {
+    display: inline-block;
+    font-size: 18px;
+    text-transform: capitalize;
+    margin: 14px 0 0 0 !important;
+    width: 100%;
+    text-align: center;
+  }
+
+  .box-content {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    width: calc(100% - 136px);
+    font-weight: 500;
+  }
+
+  p {
+    white-space: pre-wrap;
+    text-align: justify;
+  }
+
+  .box-text {
+    width: 120px;
+  }
+
+  .card-container {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .answer-button-wrapper {
+    text-align: center;
+  }
+
+  .title-label {
+    font-weight: 500;
+  }
+
+  .appointment-text {
+    white-space: pre-wrap;
+  }
+}

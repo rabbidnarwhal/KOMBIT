@@ -4,55 +4,49 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { Keyboard } from '@ionic-native/keyboard';
 import { SplashScreen } from '@ionic-native/splash-screen';
 
-import { UtilityServiceProvider } from '../providers/utility-service';
 import { AuthServiceProvider } from '../providers/auth-service';
+import { ChatServiceProvider } from '../providers/chat-service';
+import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
 import { MenuController } from 'ionic-angular/components/app/menu-controller';
 import { PushNotificationProvider } from '../providers/push-notification';
-import { DataProvinceServiceProvider } from '../providers/dataProvince-service';
+import { UtilityServiceProvider } from '../providers/utility-service';
+
+import { Config } from '../config/config';
 @Component({
   templateUrl: 'app.html'
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
-  public rootPage: string = 'login';
+  public rootPage: string = 'LoginPage';
   public pages: Array<{ title: string; component: string; icon: string; image: string }>;
   public userName: string = '';
   public picture: string;
   constructor(
-    private platform: Platform,
-    private statusBar: StatusBar,
-    private splashScreen: SplashScreen,
-    private utility: UtilityServiceProvider,
+    private chatService: ChatServiceProvider,
     private auth: AuthServiceProvider,
-    private menu: MenuController,
-    private keyboard: Keyboard,
+    private dataProvince: DataProvinceServiceProvider,
     private events: Events,
+    private keyboard: Keyboard,
+    private menu: MenuController,
+    private platform: Platform,
     private pushNotification: PushNotificationProvider,
-    private dataProvince: DataProvinceServiceProvider
+    private splashScreen: SplashScreen,
+    private statusBar: StatusBar,
+    private utility: UtilityServiceProvider
   ) {
     this.initializeApp();
     this.picture = 'assets/imgs/profile.png';
-    this.pages = [
-      { title: 'Notification', component: 'notification', icon: 'notifications', image: '' },
-      { title: 'Create new post', component: 'newPost', icon: 'paper-plane', image: '' },
-      { title: 'My post', component: 'myPost', icon: 'share', image: '' },
-      { title: 'Company', component: 'company', icon: '', image: 'assets/imgs/company.png' },
-      { title: 'Solution', component: 'solution', icon: '', image: 'assets/imgs/solution-menu.png' },
-      { title: 'Setting', component: '', icon: 'settings', image: '' },
-      { title: 'Point', component: '', icon: '', image: 'assets/imgs/points.png' },
-      { title: 'Logout', component: 'logout', icon: 'log-out', image: '' }
-    ];
+    this.pages = [];
   }
 
   private initializeApp() {
-
     this.platform.ready().then(() => {
       this.statusBar.styleLightContent();
       this.statusBar.overlaysWebView(false);
-      this.statusBar.backgroundColorByHexString('#f2703f');
+      this.statusBar.backgroundColorByHexString('#222155');
       this.menu.enable(false, 'sideMenu');
       this.menu.swipeEnable(false, 'sideMenu');
-      this.keyboard.disableScroll(false);
+      this.keyboard.disableScroll(true);
       this.pushNotification.init();
       this.loadProvinceData();
       this.authCheck();
@@ -63,23 +57,34 @@ export class MyApp {
     if (page.component === 'logout') {
       this.utility
         .confirmAlert('Are you sure to logout?', 'Logout')
-        .then(res => this.auth.logout())
-        .catch(err => console.error(err));
+        .then((res) => {
+          this.chatService.unregister();
+          this.auth.logout();
+        })
+        .catch((err) => console.error(err));
     } else if (page.component) this.nav.push(page.component);
     else alert('Not implemented yet');
   }
 
+  private changeSideMenus(role: string) {
+    if (role === 'Supplier') {
+      this.pages = Config.SUPPLIER.SIDEMENU;
+    } else if (role === 'Customer') {
+      this.pages = Config.CUSTOMER.SIDEMENU;
+    }
+  }
+
   private authCheck() {
-    if (window['IonicDevServer'])  {
+    if (window['IonicDevServer']) {
       const routeUrl = document.URL.split('/#/');
       if (routeUrl.length > 1) window.location.href = routeUrl[0];
     }
     let isFirstTime = localStorage.getItem('firstTime') || '';
-    this.auth.authNotifier.filter(res => res !== null).subscribe(res => {
+    this.auth.authNotifier.filter((res) => res !== null).subscribe((res) => {
       if (!isFirstTime || isFirstTime !== 'false') {
         localStorage.setItem('firstTime', 'false');
         isFirstTime = 'false';
-        this.rootPage = 'welcome';
+        this.rootPage = 'WelcomePage';
       } else if (res) {
         if (!this.menu.isEnabled('sideMenu')) {
           this.menu.enable(true, 'sideMenu');
@@ -87,34 +92,35 @@ export class MyApp {
         }
         this.userName = this.auth.getPrincipal().name;
         this.picture = this.auth.getPrincipal().image ? this.auth.getPrincipal().image : this.picture;
-        this.rootPage = 'home';
+        this.changeSideMenus(this.auth.getPrincipal().role);
+        this.chatService.initConnection();
+        this.rootPage = 'HomePage';
       } else {
         if (this.menu.isEnabled('sideMenu')) {
           this.menu.enable(false, 'sideMenu');
           this.menu.swipeEnable(false, 'sideMenu');
         }
-        this.rootPage = 'login';
+        this.rootPage = 'LoginPage';
       }
       this.splashScreen.hide();
     });
   }
 
   public profilePage() {
-    this.nav.push('profile', { id: this.auth.getPrincipal().id });
+    this.nav.push('ProfilePage', { id: this.auth.getPrincipal().id });
     this.menu.close('sideMenu');
 
-    this.events.subscribe('picture-changed', sub => {
+    this.events.subscribe('picture-changed', (sub) => {
       this.picture = sub;
-      this.events.unsubscribe('picture-changed');
     });
   }
 
   private loadProvinceData() {
-    Promise.all([this.dataProvince.getListProvince(), this.dataProvince.getListCity()])
-      .then(res => {
+    Promise.all([ this.dataProvince.getListProvince(), this.dataProvince.getListCity() ])
+      .then((res) => {
         this.dataProvince.setProvince(res[0]);
         this.dataProvince.setCity(res[1]);
       })
-      .catch(err => console.error(err));
+      .catch((err) => console.error(err));
   }
 }

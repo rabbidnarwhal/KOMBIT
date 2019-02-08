@@ -1,75 +1,150 @@
-import { Component, NgZone } from '@angular/core';
-import { NavController, IonicPage, Events, NavParams } from 'ionic-angular';
+import { Component, NgZone, ViewChild } from '@angular/core';
+import { NavController, IonicPage, Events, NavParams, Slides } from 'ionic-angular';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { DataProductServiceProvider } from '../../providers/dataProduct-service';
 import { Product } from '../../models/products';
 import { AuthServiceProvider } from '../../providers/auth-service';
 import { LocationService, MyLocationOptions } from '@ionic-native/google-maps';
+import { Category } from '../../models/category';
+import { DataCategoryServiceProvider } from '../../providers/dataCategory-service';
+import { DataNotificationServiceProvider } from '../../providers/dataNotification-service';
+import { ChatServiceProvider } from '../../providers/chat-service';
 
-@IonicPage({
-  name: 'home'
-})
+@IonicPage()
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
+  @ViewChild(Slides) slides: Slides;
+
   private listPost: Array<Product>;
   public filteredItems: Array<Product>;
   public listPostLeft: Array<Product>;
   public listPostRight: Array<Product>;
-  public filterText: string = '';
-  public isSearching: boolean = true;
-  public lockBtn: boolean = false;
+  public listSolution: Array<Category>;
+  public sliderProduct: Array<Product>;
+
   public selectedLikePost: any;
+
+  public filterText: string = '';
   public postType: string;
+  public locationIndicatorText: string;
+  public menuIcon: string;
+
   public userId: number;
   public distance: number;
   public selectedProvince: number;
   public selectedCity: number;
-  public locationEnabled: boolean = false;
-  public locationIndicatorText: string;
+  public numberRandomImages: number = 5;
+  public unreadNotification: number = 0;
+  public unreadChat: number = 0;
 
+  public isPromoted: boolean = true;
+  public isSearching: boolean = true;
+  public isSearchingSlider: boolean = true;
+  public isSearchingSolution: boolean = true;
+  public lockBtn: boolean = false;
+  public locationEnabled: boolean = false;
+  public newPostEnabled: boolean;
+  public notificationEnabled: boolean = true;
+  public chatEnabled: boolean = true;
+  public solutionEnabled: boolean = true;
+  public sliderEnabled: boolean = true;
+  public dividerEnabled: boolean = true;
+  public menuEnabled: boolean = true;
   constructor(
     private navCtrl: NavController,
     private navParams: NavParams,
     private utility: UtilityServiceProvider,
     private dataProduct: DataProductServiceProvider,
+    private dataCategory: DataCategoryServiceProvider,
     private events: Events,
     private auth: AuthServiceProvider,
+    private dataNotification: DataNotificationServiceProvider,
+    private chatService: ChatServiceProvider,
     private zone: NgZone
   ) {
-    this.listPost = new Array<Product>();
     this.postType = 'public';
+    this.listPost = new Array<Product>();
+    this.listSolution = new Array<Category>();
+    this.sliderProduct = new Array<Product>();
     this.filterItems(this.locationEnabled);
-    console.log('auth', this.auth.getPrincipal());
     this.userId = this.auth.getPrincipal().id;
+    this.newPostEnabled = this.auth.getPrincipal().role === 'Supplier' ? true : false;
+    this.chatEnabled = this.newPostEnabled ? true : false;
+    this.menuIcon = this.newPostEnabled ? 'more' : 'menu';
+    this.notificationEnabled = this.navParams.data ? true : false;
   }
 
   ionViewWillEnter() {
     if (!this.listPost.length) this.isSearching = true;
-    this.postType = 'public';
     this.loadPostData();
+    if (this.navParams.data.solution || this.navParams.data.company) {
+      this.notificationEnabled = false;
+      this.chatEnabled = false;
+      this.sliderEnabled = false;
+      this.isPromoted = false;
+      this.solutionEnabled = false;
+      this.dividerEnabled = false;
+      this.menuEnabled = false;
+    } else {
+      this.postType = 'public';
+      if (this.navParams.data.favorite) {
+        this.postType = 'favorite';
+        this.notificationEnabled = false;
+        this.chatEnabled = false;
+        this.sliderEnabled = false;
+        this.isPromoted = false;
+        this.solutionEnabled = false;
+        this.dividerEnabled = false;
+        this.menuEnabled = false;
+      }
+      this.loadSolution();
+      this.loadNotificationCount();
+      this.loadChatCount();
+    }
+    this.subscribeChatArrived();
+    this.subscribeFilterByLocation();
+    this.subscribeInteraction();
+    this.subscribeNotificationArrived();
+    this.subscribePostReload();
+    this.subscribeRemoveFilterByLocation();
   }
 
-  ionViewDidLoad() {
-    this.events.subscribe('homeInteraction', sub => {
-      const idx = this.listPost.findIndex(x => x.id === sub.id);
-      if (sub.type === 'view') this.listPost[idx].totalView++;
-      if (sub.type === 'call') this.listPost[idx].totalChat++;
-      if (sub.type === 'comment') this.listPost[idx].totalComment++;
-      if (sub.type === 'like')
-        if (sub.isLike) {
-          this.listPost[idx].totalLike++;
-          this.listPost[idx].isLike = true;
-        } else {
-          this.listPost[idx].totalLike--;
-          this.listPost[idx].isLike = false;
-        }
-      this.filterItems(this.locationEnabled);
-    });
+  ionViewWillLeave() {
+    this.events.unsubscribe('backFromLocation');
+    this.events.unsubscribe('chat:arrived');
+    this.events.unsubscribe('homeInteraction');
+    this.events.unsubscribe('homeLocation');
+    this.events.unsubscribe('notification-arrived');
+    this.events.unsubscribe('postReload');
+  }
 
-    this.events.subscribe('homeLocation', sub => {
+  subscribeInteraction() {
+    this.events.subscribe('homeInteraction', (sub) => {
+      const idx = this.listPost.findIndex((x) => x.id === sub.id);
+      if (idx < 0) {
+        this.loadPostData(true);
+      } else {
+        if (sub.type === 'view') this.listPost[idx].totalView++;
+        if (sub.type === 'call') this.listPost[idx].totalChat++;
+        if (sub.type === 'comment') this.listPost[idx].totalComment++;
+        if (sub.type === 'like')
+          if (sub.isLike) {
+            this.listPost[idx].totalLike++;
+            this.listPost[idx].isLike = true;
+          } else {
+            this.listPost[idx].totalLike--;
+            this.listPost[idx].isLike = false;
+          }
+        this.filterItems(this.locationEnabled);
+      }
+    });
+  }
+
+  subscribeFilterByLocation() {
+    this.events.subscribe('homeLocation', (sub) => {
       this.isSearching = true;
       this.postType = 'location';
       this.locationEnabled = true;
@@ -84,41 +159,93 @@ export class HomePage {
         this.selectedProvince = sub.province.id;
         this.filterItems(this.locationEnabled);
         this.isSearching = false;
-        this.locationIndicatorText = sub.city.id ? `${sub.city.name}, ${sub.province.name}` : `SELURUH ${sub.province.name}`;
+        this.locationIndicatorText = sub.city.id
+          ? `${sub.city.name}, ${sub.province.name}`
+          : `SELURUH ${sub.province.name}`;
       }
     });
+  }
 
+  subscribeRemoveFilterByLocation() {
+    this.events.subscribe('backFromLocation', () => {
+      this.postType = 'public';
+    });
+  }
+
+  subscribePostReload() {
     this.events.subscribe('postReload', () => {
       this.zone.run(() => {
         this.isSearching = true;
         this.loadPostData(true);
       });
     });
+  }
 
-    this.events.subscribe('backFromLocation', () => {
-      this.postType = 'public';
+  subscribeNotificationArrived() {
+    this.events.subscribe('notification-arrived', () => {
+      this.zone.run(() => {
+        this.unreadNotification++;
+      });
     });
+  }
+
+  subscribeChatArrived() {
+    this.events.subscribe('chat:arrived', (data: any) => {
+      this.zone.run(() => {
+        this.unreadChat++;
+      });
+    });
+  }
+
+  loadNotificationCount() {
+    this.dataNotification
+      .fetchUnReadNotificationCount(this.userId)
+      .then((res) => (this.unreadNotification = res.unRead))
+      .catch((err) => this.utility.showToast(err));
+  }
+
+  loadChatCount() {
+    this.chatService
+      .getUnreadChatCount()
+      .then((res) => (this.unreadChat = res.unRead))
+      .catch((err) => this.utility.showToast(err));
   }
 
   locationIndicatorClicked() {
     this.locationEnabled = false;
-    this.utility.showPopover('home-location', '', true).present();
+    this.utility.showPopover('home-location', '', 'popover-width-full').present();
   }
 
   loadPostData(isReload = false) {
     this.dataProduct
       .getListAllProducts()
-      .then(res => {
+      .then((res) => {
         this.isSearching = false;
-        if (this.navParams.data.solution) this.listPost = res.filter(x => x.categoryName === this.navParams.data.solution.category);
-        else if (this.navParams.data.company) this.listPost = res.filter(x => x.companyName === this.navParams.data.company.companyName);
-        else this.listPost = res;
+        if (this.navParams.data.solution)
+          this.listPost = res.filter((x) => x.categoryName === this.navParams.data.solution.category);
+        else if (this.navParams.data.company)
+          this.listPost = res.filter((x) => x.companyName === this.navParams.data.company.companyName);
+        else {
+          this.listPost = res;
+          this.getPromotedProduct(res);
+        }
         this.filterItems(this.locationEnabled);
       })
-      .catch(err => {
+      .catch((err) => {
         this.isSearching = false;
         if (!isReload) this.utility.showToast(err);
       });
+  }
+
+  loadSolution() {
+    if (this.listSolution.length) this.isSearchingSolution = false;
+    this.dataCategory
+      .getListCategory()
+      .then((sub) => {
+        this.listSolution = sub.splice(0, 7);
+        this.isSearchingSolution = false;
+      })
+      .catch((err) => this.utility.showToast(err));
   }
 
   segmentChanged() {
@@ -126,7 +253,7 @@ export class HomePage {
       this.selectedCity = 0;
       this.selectedProvince = 0;
       this.distance = 0;
-      this.utility.showPopover('home-location', '', true).present();
+      this.utility.showPopover('home-location', '', 'popover-width-full').present();
     } else {
       this.locationEnabled = false;
       this.filterItems(this.locationEnabled);
@@ -134,21 +261,22 @@ export class HomePage {
   }
 
   showDetail(data) {
-    this.utility.showPopover('detailPost', { id: data.id, page: 'home' }).present();
+    this.utility.showPopover('PostDetailPage', { id: data.id, page: 'home' }).present();
   }
 
   createNewPost() {
-    this.navCtrl.push('newPost');
+    this.navCtrl.push('PostNewPage');
   }
 
   filterItems(isLocation) {
     let data = [];
     if (this.postType === 'public') data = this.listPost;
-    if (this.postType === 'holding') data = this.listPost.filter(res => res.holdingId === this.dataProduct.getHoldingId());
-    if (this.postType === 'favorite') data = this.listPost.filter(res => res.isLike);
+    if (this.postType === 'holding')
+      data = this.listPost.filter((res) => res.holdingId === this.dataProduct.getHoldingId());
+    if (this.postType === 'favorite') data = this.listPost.filter((res) => res.isLike);
 
     const filtering = () => {
-      this.filteredItems = data.filter(res => {
+      this.filteredItems = data.filter((res) => {
         for (const key in res) {
           if (res.hasOwnProperty(key)) {
             const element = res[key];
@@ -159,12 +287,12 @@ export class HomePage {
     };
 
     if (isLocation && this.distance) {
-      this.nearMePost(this.distance).then(res => {
+      this.nearMePost(this.distance).then((res) => {
         data = res;
         filtering();
       });
     } else if (isLocation) {
-      data = this.listPost.filter(x => {
+      data = this.listPost.filter((x) => {
         if (this.selectedCity) return x.provinsi === this.selectedProvince && x.kabKota === this.selectedCity;
         else return x.provinsi === this.selectedProvince;
       });
@@ -185,7 +313,7 @@ export class HomePage {
         post.totalLike = post.isLike ? post.totalLike + 1 : post.totalLike - 1;
         this.utility.showToast(post.isLike ? 'Product Liked' : 'Product Unliked', 1000);
       },
-      err => {
+      (err) => {
         this.lockBtn = false;
         this.selectedLikePost = null;
         this.utility.showToast(err);
@@ -193,16 +321,57 @@ export class HomePage {
     );
   }
 
-  editPost(post) {
-    this.navCtrl.push('newPost', { id: post.id });
+  editPost(event, post) {
+    event.stopPropagation();
+    this.navCtrl.push('PostNewPage', { id: post.id });
   }
 
-  private nearMePost(dist): Promise<any> {
-    return new Promise(resolve => {
+  showAllSolutions() {
+    const popover = this.utility.showPopover('SolutionPage', { isModal: true }, 'popover-width-solution', true, true);
+    popover.present();
+    this.events.subscribe('solution-selected', (solution) => {
+      this.filterSolutions(solution);
+      this.events.unsubscribe('solution-selected');
+    });
+  }
+
+  filterSolutions(solution) {
+    this.navCtrl.push('HomePage', { solution: solution });
+  }
+
+  slidesClicked() {
+    const idx = this.slides.getActiveIndex();
+    if (idx === 0) {
+      this.showDetail(this.sliderProduct[this.sliderProduct.length - 1]);
+    } else if (idx === 1) {
+      this.showDetail(this.sliderProduct[idx - 1]);
+    } else if (idx > this.sliderProduct.length) {
+      this.showDetail(this.sliderProduct[idx - 1 - this.sliderProduct.length]);
+    } else {
+      this.showDetail(this.sliderProduct[idx - 1]);
+    }
+  }
+
+  slideAutoPlayStopped() {
+    setTimeout(() => {
+      this.slides.startAutoplay();
+    }, 5000);
+  }
+
+  toNotificationPage() {
+    this.navCtrl.push('NotificationPage');
+  }
+
+  toChatPage() {
+    this.navCtrl.push('ChatPage');
+  }
+
+  private nearMePost(dist): Promise<Array<any>> {
+    return new Promise((resolve) => {
       this.getPosition()
-        .then(pos => {
+        .then((pos) => {
           resolve(
-            this.listPost.filter(x => {
+            this.listPost.filter((x) => {
               if (x.position) {
                 const target = x.position.split(', ');
                 const distance = this.calculateDistance(pos.latLng.lat, pos.latLng.lng, target[0], target[1]);
@@ -211,11 +380,33 @@ export class HomePage {
             })
           );
         })
-        .catch(err => {
+        .catch((err) => {
           this.utility.showToast('Unable to get location');
           resolve([]);
         });
     });
+  }
+
+  private getRandomProduct(products: Array<Product>, n: number) {
+    if (products.length < n) n = products.length;
+    let temp = [];
+    while (n--) {
+      var product = products[Math.floor(Math.random() * products.length)];
+      if (temp.findIndex((x) => x.id === product.id) < 0) temp.push(product);
+      else n++;
+    }
+    this.sliderProduct = temp;
+    this.isSearchingSlider = false;
+  }
+
+  private getPromotedProduct(products: Array<Product>) {
+    this.sliderProduct = products.filter((x) => x.isPromoted);
+    if (!this.sliderProduct.length) {
+      this.isPromoted = false;
+      this.getRandomProduct(products, this.numberRandomImages);
+    } else {
+      this.isSearchingSlider = false;
+    }
   }
 
   private getPosition() {
@@ -227,10 +418,10 @@ export class HomePage {
 
   private calculateDistance(lat1, long1, lat2, long2) {
     //radians
-    lat1 = (lat1 * 2.0 * Math.PI) / 60.0 / 360.0;
-    long1 = (long1 * 2.0 * Math.PI) / 60.0 / 360.0;
-    lat2 = (lat2 * 2.0 * Math.PI) / 60.0 / 360.0;
-    long2 = (long2 * 2.0 * Math.PI) / 60.0 / 360.0;
+    lat1 = lat1 * 2.0 * Math.PI / 60.0 / 360.0;
+    long1 = long1 * 2.0 * Math.PI / 60.0 / 360.0;
+    lat2 = lat2 * 2.0 * Math.PI / 60.0 / 360.0;
+    long2 = long2 * 2.0 * Math.PI / 60.0 / 360.0;
 
     // use to different earth axis length
     var a = 6378137.0; // Earth Major Axis (WGS84)
