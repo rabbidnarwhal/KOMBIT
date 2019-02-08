@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { IonicPage, NavController, NavParams, ActionSheetController, Events, Navbar } from 'ionic-angular';
+import { IonicPage, NavController, ActionSheetController, Events, Navbar } from 'ionic-angular';
 import { User, UserRequest } from '../../models/user';
 import { ApiServiceProvider } from '../../providers/api-service';
 import { UtilityServiceProvider } from '../../providers/utility-service';

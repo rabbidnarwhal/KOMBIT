@@ -149,6 +149,8 @@ export class ProductDetail {
   videoPath: string;
   foto: Array<FotoResponse>;
   productImplementation: Array<ProductImplementationResponse>;
+  productImplementationVideo: Array<ProductImplementationResponse>;
+  productImplementationImage: Array<ProductImplementationResponse>;
   productCertificate: Array<ProductCertificateResponse>;
   productClient: Array<ProductClientResponse>;
   attachment: Array<AttachmentFileResponse>;
@@ -227,7 +229,7 @@ export class ProductClientResponse {
 
 export class ProductImplementationResponse {
   title: string;
-  type: string;
+  useCase: string;
   fotoName: string;
   fotoPath: string;
   id: number;

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { ProductDetail } from '../../models/products';
 import { UtilityServiceProvider } from '../../providers/utility-service';
 import { Platform } from 'ionic-angular';
@@ -13,6 +13,8 @@ import { ImageViewerController } from 'ionic-img-viewer';
 export class ProductDetailComponent {
   @Input() segment: string;
   @Input() data: ProductDetail;
+  @Input() enableMore: boolean;
+  @Output() moreIsActivated = new EventEmitter();
 
   // public attachmentData: any;
   public lockBtn: boolean = false;
