@@ -34,7 +34,7 @@ ion-header.custom-background {
     //  @include color-background(0deg);
   }
   .show-back-button + div.toolbar-content div.toolbar-title {
-    margin-right: 56px !important;
+    margin-right: 56px;
   }
   div.toolbar-content {
     div.toolbar-title {
@@ -45,7 +45,7 @@ ion-header.custom-background {
       // font-size: 16px !important;
     }
     div.toolbar-title-ios {
-      margin-right: 0px !important;
+      margin-right: 0px;
     }
   }
 }

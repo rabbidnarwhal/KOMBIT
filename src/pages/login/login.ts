@@ -45,4 +45,8 @@ export class LoginPage {
   forgotPassword() {
     this.navCtrl.push('ForgotPasswordPage');
   }
+
+  moveFocus(nextElement) {
+    nextElement.setFocus();
+  }
 }

@@ -30,7 +30,8 @@ import { ChatServiceProvider } from '../providers/chat-service';
     BrowserAnimationsModule,
     IonicModule.forRoot(MyApp, {
       scrollAssist: false,
-      autoFocusAssist: false
+      autoFocusAssist: false,
+      animate: false
     }),
     HttpClientModule,
     IonicImageViewerModule

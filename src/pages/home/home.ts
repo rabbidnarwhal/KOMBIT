@@ -32,6 +32,7 @@ export class HomePage {
   public locationIndicatorText: string;
   public menuIcon: string;
 
+  public autoplay: number = 4000;
   public userId: number;
   public distance: number;
   public selectedProvince: number;
@@ -75,6 +76,7 @@ export class HomePage {
     this.chatEnabled = this.newPostEnabled ? true : false;
     this.menuIcon = this.newPostEnabled ? 'more' : 'menu';
     this.notificationEnabled = this.navParams.data ? true : false;
+    this.menuEnabled = true;
   }
 
   ionViewWillEnter() {
@@ -119,6 +121,8 @@ export class HomePage {
     this.events.unsubscribe('homeLocation');
     this.events.unsubscribe('notification-arrived');
     this.events.unsubscribe('postReload');
+
+    this.autoplay = null;
   }
 
   subscribeInteraction() {
