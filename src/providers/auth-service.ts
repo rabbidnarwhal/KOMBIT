@@ -6,7 +6,6 @@ import { LoginResponse, LoginRequest } from '../models/login';
 import { PushNotificationProvider } from './push-notification';
 import { UtilityServiceProvider } from './utility-service';
 import { Platform } from 'ionic-angular';
-import { ChatServiceProvider } from './chat-service';
 
 @Injectable()
 export class AuthServiceProvider {

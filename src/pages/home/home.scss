@@ -109,8 +109,8 @@ page-home {
   }
   .box-content {
     white-space: nowrap;
-    overflow-wrap: break-word;
-    word-break: break-word;
+    text-overflow: ellipsis;
+    overflow: hidden;
     width: calc(100% - 64px);
     font-weight: 500;
     display: inline-block;

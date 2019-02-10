@@ -32,7 +32,7 @@
         <ion-spinner></ion-spinner>
       </div>
     </div>
-    <ion-slides *ngIf="sliderProduct.length" pager="true" autoplay="4000" loop="true" (ionSlideTap)="slidesClicked()" (ionSlideAutoplayStop)="slideAutoPlayStopped()">
+    <ion-slides *ngIf="sliderProduct.length" pager="true" [autoplay]="autoplay" loop="true" (ionSlideTap)="slidesClicked()" (ionSlideAutoplayStop)="slideAutoPlayStopped()">
       <ion-slide *ngFor="let item of sliderProduct">
         <img src="{{item.fotoPath}}" />
         <div class="slider-text">
@@ -76,75 +76,72 @@
       </div>
     </div>
     <ion-col col-6 *ngFor="let post of filteredItems">
-      <ion-row>
-        <div class="post-list-box">
-          <img *ngIf="post.fotoPath" class="post-image" [src]="post.fotoPath" (click)="showDetail(post)" />
-          <div class="box-label-container" (click)="showDetail(post)">
-            <div no-margin class="box-label">
-              <ion-label no-padding no-margin class="inline-flex box-text">Product</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-content">{{post.productName}}</ion-label>
-              <ion-icon *ngIf="post.posterId === userId" name="create" (click)="editPost($event, post)"></ion-icon>
-            </div>
-            <div no-margin class="box-label">
-              <ion-label no-padding no-margin class="inline-flex box-text">Company</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-content">{{post.companyName}}</ion-label>
-            </div>
-            <div no-margin class="box-label">
-              <ion-label no-padding no-margin class="inline-flex box-text">Holding</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-content">{{post.holdingName}}</ion-label>
-            </div>
-            <div no-margin class="box-label">
-              <ion-label no-padding no-margin class="inline-flex box-text">Solution</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-content">{{post.categoryName}}</ion-label>
-            </div>
-            <div no-margin class="box-label" *ngIf="post.isIncludePrice">
-              <ion-label no-padding no-margin class="inline-flex box-text">Price</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-divider">:</ion-label>
-              <ion-label no-margin no-padding class="inline-flex box-content">{{post.currency}} {{post.price | number}}</ion-label>
-            </div>
+      <div class="post-list-box">
+        <img *ngIf="post.fotoPath" class="post-image" [src]="post.fotoPath" (click)="showDetail(post)" />
+        <div class="box-label-container" (click)="showDetail(post)">
+          <div no-margin class="box-label">
+            <span no-padding no-margin class="inline-flex box-text">Product</span>
+            <span no-margin no-padding class="inline-flex box-divider">:</span>
+            <span no-margin no-padding class="inline-flex box-content">{{post.productName}}</span>
+            <ion-icon *ngIf="post.posterId === userId" name="create" (click)="editPost($event, post)"></ion-icon>
           </div>
-          <ion-row text-center class="box-icon">
-            <ion-col no-padding>
-              <ion-icon name="eye"></ion-icon>
-              <span>{{post.totalView || 0}}</span>
-              <br />
-              <span>View</span>
-            </ion-col>
-            <ion-col no-padding>
-              <ion-icon name="call"></ion-icon>
-              <span>{{post.totalChat || 0}}</span>
-              <br />
-              <span>Call</span>
-            </ion-col>
-            <ion-col no-padding>
-              <img class="icon-img-comment" src="assets/imgs/comment.png" />
-              <span>{{post.totalComment || 0}}</span>
-              <br />
-              <span>Comment</span>
-            </ion-col>
-          </ion-row>
-          <ion-row>
-            <ion-col col-4 no-padding>
-              <button ion-button full small class="box-button interactionBtn" (click)="likeBtnClick(post)">
-                <ion-icon *ngIf="!lockBtn || post !== selectedLikePost" [name]="post.isLike ? 'heart' : 'heart-outline'"></ion-icon>
-                <span class="total-like-text" *ngIf="!lockBtn || post !== selectedLikePost">{{post.totalLike}}</span>
-                <ion-spinner name="dots" *ngIf="lockBtn && post === selectedLikePost"></ion-spinner>
-              </button>
-            </ion-col>
-            <ion-col col-8 no-padding>
-              <button ion-button full small class="box-button" (click)="showDetail(post)">More</button>
-            </ion-col>
-          </ion-row>
+          <div no-margin class="box-label">
+            <span no-padding no-margin class="inline-flex box-text">Company</span>
+            <span no-margin no-padding class="inline-flex box-divider">:</span>
+            <span no-margin no-padding class="inline-flex box-content">{{post.companyName}}</span>
+          </div>
+          <div no-margin class="box-label">
+            <span no-padding no-margin class="inline-flex box-text">Holding</span>
+            <span no-margin no-padding class="inline-flex box-divider">:</span>
+            <span no-margin no-padding class="inline-flex box-content">{{post.holdingName}}</span>
+          </div>
+          <div no-margin class="box-label">
+            <span no-padding no-margin class="inline-flex box-text">Solution</span>
+            <span no-margin no-padding class="inline-flex box-divider">:</span>
+            <span no-margin no-padding class="inline-flex box-content">{{post.categoryName}}</span>
+          </div>
+          <div no-margin class="box-label" *ngIf="post.isIncludePrice">
+            <span no-padding no-margin class="inline-flex box-text">Price</span>
+            <span no-margin no-padding class="inline-flex box-divider">:</span>
+            <span no-margin no-padding class="inline-flex box-content">{{post.currency}} {{post.price | number}}</span>
+          </div>
         </div>
-      </ion-row>
+        <ion-row text-center class="box-icon">
+          <ion-col no-padding>
+            <ion-icon name="eye"></ion-icon>
+            <span>{{post.totalView || 0}}</span>
+            <br />
+            <span>View</span>
+          </ion-col>
+          <ion-col no-padding>
+            <ion-icon name="call"></ion-icon>
+            <span>{{post.totalChat || 0}}</span>
+            <br />
+            <span>Call</span>
+          </ion-col>
+          <ion-col no-padding>
+            <img class="icon-img-comment" src="assets/imgs/comment.png" />
+            <span>{{post.totalComment || 0}}</span>
+            <br />
+            <span>Comment</span>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col col-4 no-padding>
+            <button ion-button full small class="box-button interactionBtn" (click)="likeBtnClick(post)">
+              <ion-icon *ngIf="!lockBtn || post !== selectedLikePost" [name]="post.isLike ? 'heart' : 'heart-outline'"></ion-icon>
+              <span class="total-like-text" *ngIf="!lockBtn || post !== selectedLikePost">{{post.totalLike}}</span>
+              <ion-spinner name="dots" *ngIf="lockBtn && post === selectedLikePost"></ion-spinner>
+            </button>
+          </ion-col>
+          <ion-col col-8 no-padding>
+            <button ion-button full small class="box-button" (click)="showDetail(post)">More</button>
+          </ion-col>
+        </ion-row>
+      </div>
     </ion-col>
     <div text-center class="not-found-text" *ngIf="!filteredItems.length && !isSearching">Post not found</div>
   </ion-row>
-
 </ion-content>
 
 <ion-footer class="tab-menu">

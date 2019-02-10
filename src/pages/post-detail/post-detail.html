@@ -13,7 +13,7 @@
           <ion-icon class="share-button" name="share" (click)="shareProduct()"></ion-icon>
         </ion-slide>
       </ion-slides>
-      <ion-row>
+      <!-- <ion-row>
         <ion-col no-padding>
           <ion-segment padding class="segment-product" [(ngModel)]="segmentName">
             <ion-segment-button class="segment-product-button" value="Description">
@@ -30,10 +30,9 @@
             </ion-segment-button>
           </ion-segment>
         </ion-col>
-      </ion-row>
-
-      <ion-scroll class="detail" scrollY="true" *ngIf="selectedPage === 'detail' && !isSearching">
-        <product-detail [data]="data" [segment]="segmentName"></product-detail>
+      </ion-row> -->
+      <ion-scroll #scrollWeb class="detail" [class.more-is-open]="isMore" scrollY="true" *ngIf="selectedPage === 'detail' && !isSearching">
+        <product-detail [data]="data" [enableMore]="isMore"></product-detail>
         <!-- <product-comment *ngIf="selectedPage === 'comment' && !isSearching" [data]="data" [page]="parentPage"></product-comment> -->
         <!-- <product-contact *ngIf="selectedPage === 'contact' && !isSearching" [data]="data" [page]="parentPage"></product-contact> -->
       </ion-scroll>
@@ -65,6 +64,15 @@
           </button>
         </ion-col>
       </ion-row>
+
+      <ion-row *ngIf="!isMore">
+        <ion-col>
+          <div class="footer-button" (click)="isMore= true;">
+            <span>show more</span>
+          </div>
+        </ion-col>
+      </ion-row>
+
     </div>
 
     <div *ngIf="selectedPage === 'comment' && !isSearching">

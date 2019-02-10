@@ -13,8 +13,8 @@
     <ion-row class="login-form" [ngStyle]="{'height': formHeight}">
       <ion-col>
         <form id="formLogin" #form="ngForm">
-          <ion-input required type="text" class="justify-input" [(ngModel)]="credentials.Username" name="Username" placeholder="User"></ion-input>
-          <ion-input required type="password" [(ngModel)]="credentials.Password" name="Password" placeholder="Password"></ion-input>
+          <ion-input required type="text" class="justify-input" [(ngModel)]="credentials.Username" name="Username" placeholder="User" (keyup.enter)="moveFocus(password)"></ion-input>
+          <ion-input required type="password" [(ngModel)]="credentials.Password" name="Password" #password placeholder="Password" (keyup.enter)="signin()"></ion-input>
           <p margin-top>
             <a class="link-text forgot" (click)="forgotPassword()">Forgot password?</a>
           </p>
@@ -27,7 +27,6 @@
         <p class="margin-top-0">Don't have an account?
           <a class="link-text" (click)="signup()"> Sign up</a>
         </p>
-
       </ion-col>
     </ion-row>
   </ion-grid>

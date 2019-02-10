@@ -125,7 +125,10 @@
       "cordova-plugin-x-socialsharing": {},
       "cordova-plugin-network-information": {}
     },
-    "platforms": [ "ios", "android" ]
+    "platforms": [
+      "ios",
+      "android"
+    ]
   },
   "config": {
     "ionic_sass": "./config/sass.config.js"

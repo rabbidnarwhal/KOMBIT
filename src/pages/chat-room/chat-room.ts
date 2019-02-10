@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef, NgZone } from '@angular/core';
-import { IonicPage, NavParams, Content, Events, NavController } from 'ionic-angular';
+import { IonicPage, NavParams, Content, Events } from 'ionic-angular';
 import { UserChatInfo } from '../../models/user';
 import { ChatRequest, ChatRoomResponse } from '../../models/chats';
 import { ChatServiceProvider } from '../../providers/chat-service';

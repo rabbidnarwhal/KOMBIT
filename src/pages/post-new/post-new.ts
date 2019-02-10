@@ -494,7 +494,6 @@ export class PostNewPage {
 
       /** Add to upload que if there is a foto and had not been uploaded. */
       if (this.imagePathSecure.length) {
-        console.log('image', this.imagePathSecure);
         this.imagePathSecure = this.imagePathSecure.map((element) => {
           let obj = element;
           if (!element.isFotoUpload) {
@@ -516,7 +515,6 @@ export class PostNewPage {
       }
 
       if (this.clientPathSecure.length) {
-        console.log('client', this.clientPathSecure);
         this.clientPathSecure = this.clientPathSecure.map((element) => {
           let obj = element;
           if (!element.isUpload) {
@@ -527,7 +525,6 @@ export class PostNewPage {
       }
 
       if (this.certificatePathSecure.length) {
-        console.log('certificate', this.certificatePathSecure);
         this.certificatePathSecure = this.certificatePathSecure.map((element) => {
           let obj = element;
           if (!element.isUpload) {
@@ -540,7 +537,6 @@ export class PostNewPage {
       /** Add to upload que if there is an attachment file and not had been uploaded. */
       let attachmentExtend = new Array<any>();
       if (this.attachmentFile.length) {
-        console.log('attachment', this.attachmentFile);
         this.attachmentFile = this.attachmentFile.map((element) => {
           const obj = element;
           if (!element.isUploaded) {
@@ -554,7 +550,6 @@ export class PostNewPage {
       /** Add to upload que if there is an image file in quill editor. */
       this.generateQuillImageUploadPromise();
       loading.present();
-      console.log('starting', this.fileUpload);
 
       new Promise((resolve, reject) => {
         if (this.fileUpload.length) {
@@ -563,7 +558,6 @@ export class PostNewPage {
               let kitCount = 0;
               let implementationCount = 0;
               res.map((element, index) => {
-                console.log('upload done', element.useCase);
                 const segment = element.useCase;
                 if (segment === 'video') {
                   this.isVideoUpload = true;
@@ -646,7 +640,6 @@ export class PostNewPage {
         this.quillContent[segment] = element.getContents();
         if (this.quillContent[segment].ops.length) {
           this.quillContent[segment].ops.forEach((item, index) => {
-            console.log('quil', item);
             if (item.hasOwnProperty('insert') && item.insert.hasOwnProperty('imageurl')) {
               if (!item.insert.imageurl.includes('http://') && !item.insert.imageurl.includes('https://'))
                 this.fileUpload.push(this.uploadMediaFile('foto', item.insert.imageurl, segment, index));
@@ -667,7 +660,6 @@ export class PostNewPage {
   ): Promise<{ path: string; name: string; useCase: string; index: number }> {
     return new Promise((resolve, reject) => {
       if (!window['cordova']) {
-        console.log('me not cordova');
         this.api
           .getBlob(path)
           .toPromise()
@@ -714,7 +706,6 @@ export class PostNewPage {
 
   /** Send product data to server. */
   private publishProduct() {
-    console.log('publishing');
     if (!this.data.ContactId) {
       this.data.ContactId = this.data.PosterId;
       this.data.PosterAsContact = false;
@@ -727,7 +718,6 @@ export class PostNewPage {
         this.data[segment] = converter.convert();
       }
     }
-    console.log('end data', this.data);
     if (this.postId) {
       return this.api.post('/product/' + this.postId, this.data).toPromise();
     } else {

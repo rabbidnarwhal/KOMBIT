@@ -1,7 +1,10 @@
 <div>
-  <div padding *ngIf="segment === 'Description'">
+  <div padding>
     <ion-row>
       <ion-col>
+        <div class="description-title-label-container">
+          Description
+        </div>
         <ion-label no-margin class="box-label">
           <ion-label no-padding no-margin class="inline-flex box-text">Product</ion-label>
           <ion-label no-margin no-padding class="inline-flex box-divider"> : </ion-label>
@@ -42,7 +45,7 @@
     </ion-row>
   </div>
 
-  <div padding *ngIf="segment === 'Benefit'">
+  <div padding *ngIf="enableMore">
     <!-- <ion-row>
       <ion-col>
         <ion-label class="description-title">{{data.productName}} Specification:</ion-label>
@@ -52,7 +55,9 @@
 
     <ion-row>
       <ion-col>
-        <ion-label class="description-title">Benefit:</ion-label>
+        <div class="description-title-label-container">
+          Benefit
+        </div>
         <div class="text-container" [innerHtml]="data.benefit"></div>
       </ion-col>
     </ion-row>
@@ -75,71 +80,90 @@
     </ion-row>
   </div>
 
-  <div padding *ngIf="segment === 'Feature'">
+  <div padding *ngIf="enableMore">
     <ion-row>
       <ion-col>
-        <ion-label class="description-title">Feature:</ion-label>
+        <div class="description-title-label-container">
+          Feature
+        </div>
         <div class="text-container" [innerHtml]="data.feature"></div>
       </ion-col>
     </ion-row>
   </div>
 
-  <div padding *ngIf="segment === 'Testimony'">
+  <div padding *ngIf="enableMore">
     <ion-row>
       <ion-col>
-        <ion-label class="description-title title-underline">Product Certificate:</ion-label>
-        <ion-row>
-          <ion-col col-4 *ngFor="let certificate of data.productCertificate">
-            <div class="certificate-image-container">
-              <img src="{{certificate.fotoPath}}" #myImage />
-            </div>
-            <ion-icon name="search" class="zoom-icon" (click)="presentImage(myImage)"></ion-icon>
-          </ion-col>
-        </ion-row>
-        <div>
-          <p>{{data.certificate}}</p>
+        <div class="description-title-label-container">
+          Implementation
         </div>
       </ion-col>
     </ion-row>
 
     <ion-row>
       <ion-col>
-        <ion-label class="description-title title-underline">Product Implementation:</ion-label>
-        <ion-row>
-          <ion-col col-6 *ngFor="let implementation of data.productImplementation">
-            <div *ngIf="implementation.useCase === 'implementationImage'" class="implementation-container">
-              <div class="wrapper">
-                <img src="{{implementation.fotoPath}}" />
+        <ion-slides #slider class="slider-container" pager="true" spaceBetween="10">
+          <ng-container *ngFor="let implementation of data.productImplementationImage">
+            <ion-slide class="slide-image-container">
+              <div>
+                <div>
+                  <img src="{{implementation.fotoPath}}" />
+                </div>
+                <p class="text-center">{{implementation.title}}</p>
               </div>
-              <ion-label>{{implementation.title}}</ion-label>
-            </div>
-            <div *ngIf="implementation.useCase === 'implementationVideo'" class="implementation-container">
-              <div class="wrapper">
-                <video controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer">
-                  <source [src]="implementation.fotoPath" type="video/mp4" />
-                </video>
-              </div>
-              <ion-label>{{implementation.title}}</ion-label>
-            </div>
-          </ion-col>
-        </ion-row>
-        <div class="text-container" [innerHtml]="data.implementation"></div>
-        <!-- <div>
-          <p>{{data.implementation}}</p>
-        </div> -->
+            </ion-slide>
+          </ng-container>
+        </ion-slides>
       </ion-col>
     </ion-row>
 
+    <ng-container *ngFor="let implementation of data.productImplementationVideo">
+      <ion-row>
+        <ion-col>
+          <div class="implementation-container">
+            <div class="wrapper">
+              <video controls="controls" controlList="nodownload" preload="metadata" webkit-playsinline="webkit-playsinline" class="videoPlayer">
+                <source [src]="implementation.fotoPath" type="video/mp4" />
+              </video>
+            </div>
+            <ion-label>{{implementation.title}}</ion-label>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ng-container>
+
     <ion-row>
       <ion-col>
-        <ion-label class="description-title title-underline">Existing Client:</ion-label>
-        <ion-row>
-          <ion-col col-2 *ngFor="let client of data.productClient">
-            <div class="client-image-container">
-              <img src="{{client.fotoPath}}" />
-            </div>
-          </ion-col>
-        </ion-row>
+        <div>
+          <p>{{data.implementation}}</p>
+        </div>
+      </ion-col>
+    </ion-row>
+
+
+    <ion-label class="description-title title-underline">Product Certificate:</ion-label>
+    <ion-row>
+      <ion-col col-4 *ngFor="let certificate of data.productCertificate">
+        <div class="certificate-image-container">
+          <img src="{{certificate.fotoPath}}" #myImage />
+        </div>
+        <ion-icon name="search" class="zoom-icon" (click)="presentImage(myImage)"></ion-icon>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <div>
+          <p>{{data.certificate}}</p>
+        </div>
+      </ion-col>
+    </ion-row>
+
+    <ion-label class="description-title title-underline">Existing Client:</ion-label>
+    <ion-row>
+      <ion-col col-2 *ngFor="let client of data.productClient">
+        <div class="client-image-container">
+          <img src="{{client.fotoPath}}" />
+        </div>
       </ion-col>
     </ion-row>
   </div>
