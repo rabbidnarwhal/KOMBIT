@@ -50,6 +50,7 @@
     "cordova-android": "7.0.0",
     "cordova-android-support-gradle-release": "^1.4.4",
     "cordova-ios": "~4.5.4",
+    "cordova-plugin-advanced-http": "^2.0.4",
     "cordova-plugin-camera": "^4.0.3",
     "cordova-plugin-contacts": "^3.0.1",
     "cordova-plugin-datepicker": "^0.9.3",
@@ -123,7 +124,8 @@
       "mx.ferreyra.callnumber": {},
       "cordova-plugin-datepicker": {},
       "cordova-plugin-x-socialsharing": {},
-      "cordova-plugin-network-information": {}
+      "cordova-plugin-network-information": {},
+      "cordova-plugin-advanced-http": {}
     },
     "platforms": [
       "ios",

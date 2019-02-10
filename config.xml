@@ -107,6 +107,7 @@
     <plugin name="cordova-plugin-datepicker" spec="^0.9.3" />
     <plugin name="cordova-plugin-x-socialsharing" spec="^5.4.1" />
     <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
-    <engine name="ios" spec="~4.5.4" />
+    <engine name="ios" spec="4.5.4" />
     <engine name="android" spec="7.0.0" />
+    <plugin name="cordova-plugin-advanced-http" spec="^2.0.4" />
 </widget>

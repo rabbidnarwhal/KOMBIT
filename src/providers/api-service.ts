@@ -4,13 +4,14 @@ import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { catchError } from 'rxjs/operators';
 import { Config } from '../config/config';
 import { Network } from '@ionic-native/network';
+import { HTTP } from '@ionic-native/http';
 
 @Injectable()
 export class ApiServiceProvider {
   private url: string;
   private networkIsConnected = true;
 
-  constructor(private http: HttpClient, private network: Network) {
+  constructor(private http: HttpClient, private network: Network, private httpNative: HTTP) {
     this.url = Config.API_URL;
 
     if (this.network.type === 'none' || this.network.type === 'unknown') this.networkIsConnected = false;
@@ -35,7 +36,16 @@ export class ApiServiceProvider {
       return new ErrorObservable('Network error, make sure there are internet connection.');
     }
     const options = this.createRequestHeader(httpOptions ? httpOptions : {});
-    return this.http.get(this.getUrl() + endpoint, options).pipe(catchError(this.handleError));
+    if (!window['cordova']) {
+      return this.http.get(this.getUrl() + endpoint, options).pipe(catchError(this.handleError));
+    } else {
+      return new Promise((resolve, reject) => {
+        this.httpNative
+          .get(this.getUrl() + endpoint, {}, options)
+          .then((res) => resolve(res.data))
+          .catch((err) => reject(err.error));
+      });
+    }
   }
 
   getBlob(url: string, httpOptions?: any) {
@@ -50,7 +60,13 @@ export class ApiServiceProvider {
       return new ErrorObservable('Network error, make sure there are internet connection.');
     }
     const options = this.createRequestHeader(httpOptions ? httpOptions : {});
-    return this.http.get(url, options).pipe(catchError(this.handleError));
+    if (!window['cordova']) {
+      return this.http.get(url, options).pipe(catchError(this.handleError));
+    } else {
+      return new Promise((resolve, reject) => {
+        this.httpNative.get(url, {}, options).then((res) => resolve(res.data)).catch((err) => reject(err.error));
+      });
+    }
   }
 
   post(endpoint: string, body: any, httpOptions?: any) {
@@ -58,14 +74,32 @@ export class ApiServiceProvider {
       return new ErrorObservable('Network error, make sure there are internet connection.');
     }
     const options = this.createRequestHeader(httpOptions ? httpOptions : {});
-    return this.http.post(this.getUrl() + endpoint, body, options).pipe(catchError(this.handleError));
+    if (!window['cordova']) {
+      return this.http.post(this.getUrl() + endpoint, body, options).pipe(catchError(this.handleError));
+    } else {
+      return new Promise((resolve, reject) => {
+        this.httpNative
+          .post(this.getUrl() + endpoint, body, options)
+          .then((res) => resolve(res.data))
+          .catch((err) => reject(err.error));
+      });
+    }
   }
 
   postFormData(endpoint: string, body: any, httpOptions?: any) {
     if (!this.networkIsConnected) {
       return new ErrorObservable('Network error, make sure there are internet connection.');
     }
-    return this.http.post(this.getUrl() + endpoint, body).pipe(catchError(this.handleError));
+    if (!window['cordova']) {
+      return this.http.post(this.getUrl() + endpoint, body).pipe(catchError(this.handleError));
+    } else {
+      return new Promise((resolve, reject) => {
+        this.httpNative
+          .post(this.getUrl() + endpoint, body, {})
+          .then((res) => resolve(res.data))
+          .catch((err) => reject(err.error));
+      });
+    }
   }
 
   delete(endpoint: string, httpOptions?: any) {
@@ -73,7 +107,16 @@ export class ApiServiceProvider {
       return new ErrorObservable('Network error, make sure there are internet connection.');
     }
     const options = this.createRequestHeader(httpOptions ? httpOptions : {});
-    return this.http.delete(this.getUrl() + endpoint, options).pipe(catchError(this.handleError));
+    if (!window['cordova']) {
+      return this.http.delete(this.getUrl() + endpoint, options).pipe(catchError(this.handleError));
+    } else {
+      return new Promise((resolve, reject) => {
+        this.httpNative
+          .delete(this.getUrl() + endpoint, {}, options)
+          .then((res) => resolve(res.data))
+          .catch((err) => reject(err.error));
+      });
+    }
   }
 
   private createRequestHeader(options?: any): any {
