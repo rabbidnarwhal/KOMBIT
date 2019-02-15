@@ -16,12 +16,16 @@ export class ChatServiceProvider {
   getChats(): Promise<Array<ChatResponse>> {
     const userId = this.auth.getPrincipal().id;
     const header = { 'Cache-Control': 'no-cache' };
-    return this.api.get('/chat/user/' + userId, { headers: header }).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.get('/chat/user/' + userId, { headers: header }).subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   getRoomChat(id: string): Promise<ChatRoomResponse[]> {
     const userId = this.auth.getPrincipal().id;
-    return this.api.get('/chat/room/' + id + '/user/' + userId).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.get('/chat/room/' + id + '/user/' + userId).subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   sendChat(data: ChatRequest) {
@@ -47,20 +51,28 @@ export class ChatServiceProvider {
   }
 
   sendChatApi(data: ChatRequest): Promise<any> {
-    return this.api.post('/chat', data).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.post('/chat', data).subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   readChat(chatId: number): Promise<string> {
-    return this.api.post('/chat/' + chatId + 'read', {}).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.post('/chat/' + chatId + 'read', {}).subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   getUnreadChatCount(): Promise<{ unRead: number }> {
     const userId = this.auth.getPrincipal().id;
-    return this.api.get('/chat/unread/user/' + userId).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.get('/chat/unread/user/' + userId).subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   getRecieverInfo(userId: number): Promise<UserChatInfo> {
-    return this.api.get('user/chat-info/' + userId).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.get('user/chat-info/' + userId).subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   initConnection() {

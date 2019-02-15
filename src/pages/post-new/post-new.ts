@@ -719,9 +719,13 @@ export class PostNewPage {
       }
     }
     if (this.postId) {
-      return this.api.post('/product/' + this.postId, this.data).toPromise();
+      return new Promise((resolve, reject) => {
+        this.api.post('/product/' + this.postId, this.data).subscribe((res) => resolve(res), (err) => reject(err));
+      });
     } else {
-      return this.api.post('/product', this.data).toPromise();
+      return new Promise((resolve, reject) => {
+        this.api.post('/product', this.data).subscribe((res) => resolve(res), (err) => reject(err));
+      });
     }
   }
 

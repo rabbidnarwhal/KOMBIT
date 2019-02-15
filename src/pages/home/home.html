@@ -34,7 +34,7 @@
     </div>
     <ion-slides *ngIf="sliderProduct.length" pager="true" [autoplay]="autoplay" loop="true" (ionSlideTap)="slidesClicked()" (ionSlideAutoplayStop)="slideAutoPlayStopped()">
       <ion-slide *ngFor="let item of sliderProduct">
-        <img src="{{item.fotoPath}}" />
+        <img-loader [src]="item.fotoPath" useImg></img-loader>
         <div class="slider-text">
           <ion-label no-margin no-padding class="text-product">{{item.productName}}</ion-label>
           <ion-label no-margin no-padding class="sub-text-product">{{item.companyName}}</ion-label>
@@ -53,8 +53,7 @@
     <div text-center class="not-found-text" *ngIf="!listSolution.length && !isSearchingSolution">Solution not found!</div>
     <ion-col col-3 *ngFor="let solution of listSolution" (click)="filterSolutions(solution)">
       <div class="solution-container">
-        <img *ngIf="!solution.image" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="alt="" />
-        <img *ngIf="solution.image" [src]="solution.image" alt="" />
+        <img-loader [src]="solution.image ? solution.image : imagePlaceholder" useImg></img-loader>
       </div>
       <ion-label no-margin no-padding class="solution-text">{{solution.category}}</ion-label>
     </ion-col>
@@ -77,7 +76,9 @@
     </div>
     <ion-col col-6 *ngFor="let post of filteredItems">
       <div class="post-list-box">
-        <img *ngIf="post.fotoPath" class="post-image" [src]="post.fotoPath" (click)="showDetail(post)" />
+        <div class="product-image-continer">
+          <img-loader class="post-image" [src]="post.fotoPath" spinner="false" [fallbackUrl]="imagePlaceholder" fallbackAsPlaceholder="true" (click)="showDetail(post)" useImg></img-loader>
+        </div>
         <div class="box-label-container" (click)="showDetail(post)">
           <div no-margin class="box-label">
             <span no-padding no-margin class="inline-flex box-text">Product</span>

@@ -13,10 +13,6 @@ export class HomeTabPage {
   isLoading = false;
   constructor(public navCtrl: NavController, public navParams: NavParams, private authService: AuthServiceProvider) {}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad HomeTabPage');
-  }
-
   checkRole() {
     if (this.authService.getPrincipal().role === 'Customer') {
       this.tabContent = Config.CUSTOMER.TABMENU;

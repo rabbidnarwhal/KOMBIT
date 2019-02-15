@@ -23,6 +23,7 @@ export class PostMyPage {
   public lockBtn: boolean = false;
   public isSearching: boolean = false;
   public userId: number;
+  public imagePlaceholder: string;
   constructor(
     public navCtrl: NavController,
     private utility: UtilityServiceProvider,
@@ -32,6 +33,7 @@ export class PostMyPage {
   ) {
     this.listProducts = new Array<Product>();
     this.userId = this.auth.getPrincipal().id;
+    this.imagePlaceholder = 'data:image/gif;base64,R0lGODlhAQABAIAAAP///////yH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
   }
 
   ionViewDidEnter() {

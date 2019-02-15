@@ -130,7 +130,6 @@ export class ChatRoomPage {
       RoomId: this.roomId,
       Date: dateTime.toDateString()
     };
-    console.log('new', newMsg);
     const newChat: ChatRoomResponse = {
       senderId: this.sender.id,
       chat: this.editorMsg,

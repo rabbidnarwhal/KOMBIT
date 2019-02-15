@@ -225,7 +225,6 @@ export class MapPopoverPage {
         this.map.setCenter(new LatLng(details.geometry.location.lat(), details.geometry.location.lng()));
         this.marker.setPosition(details.geometry.location);
       });
-      console.log('select place', details);
     });
   }
 

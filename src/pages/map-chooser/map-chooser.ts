@@ -268,7 +268,6 @@ export class MapChooserPage {
   }
 
   searchLocation() {
-    console.log('im run');
     if (this.locationName.length > 0) {
       let config = {
         types: [ 'establishment' ],

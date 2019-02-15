@@ -50,7 +50,6 @@ export class ChatPage {
     this.chatService
       .getChats()
       .then((res: Array<ChatResponse>) => {
-        console.log('chat', res);
         this.chats = res.map((item: ChatResponse) => {
           const obj = item;
           const time = new Date(item.date);

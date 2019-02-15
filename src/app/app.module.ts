@@ -22,6 +22,9 @@ import { UtilityServiceProvider } from '../providers/utility-service';
 
 import { IonicImageViewerModule } from 'ionic-img-viewer';
 import { ChatServiceProvider } from '../providers/chat-service';
+import { HTTP } from '@ionic-native/http';
+
+import { IonicImageLoader } from 'ionic-image-loader';
 
 @NgModule({
   declarations: [ MyApp ],
@@ -34,6 +37,7 @@ import { ChatServiceProvider } from '../providers/chat-service';
       animate: false
     }),
     HttpClientModule,
+    IonicImageLoader.forRoot(),
     IonicImageViewerModule
   ],
   bootstrap: [ IonicApp ],
@@ -47,6 +51,7 @@ import { ChatServiceProvider } from '../providers/chat-service';
     Keyboard,
     Network,
     Push,
+    HTTP,
     PushNotificationProvider,
     SplashScreen,
     StatusBar,

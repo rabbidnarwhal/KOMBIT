@@ -29,7 +29,7 @@ export class ProductDetailComponent {
   ) {}
 
   downloadMarketingKit(file = null) {
-    if (this.data.attachment.length === 1) {
+    if (file === null && this.data.attachment.length === 1) {
       this.fileIsLoading = true;
       this.downloadMarketingKit(this.data.attachment[0]);
     } else if (file === null) {
@@ -40,6 +40,7 @@ export class ProductDetailComponent {
         (blob: Blob) => {
           if (!window['cordova']) {
             file.isLoading = false;
+            this.fileIsLoading = false;
             this.utility.showToast('File downloaded');
           } else {
             const directory = this.platform.is('ios')
@@ -47,7 +48,7 @@ export class ProductDetailComponent {
               : this.file.externalRootDirectory + 'Download/';
             this.file
               .writeFile(directory, file.fileName, blob, {
-                replace: true
+                replace: false
               })
               .then((res) => {
                 file.isLoading = false;

@@ -17,7 +17,7 @@ import { Config } from '../config/config';
 })
 export class MyApp {
   @ViewChild(Nav) nav: Nav;
-  public rootPage: string = 'LoginPage';
+  public rootPage: string = 'LoaderPage';
   public pages: Array<{ title: string; component: string; icon: string; image: string }>;
   public userName: string = '';
   public picture: string;

@@ -20,7 +20,7 @@
         <div *ngFor="let data of listProducts">
           <div class="post-list-box" [@postAnimation] *ngIf="data.id === selectedProductId" (click)="showDetail($event, data)">
             <div class="image-container">
-              <img *ngIf="data.fotoPath" [src]="data.fotoPath" />
+              <img-loader [src]="data.fotoPath ? data.fotoPath : imagePlaceholder" useImg></img-loader>
             </div>
             <div class="detail-container" [class.has-button-inside]="data.posterId === userId">
               <span class="detail-label">Product</span>

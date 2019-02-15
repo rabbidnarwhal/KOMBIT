@@ -9,6 +9,7 @@ import { Category } from '../../models/category';
 import { DataCategoryServiceProvider } from '../../providers/dataCategory-service';
 import { DataNotificationServiceProvider } from '../../providers/dataNotification-service';
 import { ChatServiceProvider } from '../../providers/chat-service';
+import { ImageLoaderConfig } from 'ionic-image-loader';
 
 @IonicPage()
 @Component({
@@ -31,6 +32,7 @@ export class HomePage {
   public postType: string;
   public locationIndicatorText: string;
   public menuIcon: string;
+  public imagePlaceholder: string;
 
   public autoplay: number = 4000;
   public userId: number;
@@ -64,7 +66,8 @@ export class HomePage {
     private auth: AuthServiceProvider,
     private dataNotification: DataNotificationServiceProvider,
     private chatService: ChatServiceProvider,
-    private zone: NgZone
+    private zone: NgZone,
+    private imageLoaderConfig: ImageLoaderConfig
   ) {
     this.postType = 'public';
     this.listPost = new Array<Product>();
@@ -77,6 +80,7 @@ export class HomePage {
     this.menuIcon = this.newPostEnabled ? 'more' : 'menu';
     this.notificationEnabled = this.navParams.data ? true : false;
     this.menuEnabled = true;
+    this.imagePlaceholder = 'assets/imgs/chat-white.png';
   }
 
   ionViewWillEnter() {
