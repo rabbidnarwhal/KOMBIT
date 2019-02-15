@@ -12,21 +12,37 @@ export class DataProductServiceProvider {
 
   getListAllProducts(): Promise<Array<Product>> {
     const userId = this.auth.getPrincipal().id;
-    return this.api.get('/product/like/user/' + userId, { headers: this.header }).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api
+        .get('/product/like/user/' + userId, { headers: this.header })
+        .subscribe((res) => resolve(res), (error) => reject(error));
+    });
   }
 
   getListUserProducts(): Promise<Array<Product>> {
     const userId = this.auth.getPrincipal().id;
-    return this.api.get('/product/user/' + userId, { headers: this.header }).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api
+        .get('/product/user/' + userId, { headers: this.header })
+        .subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   getProductDetail(id): Promise<ProductDetail> {
     const userId = this.auth.getPrincipal().id;
-    return this.api.get('/product/' + id + '/user/' + userId, { headers: this.header }).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api
+        .get('/product/' + id + '/user/' + userId, { headers: this.header })
+        .subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   getProductContentEdit(id): Promise<NewProduct> {
-    return this.api.get('/product/' + id + '/edit', { headers: this.header }).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api
+        .get('/product/' + id + '/edit', { headers: this.header })
+        .subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   addNewProduct(request: NewProduct) {
@@ -48,7 +64,9 @@ export class DataProductServiceProvider {
       ProductId: productId,
       ViewedBy: this.auth.getPrincipal().id
     };
-    return this.api.post('/interaction/view', request).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.post('/interaction/view', request).subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   addChatProduct(productId) {
@@ -57,7 +75,9 @@ export class DataProductServiceProvider {
       ProductId: productId,
       ChatBy: this.auth.getPrincipal().id
     };
-    return this.api.post('/interaction/chat', request).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.post('/interaction/chat', request).subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   addCommentProduct(productId, content) {
@@ -67,7 +87,9 @@ export class DataProductServiceProvider {
       CommentBy: this.auth.getPrincipal().id,
       Comment: content
     };
-    return this.api.post('/interaction/comment', request).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.post('/interaction/comment', request).subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   modifyLikeProduct(productId: number, isLike): Promise<any> {
@@ -76,7 +98,9 @@ export class DataProductServiceProvider {
       ProductId: productId,
       LikedBy: this.auth.getPrincipal().id
     };
-    return this.api.post('/interaction/like', request).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.post('/interaction/like', request).subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   getCommentByName(): string {
@@ -92,6 +116,8 @@ export class DataProductServiceProvider {
   }
 
   deleteProduct(id: number): Promise<any> {
-    return this.api.delete('/product/' + id).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.delete('/product/' + id).subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 }

@@ -147,7 +147,11 @@ export class ProfilePage {
 
   private changePassword(request: ChangePassword) {
     request.UserName = this.data.username;
-    return this.api.post('/users/' + this.data.id + '/change-password', request).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api
+        .post('/users/' + this.data.id + '/change-password', request)
+        .subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   openMap(type) {
@@ -180,7 +184,6 @@ export class ProfilePage {
       this.api.get('/users/' + this.id, { headers: header }).subscribe(
         (sub) => {
           this.data = sub;
-          console.log(this.data);
           if (this.data.kabKotaId && this.data.provinsiId) {
             Promise.all([ this.dataProvince.getCity(), this.dataProvince.getProvince() ]).then((res) => {
               const city = res[0].filter((x) => x.id === this.data.kabKotaId);
@@ -210,7 +213,6 @@ export class ProfilePage {
   private saveProfile() {
     return new Promise((resolve, reject) => {
       const request: UserRequest = new UserRequest(this.data);
-      console.log(request);
       this.api.post('/users/' + this.id, request).subscribe(
         (sub) => {
           resolve();

@@ -9,10 +9,16 @@ export class DataNotificationServiceProvider {
 
   fetchListNotification(id): Promise<Array<Notification>> {
     const header = { 'Cache-Control': 'no-cache' };
-    return this.api.get('/notification/user/' + id, { headers: header }).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api
+        .get('/notification/user/' + id, { headers: header })
+        .subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   fetchUnReadNotificationCount(id): Promise<{ unRead: number }> {
-    return this.api.get('/notification/user/' + id + '/unread').toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.get('/notification/user/' + id + '/unread').subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 }

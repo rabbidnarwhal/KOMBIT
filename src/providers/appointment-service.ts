@@ -10,20 +10,30 @@ export class AppointmentServiceProvider {
   getAppointments(): Promise<Array<AppointmentResponse>> {
     const userId = this.auth.getPrincipal().id;
     const header = { 'Cache-Control': 'no-cache' };
-    return this.api.get('/appointment/user/' + userId, { headers: header }).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api
+        .get('/appointment/user/' + userId, { headers: header })
+        .subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   getAppointmentDetail(id): Promise<AppointmentDetailResponse> {
-    return this.api.get('/appointment/' + id).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.get('/appointment/' + id).subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   createAppointment(data): Promise<any> {
     const userId = this.auth.getPrincipal().id;
     data.MakerId = userId;
-    return this.api.post('/appointment/', data).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.post('/appointment/', data).subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 
   updateStatusAppointment(id, data): Promise<any> {
-    return this.api.post('/appointment/' + id, data).toPromise();
+    return new Promise((resolve, reject) => {
+      this.api.post('/appointment/' + id, data).subscribe((res) => resolve(res), (err) => reject(err));
+    });
   }
 }
