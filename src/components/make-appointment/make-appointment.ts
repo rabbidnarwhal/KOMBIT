@@ -60,9 +60,7 @@ export class MakeAppointmentComponent {
           this.appointment.Date = data.toUTCString();
           this.dateDisplay = data.toLocaleDateString() + ', ' + data.toLocaleTimeString();
         },
-        (err) => {
-          console.log(err);
-        }
+        (err) => {}
       );
   }
 

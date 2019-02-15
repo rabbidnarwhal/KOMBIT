@@ -168,12 +168,8 @@ export class PostDetailPage {
   shareProduct() {
     this.socialSharing
       .share('Check out this product.', '', '', 'http://kombit.org/product/' + this.data.id)
-      .then(() => {
-        console.log('shared');
-      })
-      .catch((err) => {
-        console.log('share', err);
-      });
+      .then(() => {})
+      .catch((err) => {});
   }
 
   activeMore() {

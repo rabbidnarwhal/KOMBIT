@@ -74,10 +74,7 @@ export class FooterMenuComponent {
   }
 
   loadUnreadChat() {
-    this.chatService
-      .getUnreadChatCount()
-      .then((res) => (this.unreadChat = res.unRead))
-      .catch((err) => console.log(err));
+    this.chatService.getUnreadChatCount().then((res) => (this.unreadChat = res.unRead)).catch((err) => {});
   }
 
   subscribeChatArrived() {

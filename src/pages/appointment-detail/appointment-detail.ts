@@ -68,14 +68,11 @@ export class AppointmentDetailPage {
         buttons: [
           {
             text: 'Cancel',
-            handler: (data) => {
-              console.log('Cancel clicked', data);
-            }
+            handler: (data) => {}
           },
           {
             text: 'Ok',
             handler: (data) => {
-              console.log('Saved clicked', data);
               if (!data.rejectMessage) {
                 this.utility.showToast('Message is required!');
                 return false;

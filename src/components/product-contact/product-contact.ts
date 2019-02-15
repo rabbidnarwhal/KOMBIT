@@ -51,10 +51,7 @@ export class ProductContactComponent {
       .catch((err) => {
         this.utility.showToast(err);
       });
-    this.callNumber
-      .callNumber(this.data.contactHandphone, true)
-      .then((res) => console.log('Launched dialer!', res))
-      .catch((err) => console.log('Error launching dialer', err));
+    this.callNumber.callNumber(this.data.contactHandphone, true).then((res) => {}).catch((err) => {});
   }
 
   openCallChooser() {
