@@ -48,7 +48,7 @@ export class ProductDetailComponent {
               : this.file.externalRootDirectory + 'Download/';
             this.file
               .writeFile(directory, file.fileName, blob, {
-                replace: false
+                replace: true
               })
               .then((res) => {
                 file.isLoading = false;
