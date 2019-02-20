@@ -18,7 +18,9 @@ export class PushNotificationProvider {
     private events: Events,
     private platform: Platform
   ) {
-    this.isAndroid = this.platform.is('android');
+    this.platform.ready().then(() => {
+      this.isAndroid = this.platform.is('android');
+    });
   }
 
   init() {

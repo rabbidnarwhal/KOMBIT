@@ -20,9 +20,10 @@ export class AuthServiceProvider {
     private platform: Platform,
     private push: PushNotificationProvider
   ) {
-    this.isLoggin = false;
-    this.authCheck();
-    this.isAndroid = this.platform.is('android');
+    this.platform.ready().then(() => {
+      this.isLoggin = false;
+      this.isAndroid = this.platform.is('android');
+    });
   }
 
   authCheck() {
@@ -64,8 +65,8 @@ export class AuthServiceProvider {
     setTimeout(() => {
       loading.dismiss();
 
-      if (this.isAndroid) this.push.topicNotifier.next({ sub: false, topic: 'combits-android', id: this.principal.id });
-      else this.push.topicNotifier.next({ sub: false, topic: 'combits-ios', id: this.principal.id });
+      // if (this.isAndroid) this.push.topicNotifier.next({ sub: false, topic: 'combits-android', id: this.principal.id });
+      // else this.push.topicNotifier.next({ sub: false, topic: 'combits-ios', id: this.principal.id });
 
       this.setPrincipal(null);
       this.authNotifier.next(false);
@@ -92,8 +93,8 @@ export class AuthServiceProvider {
     const date = new Date().getTime().toString();
     this.isLoggin = true;
     this.setPrincipal(data);
-    if (this.isAndroid) this.push.topicNotifier.next({ sub: true, topic: 'combits-android', id: data.id });
-    else this.push.topicNotifier.next({ sub: true, topic: 'combits-ios', id: data.id });
+    // if (this.isAndroid) this.push.topicNotifier.next({ sub: true, topic: 'combits-android', id: data.id });
+    // else this.push.topicNotifier.next({ sub: true, topic: 'combits-ios', id: data.id });
     localStorage.setItem('token', data.idNumber + ':' + data.id + ':' + date);
     return new Promise(resolve => {
       resolve(true);

@@ -48,8 +48,8 @@ export class MyApp {
       this.menu.swipeEnable(false, 'sideMenu');
       this.keyboard.disableScroll(true);
       this.pushNotification.init();
-      this.loadProvinceData();
       this.authCheck();
+      this.loadProvinceData();
     });
   }
 
@@ -57,11 +57,11 @@ export class MyApp {
     if (page.component === 'logout') {
       this.utility
         .confirmAlert('Are you sure to logout?', 'Logout')
-        .then((res) => {
+        .then(res => {
           this.chatService.unregister();
           this.auth.logout();
         })
-        .catch((err) => console.error(err));
+        .catch(err => console.error(err));
     } else if (page.component) this.nav.push(page.component);
     else alert('Not implemented yet');
   }
@@ -80,47 +80,51 @@ export class MyApp {
       if (routeUrl.length > 1) window.location.href = routeUrl[0];
     }
     let isFirstTime = localStorage.getItem('firstTime') || '';
-    this.auth.authNotifier.filter((res) => res !== null).subscribe((res) => {
-      if (!isFirstTime || isFirstTime !== 'false') {
-        localStorage.setItem('firstTime', 'false');
-        isFirstTime = 'false';
-        this.rootPage = 'WelcomePage';
-      } else if (res) {
-        if (!this.menu.isEnabled('sideMenu')) {
-          this.menu.enable(true, 'sideMenu');
-          this.menu.swipeEnable(true, 'sideMenu');
+    this.auth.authNotifier
+      .filter(res => res !== null)
+      .subscribe(res => {
+        if (!isFirstTime || isFirstTime !== 'false') {
+          localStorage.setItem('firstTime', 'false');
+          isFirstTime = 'false';
+          this.rootPage = 'WelcomePage';
+        } else if (res) {
+          if (!this.menu.isEnabled('sideMenu')) {
+            this.menu.enable(true, 'sideMenu');
+            this.menu.swipeEnable(true, 'sideMenu');
+          }
+          this.userName = this.auth.getPrincipal().name;
+          this.picture = this.auth.getPrincipal().image ? this.auth.getPrincipal().image : this.picture;
+          this.changeSideMenus(this.auth.getPrincipal().role);
+          this.chatService.initConnection();
+          this.rootPage = 'HomePage';
+        } else {
+          if (this.menu.isEnabled('sideMenu')) {
+            this.menu.enable(false, 'sideMenu');
+            this.menu.swipeEnable(false, 'sideMenu');
+          }
+          this.rootPage = 'LoginPage';
         }
-        this.userName = this.auth.getPrincipal().name;
-        this.picture = this.auth.getPrincipal().image ? this.auth.getPrincipal().image : this.picture;
-        this.changeSideMenus(this.auth.getPrincipal().role);
-        this.chatService.initConnection();
-        this.rootPage = 'HomePage';
-      } else {
-        if (this.menu.isEnabled('sideMenu')) {
-          this.menu.enable(false, 'sideMenu');
-          this.menu.swipeEnable(false, 'sideMenu');
-        }
-        this.rootPage = 'LoginPage';
-      }
-      this.splashScreen.hide();
-    });
+        this.splashScreen.hide();
+      });
+
+    this.auth.authCheck();
   }
 
   public profilePage() {
     this.nav.push('ProfilePage', { id: this.auth.getPrincipal().id });
     this.menu.close('sideMenu');
 
-    this.events.subscribe('picture-changed', (sub) => {
+    this.events.subscribe('picture-changed', sub => {
       this.picture = sub;
     });
   }
 
   private loadProvinceData() {
-    Promise.all([ this.dataProvince.getListProvince(), this.dataProvince.getListCity() ])
-      .then((res) => {
+    Promise.all([this.dataProvince.getListProvince(), this.dataProvince.getListCity()])
+      .then(res => {
         this.dataProvince.setProvince(res[0]);
         this.dataProvince.setCity(res[1]);
       })
-      .catch((err) => console.error(err));
+      .catch(err => console.error(err));
   }
 }

@@ -40,21 +40,20 @@ export class ApiServiceProvider {
     if (!window['cordova']) {
       return this.http.get(this.getUrl() + endpoint, options).pipe(catchError(this.handleError));
     } else {
-      return new Observable((observer) => {
+      return new Observable(observer => {
+        this.httpNative.setDataSerializer('json');
         this.httpNative
           .get(this.getUrl() + endpoint, {}, options.headers)
-          .then((res) => {
+          .then(res => {
             try {
               const data = JSON.parse(res.data);
-              console.log('get data', data);
               observer.next(data);
-              console.log('get complete');
             } catch (error) {
               observer.next(res.data);
             }
             observer.complete;
           })
-          .catch((err) => observer.error(JSON.parse(err.error).Message));
+          .catch(err => observer.error(JSON.parse(err.error).Message));
       });
     }
   }
@@ -99,22 +98,20 @@ export class ApiServiceProvider {
     if (!window['cordova']) {
       return this.http.post(this.getUrl() + endpoint, body, options).pipe(catchError(this.handleError));
     } else {
-      return new Observable((observer) => {
+      return new Observable(observer => {
         this.httpNative.setDataSerializer('json');
         this.httpNative
           .post(this.getUrl() + endpoint, body, options.headers)
-          .then((res) => {
+          .then(res => {
             try {
               const data = JSON.parse(res.data);
-              console.log('post data', data);
               observer.next(data);
-              console.log('post complete');
             } catch (error) {
               observer.next(res.data);
             }
             observer.complete();
           })
-          .catch((err) => observer.error(JSON.parse(err.error).Message));
+          .catch(err => observer.error(JSON.parse(err.error).Message));
       });
     }
   }
@@ -126,15 +123,15 @@ export class ApiServiceProvider {
     if (!window['cordova']) {
       return this.http.post(this.getUrl() + endpoint, body).pipe(catchError(this.handleError));
     } else {
-      return new Observable((observer) => {
+      return new Observable(observer => {
         this.httpNative.setDataSerializer('urlencode');
         this.httpNative
           .post(this.getUrl() + endpoint, body, {})
-          .then((res) => {
+          .then(res => {
             observer.next(JSON.parse(res.data));
             observer.complete();
           })
-          .catch((err) => observer.error(JSON.parse(err.error).Message));
+          .catch(err => observer.error(JSON.parse(err.error).Message));
       });
     }
   }
@@ -147,14 +144,14 @@ export class ApiServiceProvider {
     if (!window['cordova']) {
       return this.http.delete(this.getUrl() + endpoint, options).pipe(catchError(this.handleError));
     } else {
-      return new Observable((observer) => {
+      return new Observable(observer => {
         this.httpNative
           .delete(this.getUrl() + endpoint, {}, options.headers)
-          .then((res) => {
+          .then(res => {
             observer.next(JSON.parse(res.data));
             observer.complete();
           })
-          .catch((err) => observer.error(JSON.parse(err.error).Message));
+          .catch(err => observer.error(JSON.parse(err.error).Message));
       });
     }
   }
